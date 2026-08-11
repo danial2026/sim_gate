@@ -1,3 +1,4 @@
+import '../models/configuration.dart';
 import '../repositories/config_repository.dart';
 import '../utils/logger.dart';
 import '../utils/validators.dart';
@@ -17,7 +18,7 @@ class ConfigService {
   final Logger _logger;
 
   /// Loads the current configuration.
-  dynamic load() => _repo.load();
+  AppConfiguration load() => _repo.load();
 
   /// Updates the listening port after validating the range.
   ///

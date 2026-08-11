@@ -20,6 +20,9 @@ class SmsService {
   final PlatformChannelService _platform;
   final Logger _logger;
 
+  /// Exposes the underlying repository (used by handlers for log queries).
+  SmsRepository get repository => _repo;
+
   /// Queues a new SMS send. Returns the persisted [SmsRequest].
   ///
   /// Throws [ArgumentError] for invalid recipient/message/simId.
