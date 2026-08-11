@@ -13,13 +13,13 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 | --- | --- |
 | ![Configure Server WiFi](screenshot/03-configure-server-wifi.png) | ![SIM Cards](screenshot/04-sim-cards.png) |
 
-| Server Configuration (Stopped) | Settings |
+| Server Configuration (Stopped) | Server Configuration (Running) |
 | --- | --- |
-| ![Server Config - Stopped](screenshot/05-server-config-stopped.png) | ![Settings](screenshot/06-settings.png) |
+| ![Server Config - Stopped](screenshot/05-server-config-stopped.png) | ![Server Config - Running](screenshot/08-server-config-running.png) |
 
-| Settings - Token & Server | Server Configuration (Running) |
+| Setting - 1 | Setting - 2 |
 | --- | --- |
-| ![Settings - Token](screenshot/07-settings-token.png) | ![Server Config - Running](screenshot/08-server-config-running.png) |
+| ![Setting - 1](screenshot/07-settings-token.png) | ![Setting - 2](screenshot/06-settings.png) |
 
 | Dashboard Overview | Dashboard - SMS Activity & Stats |
 | --- | --- |
