@@ -1,5 +1,5 @@
 # Self-Hosted SMS API Android App - MVP Documentation
-**Version:** 0.0.3  
+**Version:** 0.0.4  
 **Platform:** Flutter (Android)  
 **Date Created:** August 2026
 
@@ -368,7 +368,7 @@ A self-hosted SMS API running natively on Android devices, allowing external app
   - "Restore from Backup" button
 
 #### About Section
-- App Version: 0.0.3
+- App Version: 0.0.4
 - Build Number
 - Permissions Status (SMS, Phone, Network)
 - "Check for Updates" button
@@ -455,7 +455,7 @@ All responses return JSON:
   "data": {
     "status": "running",
     "uptime": "02:30:45",
-    "version": "0.0.3"
+    "version": "0.0.4"
   }
 }
 ```
@@ -594,7 +594,7 @@ All responses return JSON:
     "listeningPort": 3000,
     "uptime": "02:30:45",
     "startTime": "2026-08-11T07:30:00Z",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "androidVersion": 13,
     "deviceName": "Device Name",
     "deviceManufacturer": "Samsung",
@@ -940,7 +940,7 @@ CREATE TABLE configuration (
 - `log_retention_days` (integer, default: 30)
 - `max_log_entries` (integer, default: 10000)
 - `app_theme` (string, default: "system")
-- `app_version` (string, default: "0.0.3")
+- `app_version` (string, default: "0.0.4")
 
 #### Table: `sim_cards`
 ```sql
@@ -1312,7 +1312,7 @@ dependencies {
 ## Task Breakdown
 
 ### Phase 1: Project Setup & Architecture (Foundation)
-1. [ ] Initialize Flutter project with version 0.0.3
+1. [ ] Initialize Flutter project with version 0.0.4
 2. [ ] Set up directory structure (lib/models, lib/services, lib/pages, lib/widgets, lib/providers, lib/utils)
 3. [ ] Configure pubspec.yaml with all required packages
 4. [ ] Set up Android platform channel configuration
@@ -1595,12 +1595,30 @@ dependencies {
 5. [ ] Create troubleshooting guide
 6. [ ] Build APK for distribution
 7. [ ] Test on multiple devices
-8. [ ] Version 0.0.3 released
+8. [ ] Version 0.0.4 released
 
 **Deliverables:**
 - Complete documentation
 - APK built
 - App ready for users
+
+### Building the Release APK
+
+Build the release APK with:
+
+```bash
+flutter build apk --release
+```
+
+The output file is placed at:
+
+```
+build/app/outputs/apk/release/sim_gate-<VERSION>-release.apk
+```
+
+where `<VERSION>` is the app version from `pubspec.yaml` (e.g. `sim_gate-0.0.4-release.apk`).
+The APK filename is derived automatically from the pubspec version by the Gradle
+build config, so it always matches the current app version.
 
 ---
 
