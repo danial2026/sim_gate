@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../config/app_info.dart';
 import '../config/service_locator.dart';
@@ -444,9 +445,23 @@ class _SettingsPageState extends State<SettingsPage> {
               fontSize: 11,
             ),
           ),
+          const SizedBox(height: 16),
+          SecondaryButton(
+            label: 'Developer',
+            icon: Icons.code,
+            onPressed: _openDeveloperSite,
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _openDeveloperSite() async {
+    final uri = Uri.parse('https://danials.org/');
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && mounted) {
+      _toast(context, 'Could not open danials.org');
+    }
   }
 
   void _toast(BuildContext context, String message) {
