@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../config/theme.dart';
@@ -121,6 +120,14 @@ class _ConfigPageState extends State<ConfigPage> {
               }
             },
           ),
+          if (running) ...[
+            const SizedBox(height: 8),
+            PrimaryButton(
+              label: 'Open Dashboard',
+              icon: Icons.dashboard_outlined,
+              onPressed: () => Navigator.of(context).pushNamed('/dashboard'),
+            ),
+          ],
           const SizedBox(height: 8),
           SecondaryButton(
             label: 'Edit Configuration',
@@ -203,6 +210,3 @@ class _ConfigCard extends StatelessWidget {
     );
   }
 }
-
-// ignore: unused_element
-ClipboardData _copy(String text) => ClipboardData(text: text);

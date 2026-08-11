@@ -58,14 +58,16 @@ void main() {
     expect(find.text('Grant Permissions'), findsOneWidget);
   });
 
-  testWidgets('onboarding flow ends on the dashboard', (tester) async {
+  testWidgets('onboarding flow ends on the server config page', (
+    tester,
+  ) async {
     await tester.pumpWidget(const SimGateApp());
     await settleDb(tester);
 
     // Permissions gate -> Setup (mock channel grants everything).
     await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
-    expect(find.text('SETUP'), findsOneWidget);
+    expect(find.text('CONFIGURE SERVER'), findsOneWidget);
 
     // Setup -> SIM selection.
     await tester.tap(find.text('CONTINUE'));
@@ -73,20 +75,11 @@ void main() {
     expect(find.text('SIM CARDS'), findsOneWidget);
     expect(find.text('SIM 1'), findsOneWidget);
 
-    // SIM selection -> Dashboard (the app home).
+    // SIM selection -> Server configuration.
     await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
-    expect(find.text('DASHBOARD'), findsOneWidget);
-    expect(find.text('QUICK ACCESS'), findsOneWidget);
-    expect(find.text('STATISTICS'), findsOneWidget);
-
-    // The chart section is below the fold; scroll it into view.
-    await tester.scrollUntilVisible(
-      find.text('ACTIVITY'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.byType(SmsActivityChart), findsOneWidget);
-    expect(find.byType(SuccessRateChart), findsOneWidget);
+    expect(find.text('SERVER CONFIGURATION'), findsOneWidget);
+    expect(find.text('START API'), findsOneWidget);
+    expect(find.text('OPEN DASHBOARD'), findsNothing);
   });
 }

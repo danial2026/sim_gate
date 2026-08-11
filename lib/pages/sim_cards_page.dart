@@ -65,9 +65,8 @@ class _SimCardsPageState extends State<SimCardsPage> {
                     PrimaryButton(
                       label: 'Continue',
                       icon: Icons.arrow_forward,
-                      onPressed: () => Navigator.of(
-                        context,
-                      ).pushReplacementNamed('/dashboard'),
+                      onPressed: () =>
+                          Navigator.of(context).pushReplacementNamed('/config'),
                     ),
                   ],
                 ],
@@ -87,7 +86,7 @@ class _SimCardsPageState extends State<SimCardsPage> {
                                 ? null
                                 : () => Navigator.of(
                                     context,
-                                  ).pushReplacementNamed('/dashboard'),
+                                  ).pushReplacementNamed('/config'),
                           ),
                           const SizedBox(height: 12),
                           Text(
