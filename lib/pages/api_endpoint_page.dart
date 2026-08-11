@@ -99,26 +99,22 @@ class ApiEndpointPage extends StatelessWidget {
           PrimaryButton(
             label: 'Copy URL',
             icon: Icons.copy_outlined,
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: apiUrl));
-              if (!context.mounted) return;
-              _toast(context, 'URL copied to clipboard');
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: apiUrl));
             },
           ),
           const SizedBox(height: 8),
           SecondaryButton(
             label: 'Copy as cURL',
             icon: Icons.terminal,
-            onPressed: () async {
-              await Clipboard.setData(
+            onPressed: () {
+              Clipboard.setData(
                 ClipboardData(
                   text:
                       'curl -X GET "$apiUrl/sms/status?requestId=demo" \\\n'
                       '  -H "Authorization: Bearer ${config.accessToken ?? 'TOKEN'}"',
                 ),
               );
-              if (!context.mounted) return;
-              _toast(context, 'cURL copied to clipboard');
             },
           ),
           const SizedBox(height: 8),
@@ -128,16 +124,6 @@ class ApiEndpointPage extends StatelessWidget {
             onPressed: () => Navigator.of(context).maybePop(),
           ),
         ],
-      ),
-    );
-  }
-
-  void _toast(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.of(context).surface,
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
