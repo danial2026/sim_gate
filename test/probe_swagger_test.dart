@@ -7,7 +7,7 @@ import 'package:sim_gate/services/platform_channel_service.dart';
 import 'package:sim_gate/services/sim_service.dart';
 import 'package:sim_gate/services/token_service.dart';
 import 'package:sim_gate/config/app_info.dart';
-import '../test_harness.dart';
+import 'test_harness.dart';
 
 @Timeout(Duration(minutes: 30))
 void main() {
