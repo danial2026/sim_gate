@@ -62,23 +62,30 @@ void main() {
     await tester.pumpWidget(const SimGateApp());
     await settleDb(tester);
 
-    // Permissions gate -> Setup.
-    await tester.tap(find.text('Grant Permissions'));
+    // Permissions gate -> Setup (mock channel grants everything).
+    await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
     expect(find.text('SETUP'), findsOneWidget);
 
     // Setup -> SIM selection.
-    await tester.tap(find.text('Continue'));
+    await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
-    expect(find.text('SIM Cards'), findsOneWidget);
+    expect(find.text('SIM CARDS'), findsOneWidget);
     expect(find.text('SIM 1'), findsOneWidget);
 
     // SIM selection -> Dashboard (the app home).
-    await tester.tap(find.text('Continue'));
+    await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
-    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('DASHBOARD'), findsOneWidget);
     expect(find.text('QUICK ACCESS'), findsOneWidget);
     expect(find.text('STATISTICS'), findsOneWidget);
+
+    // The chart section is below the fold; scroll it into view.
+    await tester.scrollUntilVisible(
+      find.text('ACTIVITY'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.byType(SmsActivityChart), findsOneWidget);
     expect(find.byType(SuccessRateChart), findsOneWidget);
   });
