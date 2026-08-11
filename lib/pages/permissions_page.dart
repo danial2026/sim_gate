@@ -78,52 +78,67 @@ class _PermissionsPageState extends State<PermissionsPage> {
       showBack: false,
       body: _checking
           ? const Center(child: LoadingIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Grant Permissions',
-                  style: TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.5,
+          : LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Grant Permissions',
+                          style: TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'SimGate needs these permissions to send SMS, read SIM cards, '
+                          'and serve API requests.',
+                          style: TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SectionHeader('Required'),
+                        ..._granted.entries.map(
+                          (e) => _PermissionCard(
+                            permission: e.key,
+                            granted: e.value,
+                            onGrant: () => _request(e.key),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        PrimaryButton(
+                          label: _allGranted ? 'Continue' : 'Grant All',
+                          onPressed: () async {
+                            if (!_allGranted) {
+                              await _requestAll();
+                            }
+                            if (!context.mounted) return;
+                            if (_allGranted) {
+                              _navigateNext(context);
+                            }
+                          },
+                          icon: _allGranted
+                              ? Icons.arrow_forward
+                              : Icons.lock_open,
+                        ),
+                        const SizedBox(height: 12),
+                        SecondaryButton(
+                          label: 'Continue anyway',
+                          icon: Icons.skip_next,
+                          onPressed: () => _navigateNext(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'SimGate needs these permissions to send SMS, read SIM cards, '
-                  'and serve API requests.',
-                  style:
-                      TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-                ),
-                const SectionHeader('Required'),
-                ..._granted.entries.map((e) => _PermissionCard(
-                      permission: e.key,
-                      granted: e.value,
-                      onGrant: () => _request(e.key),
-                    )),
-                const SizedBox(height: 24),
-                PrimaryButton(
-                  label: _allGranted ? 'Continue' : 'Grant All',
-                  onPressed: () async {
-                    if (!_allGranted) {
-                      await _requestAll();
-                    }
-                    if (!context.mounted) return;
-                    if (_allGranted) {
-                      _navigateNext(context);
-                    }
-                  },
-                  icon: _allGranted ? Icons.arrow_forward : Icons.lock_open,
-                ),
-                const SizedBox(height: 12),
-                SecondaryButton(
-                  label: 'Continue anyway',
-                  icon: Icons.skip_next,
-                  onPressed: () => _navigateNext(context),
-                ),
-              ],
+              ),
             ),
     );
   }
@@ -202,32 +217,44 @@ class _PermissionCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_title,
-                    style: const TextStyle(
-                        color: AppTheme.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700)),
+                Text(
+                  _title,
+                  style: const TextStyle(
+                    color: AppTheme.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(_description,
-                    style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 12)),
+                Text(
+                  _description,
+                  style: const TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
           ),
           const SizedBox(width: 8),
           granted
-              ? const StatusBadge(label: 'Granted', color: AppTheme.successColor)
+              ? const StatusBadge(
+                  label: 'Granted',
+                  color: AppTheme.successColor,
+                )
               : TextButton(
                   onPressed: onGrant,
                   style: TextButton.styleFrom(
                     foregroundColor: AppTheme.accentColor,
                     side: BorderSide(color: AppTheme.subtleBorder()),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                  child: const Text('GRANT',
-                      style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w900)),
+                  child: const Text(
+                    'GRANT',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                  ),
                 ),
         ],
       ),

@@ -1,8 +1,13 @@
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/database/database_helper.dart';
+
+/// Permission status code reported by the mocked platform channel.
+const int _permissionGranted = 1;
 
 /// Shared test helpers for DB-backed tests.
 ///
@@ -24,9 +29,28 @@ class TestHarness {
     return 'file:sim_gate_test_$_counter?mode=memory&cache=shared';
   }
 
+  /// Stubs the permission_handler method channel so status/request calls
+  /// complete inside the widget-test FakeAsync zone (the real platform reply
+  /// never arrives there) and report every permission as granted.
+  static void _mockPermissionChannel() {
+    const channel = MethodChannel('flutter.baseflow.com/permissions/methods');
+    TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+      switch (call.method) {
+        case 'checkPermissionStatus':
+          return _permissionGranted;
+        case 'requestPermissions':
+          return const <int, int>{};
+        default:
+          return null;
+      }
+    });
+  }
+
   /// Creates a fresh harness and rewires the DI container.
   static Future<TestHarness> create() async {
     sqfliteFfiInit();
+    _mockPermissionChannel();
     SharedPreferences.setMockInitialValues({});
     final harness = TestHarness._(nextDbPath());
     harness.prefs = await SharedPreferences.getInstance();

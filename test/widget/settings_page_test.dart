@@ -63,7 +63,11 @@ void main() {
 
       expect(find.text('ACCESS TOKEN'), findsOneWidget);
       expect(find.text('SERVER SETTINGS'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('LOGGING'), 200,
+          scrollable: find.byType(Scrollable).first);
       expect(find.text('LOGGING'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('ABOUT'), 200,
+          scrollable: find.byType(Scrollable).first);
       expect(find.text('ABOUT'), findsOneWidget);
     });
 
@@ -76,7 +80,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('WARNING'), findsOneWidget);
-      expect(find.textContaining('invalidated'), findsWidgets);
+      expect(find.textContaining('invalidate'), findsWidgets);
       expect(find.text('CANCEL'), findsOneWidget);
       expect(find.text('REGENERATE'), findsOneWidget);
     });
@@ -98,6 +102,8 @@ void main() {
       await pumpPage(tester, const SettingsPage(),
           providers: defaultProviders());
 
+      await tester.scrollUntilVisible(find.text('CLEAR'), 200,
+          scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('CLEAR'));
       await tester.pumpAndSettle();
 
@@ -109,6 +115,8 @@ void main() {
       await pumpPage(tester, const SettingsPage(),
           providers: defaultProviders());
 
+      await tester.scrollUntilVisible(find.text('APP VERSION'), 200,
+          scrollable: find.byType(Scrollable).first);
       expect(find.text('APP VERSION'), findsOneWidget);
       // Either loading or the mock platform version (0.0.1 (1)).
       expect(find.textContaining('0.0.1'), findsWidgets);

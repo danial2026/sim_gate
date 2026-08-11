@@ -17,6 +17,14 @@ import 'package:sim_gate/services/token_service.dart';
 
 import '../test_harness.dart';
 
+/// Lets real-async work (FFI SQLite) complete under the FakeAsync test zone,
+/// then settles the UI. Use after actions that trigger database calls.
+Future<void> settleDb(WidgetTester tester) async {
+  await tester
+      .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late TestHarness harness;
@@ -46,7 +54,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('API ENDPOINT'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('COPY URL'), 200,
+          scrollable: find.byType(Scrollable).first);
       expect(find.text('COPY URL'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('COPY AS CURL'), 200,
+          scrollable: find.byType(Scrollable).first);
       expect(find.text('COPY AS CURL'), findsOneWidget);
       expect(find.byType(QrImageView), findsOneWidget);
       expect(find.textContaining('http://'), findsWidgets);
@@ -106,7 +118,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await settleDb(tester);
 
       expect(find.text('SIM 1'), findsOneWidget);
       expect(find.text('SIM 2'), findsOneWidget);
@@ -115,11 +127,11 @@ void main() {
 
       // Deactivating one of two active SIMs is allowed.
       await tester.tap(find.byType(Switch).first);
-      await tester.pumpAndSettle();
+      await settleDb(tester);
 
       // Deactivating the last remaining active SIM is rejected with a toast.
       await tester.tap(find.byType(Switch).first);
-      await tester.pumpAndSettle();
+      await settleDb(tester);
       expect(find.text('At least one SIM must remain active'), findsOneWidget);
     });
   });
