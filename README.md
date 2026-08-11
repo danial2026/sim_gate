@@ -25,6 +25,10 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 | --- | --- |
 | ![Dashboard](screenshot/09-dashboard.png) | ![Dashboard Stats](screenshot/10-dashboard-stats.png) |
 
+| Swagger UI |
+| --- |
+| ![Swagger](screenshot/swagger.png) |
+
 ## Features
 
 - Embedded HTTP server (shelf) with bearer-token auth and CORS
