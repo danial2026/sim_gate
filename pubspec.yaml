@@ -1,7 +1,7 @@
 name: sim_gate
 description: "Self-Hosted SMS API Android App - MVP"
 publish_to: "none"
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: ^3.11.0
