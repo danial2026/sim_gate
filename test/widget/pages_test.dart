@@ -175,9 +175,7 @@ void main() {
       expect(find.text('PERMISSIONS'), findsOneWidget);
 
       // Push a page on top of the root, as the flow does.
-      final nav = tester.state<NavigatorState>(
-        find.byType(Navigator).first,
-      );
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
       nav.pushNamed('/api-endpoint');
       await settleDb(tester);
       expect(find.text('API ENDPOINT'), findsOneWidget);

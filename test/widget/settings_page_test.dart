@@ -158,10 +158,7 @@ void main() {
       // Loading state (no package_info plugin in tests) or a version string.
       expect(
         find.text('Loading...').evaluate().isNotEmpty ||
-            find
-                .textContaining(getIt<AppInfo>().version)
-                .evaluate()
-                .isNotEmpty,
+            find.textContaining(getIt<AppInfo>().version).evaluate().isNotEmpty,
         isTrue,
       );
     });
