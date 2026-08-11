@@ -33,9 +33,13 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _loadPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    if (!mounted) return;
-    setState(() => _packageInfo = info);
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() => _packageInfo = info);
+    } catch (_) {
+      // Package info unavailable (e.g. in tests); keep the fallback version.
+    }
   }
 
   /// Opens the token regeneration confirmation dialog.

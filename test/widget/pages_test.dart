@@ -20,8 +20,11 @@ import '../test_harness.dart';
 /// Lets real-async work (FFI SQLite) complete under the FakeAsync test zone,
 /// then settles the UI. Use after actions that trigger database calls.
 Future<void> settleDb(WidgetTester tester) async {
-  await tester
-      .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+  for (var i = 0; i < 5; i++) {
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    await tester.pump(const Duration(milliseconds: 100));
+  }
   await tester.pumpAndSettle();
 }
 
@@ -131,7 +134,11 @@ void main() {
 
       // Deactivating the last remaining active SIM is rejected with a toast.
       await tester.tap(find.byType(Switch).first);
-      await settleDb(tester);
+      for (var i = 0; i < 3; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 50)));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
       expect(find.text('At least one SIM must remain active'), findsOneWidget);
     });
   });

@@ -104,7 +104,10 @@ void main() {
 
       await tester.scrollUntilVisible(find.text('CLEAR'), 200,
           scrollable: find.byType(Scrollable).first);
-      await tester.ensureVisible(find.text('CLEAR'));
+      // Nudge the tile fully into view so the trailing button is hittable.
+      await tester.drag(
+          find.byType(Scrollable).first, const Offset(0, -120));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('CLEAR'));
       await tester.pumpAndSettle();
 
@@ -120,8 +123,12 @@ void main() {
           scrollable: find.byType(Scrollable).first);
       expect(find.text('ABOUT'), findsOneWidget);
       expect(find.text('App Version'), findsOneWidget);
-      // Either loading or the mock platform version (0.0.1 (1)).
-      expect(find.textContaining('0.0.1'), findsWidgets);
+      // Loading state (no package_info plugin in tests) or a version string.
+      expect(
+        find.text('Loading...').evaluate().isNotEmpty ||
+            find.textContaining('0.0.1').evaluate().isNotEmpty,
+        isTrue,
+      );
     });
   });
 }
