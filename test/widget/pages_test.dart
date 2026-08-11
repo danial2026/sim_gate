@@ -139,8 +139,10 @@ void main() {
       await settleDb(tester);
       expect(find.text('PERMISSIONS'), findsOneWidget);
 
-      // Simulate the Android back button on the root page.
-      await tester.binding.handlePopRoute();
+      // Simulate the Android back button on the root page. The handler stays
+      // pending while the confirmation dialog is open, so do not await it
+      // until the dialog has been dismissed.
+      final firstBack = tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
       expect(find.text('CLOSE APP'), findsOneWidget);
@@ -150,15 +152,19 @@ void main() {
       // Cancelling keeps the page open.
       await tester.tap(find.text('CANCEL'));
       await tester.pumpAndSettle();
+      await firstBack;
       expect(find.text('CLOSE APP'), findsNothing);
       expect(find.text('PERMISSIONS'), findsOneWidget);
 
       // Back again + EXIT resolves the dialog and exits the app.
-      await tester.binding.handlePopRoute();
+      // SystemNavigator.pop has no platform reply in widget tests, so this
+      // future is intentionally left unawaited (swallowing any late error).
+      final secondBack = tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       await tester.tap(find.text('EXIT'));
       await tester.pumpAndSettle();
       expect(find.text('CLOSE APP'), findsNothing);
+      unawaited(secondBack.catchError((_) => false));
     });
 
     testWidgets('back pops a pushed page without an exit dialog', (

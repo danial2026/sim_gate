@@ -128,8 +128,11 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      // Nudge the tile fully into view so the trailing button is hittable.
-      await tester.drag(find.byType(Scrollable).first, const Offset(0, -120));
+      // Fast programmatic scrolling leaves the sliver's child-size estimates
+      // stale for a frame; settle so the layout converges before interacting.
+      await tester.pumpAndSettle();
+      // Reveal the trailing button fully so the tap always lands on it.
+      await tester.ensureVisible(find.text('CLEAR'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('CLEAR'));
       await tester.pumpAndSettle();
