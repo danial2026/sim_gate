@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/config/theme.dart';
-import 'package:sim_gate/models/configuration.dart';
 import 'package:sim_gate/pages/settings_page.dart';
 import 'package:sim_gate/providers/config_provider.dart';
 import 'package:sim_gate/providers/logs_provider.dart';
+import 'package:sim_gate/repositories/logs_repository.dart';
 import 'package:sim_gate/services/config_service.dart';
 import 'package:sim_gate/services/token_service.dart';
 

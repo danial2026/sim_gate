@@ -164,7 +164,7 @@ void main() {
 
     test('tick respects retry backoff windows', () async {
       platform.setSendSucceeds(false);
-      final queued = await smsService.queue(
+      await smsService.queue(
         simId: 'sim-0',
         recipient: '+1234567890',
         message: 'backoff me',
