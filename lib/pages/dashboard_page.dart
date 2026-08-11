@@ -57,52 +57,48 @@ class _DashboardPageState extends State<DashboardPage> {
     return SimGateScaffold(
       title: 'Dashboard',
       showBack: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, size: 18),
-            onPressed: _load,
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, size: 18),
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
-          ),
-        ],
-        body: RefreshIndicator(
-          color: AppTheme.of(context).accent,
-          onRefresh: _load,
-          child: ListView(
-            children: [
-              _StatusCard(running: running, server: server),
-              const SectionHeader('Quick Access'),
-              _QuickAccess(
-                onConfigure: () => Navigator.of(context).pushNamed('/config'),
-                onSims: () => Navigator.of(context).pushNamed('/sim'),
-                onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
-                onSettings: () => Navigator.of(context).pushNamed('/settings'),
-              ),
-              const SectionHeader('Statistics'),
-              _StatGrid(stats: stats),
-              const SectionHeader('Recent'),
-              RecentLogs(logs: stats.recentLogs),
-              const SizedBox(height: 16),
-              const SectionHeader('Activity'),
-              SmsActivityChart(data: _activity),
-              const SizedBox(height: 8),
-              SuccessRateChart(
-                sent: stats.totalSent,
-                failed: stats.totalFailed,
-                pending: stats.totalPending,
-              ),
-              const SizedBox(height: 8),
-              _SignalGrid(sims: sim.sims),
-              const SizedBox(height: 8),
-              SecondaryButton(
-                label: 'View Logs',
-                icon: Icons.list_alt,
-                onPressed: () => Navigator.of(context).pushNamed('/logs'),
-              ),
-            ],
-          ),
+      actions: [
+        IconButton(icon: const Icon(Icons.refresh, size: 18), onPressed: _load),
+        IconButton(
+          icon: const Icon(Icons.settings_outlined, size: 18),
+          onPressed: () => Navigator.of(context).pushNamed('/settings'),
+        ),
+      ],
+      body: RefreshIndicator(
+        color: AppTheme.of(context).accent,
+        onRefresh: _load,
+        child: ListView(
+          children: [
+            _StatusCard(running: running, server: server),
+            const SectionHeader('Quick Access'),
+            _QuickAccess(
+              onConfigure: () => Navigator.of(context).pushNamed('/config'),
+              onSims: () => Navigator.of(context).pushNamed('/sim'),
+              onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
+              onSettings: () => Navigator.of(context).pushNamed('/settings'),
+            ),
+            const SectionHeader('Statistics'),
+            _StatGrid(stats: stats),
+            const SectionHeader('Recent'),
+            RecentLogs(logs: stats.recentLogs),
+            const SizedBox(height: 16),
+            const SectionHeader('Activity'),
+            SmsActivityChart(data: _activity),
+            const SizedBox(height: 8),
+            SuccessRateChart(
+              sent: stats.totalSent,
+              failed: stats.totalFailed,
+              pending: stats.totalPending,
+            ),
+            const SizedBox(height: 8),
+            _SignalGrid(sims: sim.sims),
+            const SizedBox(height: 8),
+            SecondaryButton(
+              label: 'View Logs',
+              icon: Icons.list_alt,
+              onPressed: () => Navigator.of(context).pushNamed('/logs'),
+            ),
+          ],
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../config/theme.dart';
@@ -71,75 +72,134 @@ class _PermissionsPageState extends State<PermissionsPage> {
 
   bool get _allGranted => _granted.values.every((v) => v);
 
+  /// Asks for confirmation before closing the app (root page back button).
+  Future<void> _confirmExit() async {
+    final exit = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'CLOSE APP',
+          style: TextStyle(
+            color: AppTheme.errorColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to close SimGate?\n'
+          'The SMS gateway will stop responding while the app is closed.',
+          style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'CANCEL',
+              style: TextStyle(
+                color: AppTheme.of(ctx).textSecondary,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text(
+              'EXIT',
+              style: TextStyle(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (exit == true && mounted) {
+      await SystemNavigator.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SimGateScaffold(
-      title: 'Permissions',
-      showBack: false,
-      body: _checking
-          ? const Center(child: LoadingIndicator())
-          : LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Grant Permissions',
-                          style: TextStyle(
-                            color: AppTheme.of(context).textPrimary,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _confirmExit();
+      },
+      child: SimGateScaffold(
+        title: 'Permissions',
+        showBack: false,
+        body: _checking
+            ? const Center(child: LoadingIndicator())
+            : LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Grant Permissions',
+                            style: TextStyle(
+                              color: AppTheme.of(context).textPrimary,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'SimGate needs these permissions to send SMS, read SIM cards, '
-                          'and serve API requests.',
-                          style: TextStyle(
-                            color: AppTheme.of(context).textSecondary,
-                            fontSize: 13,
+                          const SizedBox(height: 8),
+                          Text(
+                            'SimGate needs these permissions to send SMS, read SIM cards, '
+                            'and serve API requests.',
+                            style: TextStyle(
+                              color: AppTheme.of(context).textSecondary,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                        const SectionHeader('Required'),
-                        ..._granted.entries.map(
-                          (e) => _PermissionCard(
-                            permission: e.key,
-                            granted: e.value,
-                            onGrant: () => _request(e.key),
+                          const SectionHeader('Required'),
+                          ..._granted.entries.map(
+                            (e) => _PermissionCard(
+                              permission: e.key,
+                              granted: e.value,
+                              onGrant: () => _request(e.key),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
-                        PrimaryButton(
-                          label: _allGranted ? 'Continue' : 'Grant All',
-                          onPressed: () async {
-                            if (!_allGranted) {
-                              await _requestAll();
-                            }
-                            if (!context.mounted) return;
-                            if (_allGranted) {
-                              _navigateNext(context);
-                            }
-                          },
-                          icon: _allGranted
-                              ? Icons.arrow_forward
-                              : Icons.lock_open,
-                        ),
-                        const SizedBox(height: 12),
-                        SecondaryButton(
-                          label: 'Continue anyway',
-                          icon: Icons.skip_next,
-                          onPressed: () => _navigateNext(context),
-                        ),
-                      ],
+                          const SizedBox(height: 24),
+                          PrimaryButton(
+                            label: _allGranted ? 'Continue' : 'Grant All',
+                            onPressed: () async {
+                              if (!_allGranted) {
+                                await _requestAll();
+                              }
+                              if (!context.mounted) return;
+                              if (_allGranted) {
+                                _navigateNext(context);
+                              }
+                            },
+                            icon: _allGranted
+                                ? Icons.arrow_forward
+                                : Icons.lock_open,
+                          ),
+                          const SizedBox(height: 12),
+                          SecondaryButton(
+                            label: 'Continue anyway',
+                            icon: Icons.skip_next,
+                            onPressed: () => _navigateNext(context),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
