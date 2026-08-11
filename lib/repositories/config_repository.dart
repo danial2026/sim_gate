@@ -61,10 +61,7 @@ class ConfigRepository {
       AppConstants.keyActiveSims,
       jsonEncode(config.activeSimIds),
     );
-    await _prefs.setBool(
-      AppConstants.keyEnableSwagger,
-      config.enableSwagger,
-    );
+    await _prefs.setBool(AppConstants.keyEnableSwagger, config.enableSwagger);
     if (config.accessToken != null) {
       await saveToken(
         config.accessToken!,

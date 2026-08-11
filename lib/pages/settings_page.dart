@@ -341,7 +341,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   context,
                   v
                       ? 'Docs enabled: '
-                          'http://${config.serverIp}:${config.serverPort}/swagger.html'
+                            'http://${config.serverIp}:${config.serverPort}/swagger.html'
                       : 'API docs disabled',
                 );
               },

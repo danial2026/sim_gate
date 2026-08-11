@@ -171,7 +171,8 @@ void main() {
         providers: [
           ChangeNotifierProvider<ConfigProvider>.value(value: configProvider),
           ChangeNotifierProvider<LogsProvider>(
-            create: (_) => LogsProvider(logsRepository: getIt<LogsRepository>()),
+            create: (_) =>
+                LogsProvider(logsRepository: getIt<LogsRepository>()),
           ),
         ],
       );
@@ -190,10 +191,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.widget<Switch>(docsSwitch).value, isTrue);
-      expect(
-        getIt<ConfigService>().load().enableSwagger,
-        isTrue,
-      );
+      expect(getIt<ConfigService>().load().enableSwagger, isTrue);
 
       // Disable again to keep the default for later tests.
       await tester.tap(docsSwitch);

@@ -443,8 +443,7 @@ void main() {
       expect(raw, contains('swagger.json'));
     });
 
-    test('serves an OpenAPI spec with live config values when enabled',
-        () async {
+    test('serves an OpenAPI spec with live config values when enabled', () async {
       await getIt<ConfigService>().updateSwaggerEnabled(true);
       final res = await request('GET', '/swagger.json');
       expect(res.statusCode, 200);
@@ -462,8 +461,8 @@ void main() {
       expect(sendExample['simId'], 'sim-0');
       expect(sendExample['recipient'], '+1234000001');
 
-      final portExample = spec['paths']['/api/config/port']['put']
-          ['requestBody']['content']['application/json']['example'];
+      final portExample =
+          spec['paths']['/api/config/port']['put']['requestBody']['content']['application/json']['example'];
       expect(portExample['port'], getIt<ConfigService>().load().serverPort);
 
       // Bearer auth is declared.
@@ -478,8 +477,8 @@ void main() {
       await getIt<ConfigService>().updateSwaggerEnabled(true);
       final res = await request('GET', '/swagger.json');
       final spec = await readJson(res);
-      final cards = spec['paths']['/api/sims/active']['get']['responses']
-          ['200']['content']['application/json']['example']['data']['simCards'];
+      final cards =
+          spec['paths']['/api/sims/active']['get']['responses']['200']['content']['application/json']['example']['data']['simCards'];
       expect(cards.length, 2);
       expect(cards.first['simId'], 'sim-0');
     });

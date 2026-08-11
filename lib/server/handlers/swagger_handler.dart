@@ -14,10 +14,7 @@ import '../swagger/swagger_ui.dart';
 /// the current access token and live config values so the docs page is
 /// pre-authorized and every example reflects the real device state.
 class SwaggerHandler {
-  SwaggerHandler({
-    required this.configService,
-    required this.simService,
-  });
+  SwaggerHandler({required this.configService, required this.simService});
 
   final ConfigService configService;
   final SimService simService;
@@ -48,6 +45,8 @@ class SwaggerHandler {
     return config.enableSwagger == true;
   }
 
-  Response _disabledResponse() =>
-      ApiResponse.error('Swagger docs are disabled in app settings', status: 404);
+  Response _disabledResponse() => ApiResponse.error(
+    'Swagger docs are disabled in app settings',
+    status: 404,
+  );
 }

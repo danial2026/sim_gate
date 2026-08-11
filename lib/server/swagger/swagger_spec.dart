@@ -12,10 +12,7 @@ import '../../models/sim_card.dart';
 /// `x-access-token` so the docs page can prefill authorization), the detected
 /// SIM cards (used as `simId` examples), and the log retention settings.
 class SwaggerSpecBuilder {
-  SwaggerSpecBuilder({
-    required this.config,
-    required this.sims,
-  });
+  SwaggerSpecBuilder({required this.config, required this.sims});
 
   final AppConfiguration config;
   final List<SimCard> sims;
@@ -46,10 +43,7 @@ class SwaggerSpecBuilder {
         'version': AppConstants.appVersion,
       },
       'servers': [
-        {
-          'url': '/api',
-          'description': 'Relative to the SimGate server origin',
-        },
+        {'url': '/api', 'description': 'Relative to the SimGate server origin'},
       ],
       'tags': [
         {'name': 'Health', 'description': 'Service liveness (no auth)'},
@@ -151,11 +145,7 @@ class SwaggerSpecBuilder {
                 'SIM slot id to activate/deactivate',
                 enumValues: simIdEnum,
               ),
-              'activate': {
-                'type': 'boolean',
-                'default': true,
-                'example': true,
-              },
+              'activate': {'type': 'boolean', 'default': true, 'example': true},
             },
           },
           'UpdatePortRequest': {
@@ -248,7 +238,8 @@ class SwaggerSpecBuilder {
         ApiEndpoints.serverToken: _path(
           tag: 'Server',
           summary: 'Token metadata',
-          description: 'Returns when the access token was generated. '
+          description:
+              'Returns when the access token was generated. '
               'The token value itself is never exposed.',
           operationId: 'serverToken',
           responses: {
@@ -394,24 +385,35 @@ class SwaggerSpecBuilder {
           summary: 'List SMS request logs',
           operationId: 'smsLogs',
           parameters: [
-            _queryParam('limit', 'Page size', schema: {
-              'type': 'integer',
-              'default': 20,
-              'maximum': AppConstants.maxLogsPage,
-              'example': 20,
-            }),
-            _queryParam('offset', 'Pagination offset', schema: {
-              'type': 'integer',
-              'default': 0,
-              'example': 0,
-            }),
-            _queryParam('status', 'Filter by status', schema: {
-              'type': 'string',
-              'enum': ['pending', 'retrying', 'sent', 'failed', 'cancelled'],
-              'example': 'sent',
-            }),
-            _queryParam('simId', 'Filter by SIM id',
-                schema: _stringSchema('SIM id', enumValues: simIdEnum)),
+            _queryParam(
+              'limit',
+              'Page size',
+              schema: {
+                'type': 'integer',
+                'default': 20,
+                'maximum': AppConstants.maxLogsPage,
+                'example': 20,
+              },
+            ),
+            _queryParam(
+              'offset',
+              'Pagination offset',
+              schema: {'type': 'integer', 'default': 0, 'example': 0},
+            ),
+            _queryParam(
+              'status',
+              'Filter by status',
+              schema: {
+                'type': 'string',
+                'enum': ['pending', 'retrying', 'sent', 'failed', 'cancelled'],
+                'example': 'sent',
+              },
+            ),
+            _queryParam(
+              'simId',
+              'Filter by SIM id',
+              schema: _stringSchema('SIM id', enumValues: simIdEnum),
+            ),
             _queryParam(
               'startDate',
               'Earliest createdAt (ISO-8601)',
@@ -430,10 +432,11 @@ class SwaggerSpecBuilder {
                 'example': '2026-12-31T23:59:59Z',
               },
             ),
-            _queryParam('searchQuery', 'Search recipient or message', schema: {
-              'type': 'string',
-              'example': 'hello',
-            }),
+            _queryParam(
+              'searchQuery',
+              'Search recipient or message',
+              schema: {'type': 'string', 'example': 'hello'},
+            ),
           ],
           responses: {
             '200': _envelopeResponse(
@@ -484,7 +487,8 @@ class SwaggerSpecBuilder {
               'Port updated',
               example: {
                 'newPort': config.serverPort,
-                'message': 'Port updated. Server will restart on next '
+                'message':
+                    'Port updated. Server will restart on next '
                     'connection.',
                 'warning': 'Update API endpoint URL in clients',
               },
@@ -498,9 +502,7 @@ class SwaggerSpecBuilder {
           summary: 'Update the listening IP',
           operationId: 'updateIp',
           method: 'put',
-          requestBody: _jsonBody('UpdateIpRequest', {
-            'ip': config.serverIp,
-          }),
+          requestBody: _jsonBody('UpdateIpRequest', {'ip': config.serverIp}),
           responses: {
             '200': _envelopeResponse(
               'IP updated',
@@ -532,9 +534,7 @@ class SwaggerSpecBuilder {
                 'message': 'Log retention policy updated',
               },
             ),
-            '400': _errorResponse(
-              'retentionDays must be a positive integer',
-            ),
+            '400': _errorResponse('retentionDays must be a positive integer'),
             '401': _unauthorizedResponse(),
           },
         ),
@@ -558,8 +558,7 @@ class SwaggerSpecBuilder {
       'summary': summary,
       'operationId': operationId,
       if (description != null) 'description': description,
-      if (parameters != null && parameters.isNotEmpty)
-        'parameters': parameters,
+      if (parameters != null && parameters.isNotEmpty) 'parameters': parameters,
       if (requestBody != null) 'requestBody': requestBody,
       if (security != null) 'security': security,
       'responses': responses,
