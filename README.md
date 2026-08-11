@@ -34,7 +34,7 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 - Built-in Swagger UI docs (`/swagger.html`, gated by a settings toggle)
 - Configurable port, IP binding, and log retention (all in-app)
 - Server info, request logs, and SMS history (filterable)
-- Material dark UI: permissions → server setup → SIM selection → confirm → API endpoint (QR) → dashboard hub (logs, settings)
+- Material UI (dark + light): permissions → server setup → SIM selection → config → API endpoint (QR) → dashboard hub (logs, settings)
 
 ## Architecture
 
@@ -78,32 +78,32 @@ settings toggle) are public; all other endpoints require
 | GET    | `/health`            | Liveness check                  |
 | GET    | `/swagger.html`      | Swagger UI docs (if enabled)    |
 | GET    | `/swagger.json`      | OpenAPI spec (if enabled)       |
-| POST   | `/sms/send`          | Queue an SMS: `{recipient, message, simId?}` |
+| POST   | `/sms/send`          | Queue an SMS: `{recipient, message, simId, maxRetries?, priority?}` |
 | POST   | `/sms/cancel`        | Cancel a queued message         |
 | GET    | `/sms/status`        | SMS request status              |
 | GET    | `/sms/logs`          | SMS history                     |
 | GET    | `/sims/active`       | Active SIMs                     |
-| POST   | `/sims/activate`     | Activate a SIM                  |
+| POST   | `/sims/activate`     | Activate or deactivate a SIM    |
 | GET    | `/server/info`       | Uptime, IP, port, SIMs          |
-| GET    | `/server/token`      | Current token                   |
+| GET    | `/server/token`      | Token metadata (generated time) |
 | POST   | `/token/regenerate`  | Rotate the token                |
 | PUT    | `/config/ip`         | Change bind IP                  |
 | PUT    | `/config/port`       | Change bind port                |
-| PUT    | `/logs/retention`    | Log retention days              |
+| PUT    | `/logs/retention`    | Log retention days and max entries |
 
 ## Testing
 
 ```bash
 flutter analyze       # static analysis
 flutter test          # unit + widget tests
-./scripts/test.sh     # analyze + full test suite
-./scripts/check.sh    # full project check (analyze, tests, build)
+./scripts/test.sh     # unit/widget/e2e tests
+./scripts/check.sh    # full project check (analyze, format, tests, build)
 ```
 
 ## Scripts
 
 | Script               | Purpose                                  |
 | -------------------- | ---------------------------------------- |
-| `scripts/test.sh`    | Analyze + unit/widget tests              |
-| `scripts/check.sh`   | Full check: analyze, tests, APK build    |
-| `scripts/dev.sh`     | Run the app on a connected device        |
+| `scripts/test.sh`    | Unit, widget, and e2e tests              |
+| `scripts/check.sh`   | Analyze, format, tests, Kotlin compile, APK build |
+| `scripts/dev.sh`     | Multi-command: analyze, format, run, apk |
