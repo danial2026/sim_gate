@@ -101,7 +101,7 @@ Future<void> migration001Initial(Database db) async {
       last_updated DATETIME
     )
   ''');
-  batch.execute('CREATE INDEX idx_sim_id ON sim_cards(sim_id)');
+  batch.execute('CREATE INDEX idx_sim_cards_sim_id ON sim_cards(sim_id)');
   batch.execute('CREATE INDEX idx_is_active ON sim_cards(is_active)');
 
   // --- api_access_log ------------------------------------------------------
