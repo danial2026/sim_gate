@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import 'package:sim_gate/config/app_info.dart';
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/config/theme.dart';
 import 'package:sim_gate/main.dart';
@@ -328,6 +329,7 @@ void main() {
         logsRepo: getIt<LogsRepository>(),
         tokenService: getIt<TokenService>(),
         configService: getIt<ConfigService>(),
+        appVersion: getIt<AppInfo>().version,
       );
       addTearDown(fake.disposeFake);
 
