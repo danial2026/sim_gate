@@ -104,6 +104,7 @@ void main() {
 
       await tester.scrollUntilVisible(find.text('CLEAR'), 200,
           scrollable: find.byType(Scrollable).first);
+      await tester.ensureVisible(find.text('CLEAR'));
       await tester.tap(find.text('CLEAR'));
       await tester.pumpAndSettle();
 
@@ -115,9 +116,10 @@ void main() {
       await pumpPage(tester, const SettingsPage(),
           providers: defaultProviders());
 
-      await tester.scrollUntilVisible(find.text('APP VERSION'), 200,
+      await tester.scrollUntilVisible(find.text('ABOUT'), 200,
           scrollable: find.byType(Scrollable).first);
-      expect(find.text('APP VERSION'), findsOneWidget);
+      expect(find.text('ABOUT'), findsOneWidget);
+      expect(find.text('App Version'), findsOneWidget);
       // Either loading or the mock platform version (0.0.1 (1)).
       expect(find.textContaining('0.0.1'), findsWidgets);
     });

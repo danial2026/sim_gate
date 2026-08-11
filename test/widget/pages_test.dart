@@ -54,14 +54,14 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('API ENDPOINT'), findsOneWidget);
+      expect(find.byType(QrImageView), findsOneWidget);
+      expect(find.textContaining('http://'), findsWidgets);
       await tester.scrollUntilVisible(find.text('COPY URL'), 200,
           scrollable: find.byType(Scrollable).first);
       expect(find.text('COPY URL'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('COPY AS CURL'), 200,
           scrollable: find.byType(Scrollable).first);
       expect(find.text('COPY AS CURL'), findsOneWidget);
-      expect(find.byType(QrImageView), findsOneWidget);
-      expect(find.textContaining('http://'), findsWidgets);
     });
   });
 
