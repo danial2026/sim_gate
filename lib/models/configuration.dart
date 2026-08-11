@@ -39,6 +39,7 @@ class AppConfiguration {
     this.maxLogEntries = 10000,
     this.appTheme = AppThemeMode.system,
     this.activeSimIds = const [],
+    this.enableSwagger = false,
   });
 
   String serverIp;
@@ -52,6 +53,9 @@ class AppConfiguration {
   AppThemeMode appTheme;
   List<String> activeSimIds;
 
+  /// Enables the interactive API docs page (`/swagger.html`) on the server.
+  bool enableSwagger;
+
   /// Builds a copy with the given overrides.
   AppConfiguration copyWith({
     String? serverIp,
@@ -64,6 +68,7 @@ class AppConfiguration {
     int? maxLogEntries,
     AppThemeMode? appTheme,
     List<String>? activeSimIds,
+    bool? enableSwagger,
   }) {
     return AppConfiguration(
       serverIp: serverIp ?? this.serverIp,
@@ -76,6 +81,7 @@ class AppConfiguration {
       maxLogEntries: maxLogEntries ?? this.maxLogEntries,
       appTheme: appTheme ?? this.appTheme,
       activeSimIds: activeSimIds ?? this.activeSimIds,
+      enableSwagger: enableSwagger ?? this.enableSwagger,
     );
   }
 

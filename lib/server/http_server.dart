@@ -20,6 +20,7 @@ import 'handlers/config_handler.dart';
 import 'handlers/server_handler.dart';
 import 'handlers/sim_handler.dart';
 import 'handlers/sms_handler.dart';
+import 'handlers/swagger_handler.dart';
 import 'handlers/token_handler.dart';
 import 'middleware/auth_middleware.dart';
 import 'middleware/logging_middleware.dart';
@@ -83,11 +84,19 @@ class HttpServerService {
       serverIp: boundIp ?? configService.load().serverIp,
       serverPort: boundPort ?? configService.load().serverPort,
     );
+    final swagger = SwaggerHandler(
+      configService: configService,
+      simService: simService,
+    );
 
     final router = Router();
 
     // Public health endpoint (no auth) ------------------------------------
     router.get(ApiEndpoints.health, server.health);
+
+    // Public API docs (gated by the enableSwagger config toggle) ----------
+    router.get('/swagger.html', swagger.html);
+    router.get('/swagger.json', swagger.spec);
 
     // Authenticated subtree mounted under /api/* ---------------------------
     final authed = Router()
@@ -98,8 +107,12 @@ class HttpServerService {
       ..mount('/config', configRouter(config))
       ..mount('/logs', logsRetentionRouter(config));
 
-    // Auth-protected paths: everything except /api/health.
-    final public = {ApiEndpoints.health.substring(1)}; // strip leading '/'
+    // Auth-protected paths: everything except /api/health and the docs.
+    final public = {
+      ApiEndpoints.health.substring(1), // strip leading '/'
+      'swagger.html',
+      'swagger.json',
+    };
     router.mount('/api', authed);
 
     shelf.Handler handler = router;

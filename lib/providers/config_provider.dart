@@ -59,6 +59,13 @@ class ConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Updates the swagger docs toggle.
+  Future<void> updateSwaggerEnabled(bool value) async {
+    await configService.updateSwaggerEnabled(value);
+    _config = configService.load();
+    notifyListeners();
+  }
+
   /// Updates the theme mode.
   Future<void> updateTheme(AppThemeMode mode) async {
     final updated = _config.copyWith(appTheme: mode);

@@ -59,6 +59,7 @@ class AppConstants {
   static const String keyMaxLogEntries = 'max_log_entries';
   static const String keyAppTheme = 'app_theme';
   static const String keyActiveSims = 'active_sims';
+  static const String keyEnableSwagger = 'enable_swagger';
 
   // ---------------------------------------------------------------------------
   // Database

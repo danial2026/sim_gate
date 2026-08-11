@@ -48,6 +48,16 @@ class ConfigService {
     );
   }
 
+  /// Updates the swagger docs toggle.
+  Future<void> updateSwaggerEnabled(bool value) async {
+    await _repo.saveSwaggerEnabled(value);
+    _logger.info(
+      LogComponent.config,
+      'Swagger docs updated',
+      details: {'enabled': value},
+    );
+  }
+
   /// Updates the active SIM id list.
   Future<void> updateActiveSims(List<String> ids) async {
     await _repo.saveActiveSims(ids);

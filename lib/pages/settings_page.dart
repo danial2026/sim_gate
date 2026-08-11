@@ -326,6 +326,27 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
+          _SettingTile(
+            icon: Icons.menu_book_outlined,
+            title: 'API Docs (Swagger)',
+            subtitle: config.enableSwagger
+                ? 'Docs page is public on your network while enabled'
+                : 'Serve interactive docs at /swagger.html',
+            trailing: Switch.adaptive(
+              value: config.enableSwagger,
+              onChanged: (v) async {
+                await context.read<ConfigProvider>().updateSwaggerEnabled(v);
+                if (!mounted) return;
+                _toast(
+                  context,
+                  v
+                      ? 'Docs enabled: '
+                          'http://${config.serverIp}:${config.serverPort}/swagger.html'
+                      : 'API docs disabled',
+                );
+              },
+            ),
+          ),
 
           const SectionHeader('Logging'),
           _SettingTile(

@@ -38,6 +38,7 @@ class ConfigRepository {
         _prefs.getString(AppConstants.keyAppTheme),
       ),
       activeSimIds: _decodeSimIds(_prefs.getString(AppConstants.keyActiveSims)),
+      enableSwagger: _prefs.getBool(AppConstants.keyEnableSwagger) ?? false,
     );
   }
 
@@ -59,6 +60,10 @@ class ConfigRepository {
     await _prefs.setString(
       AppConstants.keyActiveSims,
       jsonEncode(config.activeSimIds),
+    );
+    await _prefs.setBool(
+      AppConstants.keyEnableSwagger,
+      config.enableSwagger,
     );
     if (config.accessToken != null) {
       await saveToken(
@@ -92,6 +97,10 @@ class ConfigRepository {
   /// Persists the active SIM id list.
   Future<void> saveActiveSims(List<String> ids) =>
       _prefs.setString(AppConstants.keyActiveSims, jsonEncode(ids));
+
+  /// Persists the swagger docs toggle.
+  Future<void> saveSwaggerEnabled(bool value) =>
+      _prefs.setBool(AppConstants.keyEnableSwagger, value);
 
   DateTime? _parseDate(String? value) =>
       value == null ? null : DateTime.parse(value).toUtc();
