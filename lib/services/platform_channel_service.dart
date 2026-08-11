@@ -127,7 +127,8 @@ class MethodChannelPlatformService implements PlatformChannelService {
     return SimCard(
       simId: m['simId'] as String,
       slotNumber: (m['slotNumber'] as num).toInt(),
-      name: (m['name'] as String?) ?? 'SIM ${(m['slotNumber'] as num).toInt() + 1}',
+      name:
+          (m['name'] as String?) ?? 'SIM ${(m['slotNumber'] as num).toInt() + 1}',
       phoneNumber: m['phoneNumber'] as String?,
       carrier: m['carrier'] as String?,
       signalStrength: (m['signalStrength'] as num?)?.toInt() ?? 0,
@@ -138,10 +139,61 @@ class MethodChannelPlatformService implements PlatformChannelService {
   }
 }
 
-// Imported here to keep the file self-contained for parsing.
-extension _NetworkTypeParser on NetworkInterface {
-  // no-op
-}
+/// A no-op [PlatformChannelService] used in tests and desktop environments
+/// where the native channel is unavailable.
+///
+/// [FakePlatformService] can be configured to return canned SIM lists and to
+/// succeed/fail SMS sends deterministically.
+class FakePlatformService implements PlatformChannelService {
+  FakePlatformService({
+    List<SimCard>? sims,
+    List<NetworkInterface>? interfaces,
+    bool sendSucceeds = true,
+    Duration sendDelay = Duration.zero,
+  })  : _sims = sims ?? const [],
+        _interfaces = interfaces ?? const [],
+        _sendSucceeds = sendSucceeds,
+        _sendDelay = sendDelay;
 
-// Re-export NetworkType name parser used internally.
-import '../models/sim_card.dart' show NetworkTypeName;
+  List<SimCard> _sims;
+  List<NetworkInterface> _interfaces;
+  bool _sendSucceeds;
+  Duration _sendDelay;
+
+  /// Records the last invocation's arguments for assertion in tests.
+  Map<String, dynamic>? lastSendArgs;
+
+  void setSims(List<SimCard> sims) => _sims = sims;
+  void setInterfaces(List<NetworkInterface> ifaces) => _interfaces = ifaces;
+  void setSendSucceeds(bool value) => _sendSucceeds = value;
+  void setSendDelay(Duration d) => _sendDelay = d;
+
+  @override
+  Future<SmsSendResult> sendSms({
+    required String simId,
+    required String recipient,
+    required String message,
+  }) async {
+    lastSendArgs = {
+      'simId': simId,
+      'recipient': recipient,
+      'message': message,
+    };
+    if (_sendDelay != Duration.zero) {
+      await Future.delayed(_sendDelay);
+    }
+    return SmsSendResult(
+      success: _sendSucceeds,
+      errorMessage: _sendSucceeds ? null : 'SIM_NOT_READY',
+      errorCode: _sendSucceeds ? null : 'sim_not_ready',
+      responseTimeMs: _sendDelay.inMilliseconds,
+    );
+  }
+
+  @override
+  Future<List<SimCard>> detectSims() async => List.unmodifiable(_sims);
+
+  @override
+  Future<List<NetworkInterface>> networkInterfaces() async =>
+      List.unmodifiable(_interfaces);
+}
