@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../config/theme.dart';
@@ -72,65 +71,9 @@ class _PermissionsPageState extends State<PermissionsPage> {
 
   bool get _allGranted => _granted.values.every((v) => v);
 
-  /// Asks for confirmation before closing the app (root page back button).
-  Future<void> _confirmExit() async {
-    final exit = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(
-          'CLOSE APP',
-          style: TextStyle(
-            color: AppTheme.errorColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 2.0,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to close SimGate?\n'
-          'The SMS gateway will stop responding while the app is closed.',
-          style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              'CANCEL',
-              style: TextStyle(
-                color: AppTheme.of(ctx).textSecondary,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text(
-              'EXIT',
-              style: TextStyle(
-                color: AppTheme.errorColor,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-    if (exit == true && mounted) {
-      await SystemNavigator.pop();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _confirmExit();
-      },
-      child: SimGateScaffold(
+    return SimGateScaffold(
         title: 'Permissions',
         showBack: false,
         body: _checking
@@ -199,7 +142,6 @@ class _PermissionsPageState extends State<PermissionsPage> {
                   ),
                 ),
               ),
-      ),
     );
   }
 

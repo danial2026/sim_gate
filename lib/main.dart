@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'config/service_locator.dart';
@@ -38,8 +39,97 @@ Future<void> main() async {
 }
 
 /// Root widget. Wires providers and the named-route navigator.
-class SimGateApp extends StatelessWidget {
+class SimGateApp extends StatefulWidget {
   const SimGateApp({super.key});
+
+  @override
+  State<SimGateApp> createState() => _SimGateAppState();
+}
+
+class _SimGateAppState extends State<SimGateApp> with WidgetsBindingObserver {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  bool _exitDialogOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Android back button. Pops when there is a page to go back to; otherwise
+  /// asks for confirmation before closing the app (applies to every page).
+  @override
+  Future<bool> didPopRoute() async {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null) return false;
+    final popped = await navigator.maybePop();
+    if (popped || _exitDialogOpen) return true;
+    _exitDialogOpen = true;
+    try {
+      await _confirmExit();
+    } finally {
+      _exitDialogOpen = false;
+    }
+    return true;
+  }
+
+  /// Asks for confirmation before closing the app (root page back button).
+  Future<void> _confirmExit() async {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || !navigator.mounted) return;
+    final exit = await showDialog<bool>(
+      context: navigator.context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'CLOSE APP',
+          style: TextStyle(
+            color: AppTheme.errorColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to close SimGate?\n'
+          'The SMS gateway will stop responding while the app is closed.',
+          style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'CANCEL',
+              style: TextStyle(
+                color: AppTheme.of(ctx).textSecondary,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text(
+              'EXIT',
+              style: TextStyle(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (exit == true) {
+      await SystemNavigator.pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +177,7 @@ class SimGateApp extends StatelessWidget {
       ],
       child: Consumer<ConfigProvider>(
         builder: (context, config, _) => MaterialApp(
+          navigatorKey: _navigatorKey,
           title: 'SimGate',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,

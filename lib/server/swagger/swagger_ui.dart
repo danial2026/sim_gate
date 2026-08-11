@@ -301,45 +301,31 @@ const state = { spec: null, token: localStorage.getItem("simgate_token") || "", 
 
 const METHOD_COLORS = { get: "#61affe", post: "#49cc90", put: "#fca130", delete: "#f93e3e", patch: "#50e3c2" };
 const METHOD_ORDER = ["get", "post", "put", "delete", "patch"];
-const jsonClass = (k, v, d) => {
-  if (v === null) return `<span class="b">null</span>`;
-  if (typeof v === "boolean") return `<span class="b">${v}</span>`;
-  if (typeof v === "number") return `<span class="n">${v}</span>`;
-  if (typeof v === "string") return `<span class="s">${escapeHtml(JSON.stringify(v))}</span>`;
-  return "";
-};
-function prettyJson(v) {
-  const j = JSON.stringify(v, null, 2) || "null";
-  const lines = j.split("\n");
-  let out = "";
-  for (const line of lines) {
-    const m = line.match(/^(\s*)(.*?)(: )?("(?:[^"\\]|\\.)*")(?=(: )?)(.*)$/);
-    const indent = line.match(/^\s*/)[0];
-    if (m && line.trimStart().startsWith("\"")) {
-      const key = `<span class="k">${escapeHtml(m[3] ? m[2].trim() : m[2])}</span>`;
-      let rest = "";
-      const after = line.trimStart().slice(m[2].length);
-      const colon = after.startsWith(":") ? `<span class="p">:</span> ` : "";
-      const valRaw = after.replace(/^:\s*/, "");
-      rest = colon + jsonHighlightVal(valRaw);
-      out += `<span class="p">${escapeHtml(indent)}</span>${key}${rest}\n`;
-    } else {
-      out += `<span class="p">${escapeHtml(indent)}</span>${jsonHighlightVal(line.trim())}\n`;
-    }
-  }
-  return out;
-}
-function jsonHighlightVal(raw) {
-  if (raw === "true" || raw === "false" || raw === "null") {
-    return `<span class="b">${raw}</span>`;
-  }
-  if (/^-?\d+(\.\d+)?$/.test(raw)) return `<span class="n">${raw}</span>`;
-  if (raw.startsWith("\"")) return `<span class="s">${escapeHtml(raw)}</span>`;
-  if (raw === "" || raw === "{") return "";
-  return escapeHtml(raw);
-}
 function escapeHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+const JSON_TOKEN_RE =
+  /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|(true|false|null)|([{}[\],])/g;
+function prettyJson(v) {
+  const src = JSON.stringify(v, null, 2) || "null";
+  let out = "", last = 0, m;
+  JSON_TOKEN_RE.lastIndex = 0;
+  while ((m = JSON_TOKEN_RE.exec(src)) !== null) {
+    out += escapeHtml(src.slice(last, m.index));
+    if (m[1] !== undefined) {
+      out += m[2] !== undefined
+        ? `<span class="k">${escapeHtml(m[1])}</span><span class="p">${escapeHtml(m[2])}</span>`
+        : `<span class="s">${escapeHtml(m[1])}</span>`;
+    } else if (m[3] !== undefined) {
+      out += `<span class="n">${escapeHtml(m[3])}</span>`;
+    } else if (m[4] !== undefined) {
+      out += `<span class="b">${escapeHtml(m[4])}</span>`;
+    } else {
+      out += `<span class="p">${escapeHtml(m[5])}</span>`;
+    }
+    last = m.index + m[0].length;
+  }
+  return out + escapeHtml(src.slice(last));
 }
 function stripTrailingSlash(u) { return u.endsWith("/") ? u.slice(0, -1) : u; }
 
@@ -552,7 +538,6 @@ function setupActions(card, ctx) {
     if (bodyEl) bodyEl.disabled = true;
     response.style.display = "none";
     errBanner.style.display = "none";
-    curlEl.textContent = "";
   };
 
   tryBtn.onclick = () => {
@@ -621,7 +606,7 @@ function setupActions(card, ctx) {
       response.style.display = "block";
       errBanner.style.display = "block";
       errBanner.textContent = msg;
-      showCurl(curlEl, url, headers, bodyRaw);
+      showCurl(curlEl, url, headers, bodyRaw, ctx.method.toUpperCase());
       return;
     }
 
@@ -665,7 +650,7 @@ function setupActions(card, ctx) {
     } else {
       bodyOut.textContent = raw || "(empty body)";
     }
-    showCurl(curlEl, url, headers, bodyRaw);
+    showCurl(curlEl, url, headers, bodyRaw, ctx.method.toUpperCase());
     setTimeout(reset, 1);
     execBtn.style.display = "none";
     tryBtn.style.display = "inline-block";
@@ -677,9 +662,9 @@ function prettyBytes(n) {
   if (n < 1024) return n + " B";
   return (n / 1024).toFixed(1) + " KB";
 }
-function showCurl(curlEl, url, headers, bodyRaw) {
+function showCurl(curlEl, url, headers, bodyRaw, method) {
   if (curlEl) {
-    const args = [`curl -X ${ctx.method.toUpperCase()}`, `"${escapeHtml(url)}"`];
+    const args = [`curl -X ${method}`, `"${url}"`];
     for (const [k, v] of Object.entries(headers)) args.push(`-H "${escapeHtml(k)}: ${escapeHtml(v)}"`);
     if (bodyRaw) args.push(`-d '${escapeHtml(bodyRaw)}'`);
     curlEl.textContent = args.join(" \\\n  ");

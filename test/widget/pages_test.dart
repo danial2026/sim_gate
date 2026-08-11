@@ -7,11 +7,11 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/config/theme.dart';
+import 'package:sim_gate/main.dart';
 import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/pages/api_endpoint_page.dart';
 import 'package:sim_gate/pages/config_page.dart';
 import 'package:sim_gate/pages/dashboard_page.dart';
-import 'package:sim_gate/pages/permissions_page.dart';
 import 'package:sim_gate/pages/sim_cards_page.dart';
 import 'package:sim_gate/providers/config_provider.dart';
 import 'package:sim_gate/providers/server_provider.dart';
@@ -129,13 +129,11 @@ void main() {
     });
   });
 
-  group('PermissionsPage', () {
-    testWidgets('back button asks for confirmation before closing the app', (
+  group('App back button guard', () {
+    testWidgets('root page asks for confirmation before closing the app', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        MaterialApp(theme: AppTheme.darkTheme, home: const PermissionsPage()),
-      );
+      await tester.pumpWidget(const SimGateApp());
       await settleDb(tester);
       expect(find.text('PERMISSIONS'), findsOneWidget);
 
@@ -158,6 +156,30 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('EXIT'));
       await tester.pumpAndSettle();
+      expect(find.text('CLOSE APP'), findsNothing);
+    });
+
+    testWidgets('back pops a pushed page without an exit dialog', (
+      tester,
+    ) async {
+      await tester.pumpWidget(const SimGateApp());
+      await settleDb(tester);
+      expect(find.text('PERMISSIONS'), findsOneWidget);
+
+      // Push a page on top of the root, as the flow does.
+      final nav = tester.state<NavigatorState>(
+        find.byType(Navigator).first,
+      );
+      nav.pushNamed('/api-endpoint');
+      await settleDb(tester);
+      expect(find.text('API ENDPOINT'), findsOneWidget);
+
+      // The back button must return to the root page...
+      await tester.binding.handlePopRoute();
+      await settleDb(tester);
+      expect(find.text('API ENDPOINT'), findsNothing);
+      expect(find.text('PERMISSIONS'), findsOneWidget);
+      // ...without any exit-confirmation dialog.
       expect(find.text('CLOSE APP'), findsNothing);
     });
   });
