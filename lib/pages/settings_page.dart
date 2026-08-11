@@ -260,12 +260,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     size: 18,
                     color: AppTheme.of(context).textSecondary,
                   ),
-                  onPressed: () async {
-                    await Clipboard.setData(
+                  onPressed: () {
+                    Clipboard.setData(
                       ClipboardData(text: config.accessToken ?? ''),
                     );
-                    if (!context.mounted) return;
-                    _toast(context, 'Token copied');
                   },
                 ),
               ],
