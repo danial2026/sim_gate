@@ -32,10 +32,15 @@ class TestHarness {
   /// Stubs the permission_handler method channel so status/request calls
   /// complete inside the widget-test FakeAsync zone (the real platform reply
   /// never arrives there) and report every permission as granted.
+  ///
+  /// Only applies when a widget-test binding exists: plain `test()` suites
+  /// (e.g. e2e) must keep real networking, which TestWidgetsFlutterBinding
+  /// would stub out.
   static void _mockPermissionChannel() {
+    final binding = TestWidgetsFlutterBinding.instance;
+    if (binding == null) return;
     const channel = MethodChannel('flutter.baseflow.com/permissions/methods');
-    TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (call) async {
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
       switch (call.method) {
         case 'checkPermissionStatus':
           return _permissionGranted;
