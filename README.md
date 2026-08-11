@@ -19,7 +19,7 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 
 | Setting - 1 | Setting - 2 |
 | --- | --- |
-| ![Setting - 1](screenshot/07-settings-token.png) | ![Setting - 2](screenshot/06-settings.png) |
+| ![Setting - 1](screenshot/06-settings-1.png) | ![Setting - 2](screenshot/07-settings-2.png) |
 
 | Dashboard Overview | Dashboard - SMS Activity & Stats |
 | --- | --- |
