@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light plate so black SMS glyph stays visible on dark Samsung One UI launchers -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
