@@ -21,12 +21,9 @@ Middleware loggingMiddleware({
         status = response.statusCode;
         sw.stop();
         // Fire-and-forget the access log write.
-        final requestId = request.context['validatedToken'] != null
-            ? null
-            : null;
         final entry = ApiAccessLog(
           id: DateTime.now().microsecondsSinceEpoch.toRadixString(36),
-          requestId: requestId,
+          requestId: null,
           clientIp: request.requestedUri.host,
           endpoint: '/${request.url.path}',
           method: request.method,

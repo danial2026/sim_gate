@@ -16,6 +16,7 @@ import '../services/sms_service.dart';
 import '../services/token_service.dart';
 import '../server/http_server.dart';
 import '../utils/logger.dart';
+import 'app_info.dart';
 
 /// Central dependency injection container.
 ///
@@ -29,6 +30,9 @@ Future<void> setup() async {
   final loggerService = LoggerService();
   getIt.registerSingleton<LoggerService>(loggerService);
   getIt.registerSingleton<Logger>(loggerService.logger);
+
+  // App metadata from package_info_plus (single source: pubspec.yaml).
+  getIt.registerSingleton<AppInfo>(await AppInfo.load());
 
   // Database (platform default on Android).
   final dbHelper = DatabaseHelper();
@@ -82,6 +86,7 @@ Future<void> setup() async {
   getIt.registerSingleton<RetryManager>(retryManager);
 
   // HTTP server.
+  final appInfo = getIt<AppInfo>();
   final httpServer = HttpServerService(
     smsService: smsService,
     simService: simService,
@@ -90,6 +95,7 @@ Future<void> setup() async {
     logsRepo: logsRepo,
     tokenService: tokenService,
     configService: configService,
+    appVersion: appInfo.version,
     logger: getIt<Logger>(),
   );
   getIt.registerSingleton<HttpServerService>(httpServer);
@@ -106,6 +112,13 @@ Future<void> setupForTest({
   // SQLite in-process so futures complete under the widget-test FakeAsync zone.
   sqfliteFfiInit();
   DatabaseHelper.overrideFactory = databaseFactoryFfiNoIsolate;
+
+  // Stub app metadata: package_info_plus is unavailable on the host, so tests
+  // register a fixed version that mirrors the current pubspec version.
+  getIt.registerSingleton<AppInfo>(
+    AppInfo(version: testAppVersion, buildNumber: 3),
+    signalsReady: false,
+  );
 
   final logger = Logger(minLevel: LogLevel.debug, sinks: const []);
   getIt.registerSingleton<Logger>(logger, signalsReady: false);
@@ -156,10 +169,15 @@ Future<void> setupForTest({
     logsRepo: logsRepo,
     tokenService: tokenService,
     configService: configService,
+    appVersion: getIt<AppInfo>().version,
     logger: logger,
   );
   getIt.registerSingleton<HttpServerService>(httpServer);
 }
+
+/// App version reported by the test harness. Mirrors the current version in
+/// `pubspec.yaml` so host tests can assert against a stable value.
+const String testAppVersion = '0.0.3';
 
 /// Resets the DI container between tests.
 Future<void> resetGetIt() async {

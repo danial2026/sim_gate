@@ -3,8 +3,8 @@
 /// A self-contained, Swagger-UI-style page (no external CDN assets, so it
 /// works on LANs without internet). It fetches the OpenAPI document from
 /// `/swagger.json`, renders every operation grouped by tag, and lets the user
-/// authorize with the access token (prefilled from the live config) and send
-/// real test requests with clean, syntax-highlighted responses.
+/// authorize with the access token (pasted from the app) and send real test
+/// requests with clean, syntax-highlighted responses.
 class SwaggerUi {
   SwaggerUi._();
 
@@ -261,7 +261,8 @@ class SwaggerUi {
 <div class="banner">
   Interactive documentation for the SimGate self-hosted SMS gateway.
   Every example is pre-filled from the live server config (SIM cards, port,
-  retention policy, token). Responses use the
+  retention policy). The access token is <b>not</b> exposed here — paste it
+  from <code>SimGate → Settings → Access Token</code>. Responses use the
   <code>{ success, data, error, timestamp, requestId }</code> envelope.
 </div>
 
@@ -282,8 +283,7 @@ class SwaggerUi {
   <div class="modal">
     <h3>Authorize</h3>
     <p>Paste the access token from <b>SimGate → Settings → Access Token</b>.
-       It is sent as <b>Authorization: Bearer &lt;token&gt;</b>.
-       The current token from the server config is pre-filled below.</p>
+       It is sent as <b>Authorization: Bearer &lt;token&gt;</b>.</p>
     <input type="password" id="token-input" placeholder="Paste access token…" autocomplete="off">
     <div class="token-state" id="token-state"></div>
     <div class="row">
@@ -355,10 +355,6 @@ async function loadSpec() {
   }
   if (servers.length) state.server = servers[0];
   select.onchange = () => { state.server = select.value; };
-  if (state.spec["x-access-token"] && !state.token) {
-    state.token = state.spec["x-access-token"];
-    localStorage.setItem("simgate_token", state.token);
-  }
   updateAuthUi();
   render();
   $("hdr-sub").textContent = `${info.title || "SimGate API"} · v${info.version || "?"} · ` +
@@ -680,7 +676,7 @@ function setupAuthModal() {
   const st = $("token-state");
   $("auth-btn").onclick = () => {
     input.value = state.token || "";
-    st.textContent = state.token ? "Token loaded from server config / browser storage." : "";
+    st.textContent = state.token ? "Token loaded from browser storage." : "";
     st.className = "token-state ok";
     back.classList.add("show");
     input.focus();

@@ -8,9 +8,10 @@ class AppConstants {
   // ---------------------------------------------------------------------------
   // App metadata
   // ---------------------------------------------------------------------------
+  // NOTE: the app version and build number are NOT defined here. They are read
+  // at runtime from `pubspec.yaml` via package_info_plus (see AppInfo) and are
+  // also used for the Android APK versionName/versionCode.
   static const String appName = 'SimGate';
-  static const String appVersion = '0.0.3';
-  static const int buildNumber = 3;
 
   // ---------------------------------------------------------------------------
   // Server defaults

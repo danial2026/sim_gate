@@ -41,6 +41,7 @@ class HttpServerService {
     required this.logsRepo,
     required this.tokenService,
     required this.configService,
+    required this.appVersion,
     Logger? logger,
   }) : _logger = logger ?? Logger();
 
@@ -51,6 +52,7 @@ class HttpServerService {
   final LogsRepository logsRepo;
   final TokenService tokenService;
   final ConfigService configService;
+  final String appVersion;
   final Logger _logger;
 
   HttpServer? _server;
@@ -83,10 +85,12 @@ class HttpServerService {
       startTimeProvider: () => _startTime ?? DateTime.now().toUtc(),
       serverIp: boundIp ?? configService.load().serverIp,
       serverPort: boundPort ?? configService.load().serverPort,
+      appVersion: appVersion,
     );
     final swagger = SwaggerHandler(
       configService: configService,
       simService: simService,
+      appVersion: appVersion,
     );
 
     final router = Router();

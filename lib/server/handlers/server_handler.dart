@@ -1,6 +1,5 @@
 import 'package:shelf/shelf.dart';
 
-import '../../constants/app_constants.dart';
 import '../../models/server_info.dart';
 import '../../repositories/logs_repository.dart';
 import '../../repositories/sms_repository.dart';
@@ -19,6 +18,7 @@ class ServerHandler {
     required this.startTimeProvider,
     required this.serverIp,
     required this.serverPort,
+    required this.appVersion,
   });
 
   final SmsRepository smsRepo;
@@ -28,6 +28,7 @@ class ServerHandler {
   final DateTime Function() startTimeProvider;
   final String serverIp;
   final int serverPort;
+  final String appVersion;
 
   /// `GET /api/health` — no auth required.
   Response health(Request request) {
@@ -35,7 +36,7 @@ class ServerHandler {
     return ApiResponse.ok({
       'status': 'running',
       'uptime': Formatters.formatDuration(uptime),
-      'version': AppConstants.appVersion,
+      'version': appVersion,
     });
   }
 
@@ -56,7 +57,7 @@ class ServerHandler {
       listeningPort: serverPort,
       uptime: uptime,
       startTime: startTimeProvider(),
-      version: AppConstants.appVersion,
+      version: appVersion,
       activeSims: activeSims,
       totalSims: totalSims,
       databaseSize: '0 KB',

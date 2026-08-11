@@ -35,6 +35,25 @@ import 'pages/settings_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setup();
+  // Guarantee a token exists before the server can accept requests.
+  await getIt<TokenService>().ensureToken();
+  final config = getIt<ConfigService>().load();
+  if (config.autoStartServer) {
+    final httpServer = getIt<HttpServerService>();
+    if (!httpServer.isRunning) {
+      try {
+        await httpServer.start(ip: config.serverIp, port: config.serverPort);
+        getIt<RetryManager>().start();
+      } catch (e) {
+        // Swallow startup failure; the user can start the API from the UI.
+        getIt<Logger>().error(
+          LogComponent.server,
+          'Auto-start failed',
+          error: e,
+        );
+      }
+    }
+  }
   runApp(const SimGateApp());
 }
 

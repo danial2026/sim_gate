@@ -37,6 +37,17 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Name the built APK after the project + version, e.g.
+    // sim_gate-v0.0.3-release.apk (version comes from pubspec via
+    // flutter.versionName, so rename follows version bumps automatically).
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl)
+                .outputFileName = "sim_gate-v${variant.versionName}-${name}.apk"
+        }
+    }
 }
 
 flutter {

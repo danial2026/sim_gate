@@ -95,8 +95,13 @@ class SmsHandler {
     if (requestId == null || requestId.isEmpty) {
       return ApiResponse.error('requestId is required', status: 400);
     }
-    final existing = await _sms.detailedStatus(requestId);
-    final previousStatus = existing['status'] as String;
+    String previousStatus;
+    try {
+      final existing = await _sms.detailedStatus(requestId);
+      previousStatus = existing['status'] as String;
+    } on StateError {
+      return ApiResponse.error('Request not found', status: 404);
+    }
     if (previousStatus == 'sent') {
       return ApiResponse.error('Cannot cancel already sent SMS', status: 409);
     }

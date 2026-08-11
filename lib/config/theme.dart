@@ -104,7 +104,10 @@ class AppTheme {
   static const Color errorColor = Color(0xFFFF3366); // Pink-red destructive.
 
   /// Monospace family used for IPs, tokens, and technical data.
-  static const String monoFamily = 'RobotoMono';
+  ///
+  /// Uses the platform's generic monospace family instead of a bundled font
+  /// (bundling would add assets and require pubspec font config).
+  static const String monoFamily = 'monospace';
 
   /// Resolves the active palette from the ambient [BuildContext].
   static AppPalette of(BuildContext context) =>

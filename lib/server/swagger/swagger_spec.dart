@@ -8,14 +8,20 @@ import '../../models/sim_card.dart';
 /// Builds the OpenAPI 3.0 document for the SimGate HTTP API.
 ///
 /// The spec is generated at request time so every example value reflects the
-/// live app state: the configured port/IP, the real access token (embedded as
-/// `x-access-token` so the docs page can prefill authorization), the detected
-/// SIM cards (used as `simId` examples), and the log retention settings.
+/// live app state: the configured port/IP, the detected SIM cards (used as
+/// `simId` examples), and the log retention settings.
+///
+/// The access token is intentionally never embedded (see SwaggerHandler).
 class SwaggerSpecBuilder {
-  SwaggerSpecBuilder({required this.config, required this.sims});
+  SwaggerSpecBuilder({
+    required this.config,
+    required this.sims,
+    required this.appVersion,
+  });
 
   final AppConfiguration config;
   final List<SimCard> sims;
+  final String appVersion;
 
   /// Builds the OpenAPI document.
   Map<String, dynamic> build() {
@@ -40,7 +46,7 @@ class SwaggerSpecBuilder {
             '`Authorization: Bearer <token>`. Responses always use the '
             'envelope `{ "success": bool, "data": ..., "error": ..., '
             '"timestamp": ..., "requestId": ... }`.',
-        'version': AppConstants.appVersion,
+        'version': appVersion,
       },
       'servers': [
         {
@@ -59,9 +65,6 @@ class SwaggerSpecBuilder {
         {'name': 'Config', 'description': 'Server configuration'},
         {'name': 'Logs', 'description': 'Log retention policy'},
       ],
-      // The current access token, read by the docs page to prefill
-      // "Authorize". Only present when the swagger toggle is enabled.
-      'x-access-token': config.accessToken,
       'security': [
         {'bearerAuth': <String>[]},
       ],
@@ -206,7 +209,7 @@ class SwaggerSpecBuilder {
               example: {
                 'status': 'running',
                 'uptime': '0h 12m 34s',
-                'version': AppConstants.appVersion,
+                'version': appVersion,
               },
             ),
           },
@@ -224,7 +227,7 @@ class SwaggerSpecBuilder {
                 'listeningPort': config.serverPort,
                 'uptime': '0h 12m 34s',
                 'startTime': DateTime.now().toUtc().toIso8601String(),
-                'version': AppConstants.appVersion,
+                'version': appVersion,
                 'activeSims': activeSims.length,
                 'totalSims': sims.length,
                 'databaseSize': '0 KB',

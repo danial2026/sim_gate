@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import '../config/app_info.dart';
+import '../config/service_locator.dart';
 import '../config/theme.dart';
 import '../constants/app_constants.dart';
 import '../models/configuration.dart';
@@ -437,7 +439,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'SimGate v${_packageInfo?.version ?? AppConstants.appVersion} — '
+            'SimGate v${_packageInfo?.version ?? getIt<AppInfo>().version} — '
             'Self-Hosted SMS API',
             textAlign: TextAlign.center,
             style: TextStyle(

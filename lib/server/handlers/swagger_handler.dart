@@ -11,13 +11,22 @@ import '../swagger/swagger_ui.dart';
 /// Both routes are *public* (no auth) so a browser can load them without a
 /// token — access is controlled by the `enableSwagger` config toggle instead.
 /// When disabled, every request returns 404. When enabled, the spec embeds
-/// the current access token and live config values so the docs page is
-/// pre-authorized and every example reflects the real device state.
+/// live config values so every example reflects the real device state.
+///
+/// NOTE: the access token is deliberately NOT included in the spec. Because
+/// these routes are public, embedding the token would let anyone on the
+/// network steal it and bypass the API auth entirely. Users paste the token
+/// manually (SimGate → Settings → Access Token).
 class SwaggerHandler {
-  SwaggerHandler({required this.configService, required this.simService});
+  SwaggerHandler({
+    required this.configService,
+    required this.simService,
+    required this.appVersion,
+  });
 
   final ConfigService configService;
   final SimService simService;
+  final String appVersion;
 
   /// `GET /swagger.html` — interactive API docs.
   Future<Response> html(Request request) async {
@@ -33,7 +42,11 @@ class SwaggerHandler {
     if (!_enabled()) return _disabledResponse();
     final config = configService.load();
     final sims = await simService.getAll();
-    final spec = SwaggerSpecBuilder(config: config, sims: sims).build();
+    final spec = SwaggerSpecBuilder(
+      config: config,
+      sims: sims,
+      appVersion: appVersion,
+    ).build();
     return Response.ok(
       encodeSpec(spec),
       headers: {'Content-Type': 'application/json; charset=utf-8'},
