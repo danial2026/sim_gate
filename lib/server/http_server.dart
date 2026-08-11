@@ -69,14 +69,16 @@ class HttpServerService {
     final sim = SimHandler(simService);
     final token = TokenHandler(tokenService);
     final config = ConfigHandler(configService: configService, logsRepo: logsRepo);
+    final boundIp = _server?.address.address;
+    final boundPort = _server?.port;
     final server = ServerHandler(
       smsRepo: smsRepo,
       simRepo: simRepo,
       logsRepo: logsRepo,
       tokenService: tokenService,
       startTimeProvider: () => _startTime ?? DateTime.now().toUtc(),
-      serverIp: configService.load().serverIp,
-      serverPort: configService.load().serverPort,
+      serverIp: boundIp ?? configService.load().serverIp,
+      serverPort: boundPort ?? configService.load().serverPort,
     );
 
     final router = Router();

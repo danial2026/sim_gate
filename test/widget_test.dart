@@ -1,30 +1,48 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// App-level smoke test: boots the whole widget tree with test wiring and
+// verifies the first screen renders without exceptions.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/main.dart';
+import 'package:sim_gate/models/sim_card.dart';
+import 'package:sim_gate/services/platform_channel_service.dart';
+import 'package:sim_gate/services/sim_service.dart';
+
+import 'test_harness.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  TestWidgetsFlutterBinding.ensureInitialized();
+  late TestHarness harness;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() async {
+    harness = await TestHarness.create();
+    // Ensure a SIM exists so the dashboard has data to show.
+    final platform =
+        getIt<PlatformChannelService>() as FakePlatformService;
+    platform.setSims([
+      SimCard(
+        simId: 'sim-0',
+        slotNumber: 0,
+        name: 'SIM 1',
+        phoneNumber: '+1234000001',
+        carrier: 'TestNet',
+        signalStrength: 4,
+      ),
+    ]);
+    await getIt<SimService>().refresh();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  tearDown(() async {
+    await harness.dispose();
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('app boots and shows the permissions screen', (tester) async {
+    await tester.pumpWidget(const SimGateApp());
+    await tester.pumpAndSettle();
+
+    // First screen is the permissions gate.
+    expect(find.text('PERMISSIONS'), findsOneWidget);
+    expect(find.text('Grant Permissions'), findsOneWidget);
   });
 }
