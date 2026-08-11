@@ -2,10 +2,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- SIM GATE · outlined SMS · #FFF · transparent (UI_DESIGN_GUIDE linear) -->
     <path
-        android:fillColor="#FFFFFFFF"
-        android:fillType="evenOdd"
-        android:pathData="M26,32c0,-5.523 4.477,-10 10,-10h36c5.523,0 10,4.477 10,10v28c0,5.523 -4.477,10 -10,10H52L38,84V70H36c-5.523,0 -10,-4.477 -10,-10V32zM44,52a4,4 0,1 0,8 0a4,4 0,1 0,-8 0zM58,52a4,4 0,1 0,8 0a4,4 0,1 0,-8 0zM72,52a4,4 0,1 0,8 0a4,4 0,1 0,-8 0z"/>
+        android:pathData="M21,15a2,2 0,0 1,-2 2H7l-4,4V5a2,2 0,0 1,2 -2h14a2,2 0,0 1,2 2z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.85"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M8,8h8M8,12h5"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.85"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
 </vector>

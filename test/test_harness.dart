@@ -30,7 +30,9 @@ class TestHarness {
     SharedPreferences.setMockInitialValues({});
     final harness = TestHarness._(nextDbPath());
     harness.prefs = await SharedPreferences.getInstance();
-    DatabaseHelper.overrideFactory = databaseFactoryFfi;
+    // In-process sqlite (no background isolate) so DB futures complete under
+    // the widget-test FakeAsync zone; unit tests benefit too.
+    DatabaseHelper.overrideFactory = databaseFactoryFfiNoIsolate;
     await setupForTest(prefs: harness.prefs!, dbPath: harness._dbPath);
     return harness;
   }

@@ -97,9 +97,10 @@ Future<void> setupForTest({
   String? dbPath,
   FakePlatformService? platform,
 }) async {
-  // Force FFI backend so tests run on the host machine.
+  // Force FFI backend so tests run on the host machine. NoIsolate keeps
+  // SQLite in-process so futures complete under the widget-test FakeAsync zone.
   sqfliteFfiInit();
-  DatabaseHelper.overrideFactory = databaseFactoryFfi;
+  DatabaseHelper.overrideFactory = databaseFactoryFfiNoIsolate;
 
   final logger = Logger(minLevel: LogLevel.debug, sinks: const []);
   getIt.registerSingleton<Logger>(logger, signalsReady: false);
