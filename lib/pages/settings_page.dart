@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../config/app_info.dart';
 import '../config/service_locator.dart';
 import '../config/theme.dart';
-import '../constants/app_constants.dart';
 import '../models/configuration.dart';
 import '../providers/config_provider.dart';
 import '../providers/logs_provider.dart';

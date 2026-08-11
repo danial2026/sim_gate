@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sim_gate/config/app_info.dart';
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/server/http_server.dart';
@@ -450,7 +451,8 @@ void main() {
       final spec = await readJson(res);
       expect(spec['openapi'], '3.0.3');
       expect(spec['info']['title'], contains('SimGate'));
-      expect(spec['x-access-token'], token);
+      // The access token must never be embedded in the public spec.
+      expect(spec.containsKey('x-access-token'), isFalse);
       expect(spec['paths'], contains('/api/sms/send'));
       expect(spec['paths'], contains('/api/sims/active'));
 

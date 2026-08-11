@@ -53,6 +53,7 @@ class _FakeHttpServer extends HttpServerService {
     required super.logsRepo,
     required super.tokenService,
     required super.configService,
+    required super.appVersion,
   });
 
   final _states = StreamController<ServerState>.broadcast();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+import 'package:sim_gate/config/app_info.dart';
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/config/theme.dart';
 import 'package:sim_gate/models/configuration.dart';
@@ -154,7 +155,10 @@ void main() {
       // Loading state (no package_info plugin in tests) or a version string.
       expect(
         find.text('Loading...').evaluate().isNotEmpty ||
-            find.textContaining('0.0.3').evaluate().isNotEmpty,
+            find
+                .textContaining(getIt<AppInfo>().version)
+                .evaluate()
+                .isNotEmpty,
         isTrue,
       );
     });
