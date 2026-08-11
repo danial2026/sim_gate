@@ -43,7 +43,12 @@ class SwaggerSpecBuilder {
         'version': AppConstants.appVersion,
       },
       'servers': [
-        {'url': '/api', 'description': 'Relative to the SimGate server origin'},
+        {
+          'url': '',
+          'description':
+              'Same origin as the SimGate server; paths already include '
+              'the /api prefix',
+        },
       ],
       'tags': [
         {'name': 'Health', 'description': 'Service liveness (no auth)'},
