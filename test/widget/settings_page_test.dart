@@ -158,7 +158,52 @@ void main() {
         isTrue,
       );
     });
+    testWidgets('swagger toggle enables and persists the docs flag', (
+      tester,
+    ) async {
+      final configProvider = ConfigProvider(
+        configService: getIt<ConfigService>(),
+        tokenService: getIt<TokenService>(),
+      )..load();
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: [
+          ChangeNotifierProvider<ConfigProvider>.value(value: configProvider),
+          ChangeNotifierProvider<LogsProvider>(
+            create: (_) => LogsProvider(logsRepository: getIt<LogsRepository>()),
+          ),
+        ],
+      );
+
+      expect(find.text('API Docs (Swagger)'), findsOneWidget);
+      final docsSwitch = find.descendant(
+        of: find.ancestor(
+          of: find.text('API Docs (Swagger)'),
+          matching: find.byType(Container),
+        ),
+        matching: find.byType(Switch),
+      );
+      expect(tester.widget<Switch>(docsSwitch).value, isFalse);
+
+      await tester.tap(docsSwitch);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Switch>(docsSwitch).value, isTrue);
+      expect(
+        getIt<ConfigService>().load().enableSwagger,
+        isTrue,
+      );
+
+      // Disable again to keep the default for later tests.
+      await tester.tap(docsSwitch);
+      await tester.pumpAndSettle();
+      expect(getIt<ConfigService>().load().enableSwagger, isFalse);
+    });
+
     testWidgets('switching theme to light flips the app brightness', (
+      tester,
+    ) async {
       tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
       addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
 

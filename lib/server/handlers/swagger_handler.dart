@@ -1,6 +1,5 @@
 import 'package:shelf/shelf.dart';
 
-import '../../models/configuration.dart';
 import '../../services/config_service.dart';
 import '../../services/sim_service.dart';
 import '../api_response.dart';
