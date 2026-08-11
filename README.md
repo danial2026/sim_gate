@@ -5,33 +5,23 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 
 ## Screenshots
 
-### Grant Permissions & Configure Server
-
-| | |
+| Grant Permissions | Configure Server (Any) |
 | --- | --- |
 | ![Permissions](screenshot/01-permissions.png) | ![Configure Server](screenshot/02-configure-server-any.png) |
 
-### Configure Server (WiFi) & SIM Card Selection
-
-| | |
+| Configure Server (WiFi) | SIM Card Selection |
 | --- | --- |
 | ![Configure Server WiFi](screenshot/03-configure-server-wifi.png) | ![SIM Cards](screenshot/04-sim-cards.png) |
 
-### Server Configuration (Stopped) & Settings
-
-| | |
+| Server Configuration (Stopped) | Settings |
 | --- | --- |
 | ![Server Config - Stopped](screenshot/05-server-config-stopped.png) | ![Settings](screenshot/06-settings.png) |
 
-### Settings - Token & Server & Server Running
-
-| | |
+| Settings - Token & Server | Server Configuration (Running) |
 | --- | --- |
 | ![Settings - Token](screenshot/07-settings-token.png) | ![Server Config - Running](screenshot/08-server-config-running.png) |
 
-### Dashboard Overview & Stats
-
-| | |
+| Dashboard Overview | Dashboard - SMS Activity & Stats |
 | --- | --- |
 | ![Dashboard](screenshot/09-dashboard.png) | ![Dashboard Stats](screenshot/10-dashboard-stats.png) |
 
