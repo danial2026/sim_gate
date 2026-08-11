@@ -59,7 +59,7 @@ class _SetupPageState extends State<SetupPage> {
       await provider.updateIp(_selectedIp);
       await provider.updatePort(int.parse(_portController.text));
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/config');
+        Navigator.of(context).pushReplacementNamed('/sim');
       }
     } finally {
       if (mounted) setState(() => _saving = false);

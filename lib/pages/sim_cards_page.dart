@@ -7,8 +7,13 @@ import '../widgets/common/app_widgets.dart';
 import '../widgets/sim/sim_card_item.dart';
 
 /// Page 4: List detected SIM cards and toggle which are active.
+///
+/// When [inFlow] is true (onboarding), a Continue button is shown so the user
+/// can pick the SIMs the gateway should use before moving on.
 class SimCardsPage extends StatefulWidget {
-  const SimCardsPage({super.key});
+  const SimCardsPage({super.key, this.inFlow = false});
+
+  final bool inFlow;
 
   @override
   State<SimCardsPage> createState() => _SimCardsPageState();
@@ -53,26 +58,55 @@ class _SimCardsPageState extends State<SimCardsPage> {
                     ],
                   )
                 : ListView.builder(
-                    itemCount: sim.sims.length,
-                    itemBuilder: (_, i) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: SimCardItem(
-                        sim: sim.sims[i],
-                        onToggle: (value) async {
-                          try {
-                            await sim.toggle(sim.sims[i]);
-                          } on StateError catch (e) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.message),
-                                backgroundColor: AppTheme.errorColor,
+                    itemCount: sim.sims.length +
+                        (widget.inFlow ? 1 : 0),
+                    itemBuilder: (_, i) {
+                      if (i >= sim.sims.length) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Column(
+                            children: [
+                              PrimaryButton(
+                                label: 'Continue',
+                                icon: Icons.arrow_forward,
+                                onPressed: sim.activeSims.isEmpty
+                                    ? null
+                                    : () => Navigator.of(context)
+                                        .pushReplacementNamed('/config'),
                               ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+                              const SizedBox(height: 12),
+                              Text(
+                                sim.activeSims.isEmpty
+                                    ? 'Activate at least one SIM to continue'
+                                    : '${sim.activeSims.length} SIM(s) selected for the gateway',
+                                style: const TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: SimCardItem(
+                          sim: sim.sims[i],
+                          onToggle: (value) async {
+                            try {
+                              await sim.toggle(sim.sims[i]);
+                            } on StateError catch (e) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.message),
+                                  backgroundColor: AppTheme.errorColor,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    },
                   ),
       ),
       actions: [
