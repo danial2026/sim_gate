@@ -92,7 +92,7 @@ void main() {
       final json = await readJson(res);
       expect(json['success'], isTrue);
       expect(json['data']['status'], 'running');
-      expect(json['data']['version'], '0.0.1');
+      expect(json['data']['version'], '0.0.2');
     });
   });
 
@@ -332,7 +332,7 @@ void main() {
       expect(json['success'], isTrue);
       final data = json['data'];
       expect(data['serverStatus'], 'running');
-      expect(data['version'], '0.0.1');
+      expect(data['version'], '0.0.2');
       expect(data['listeningPort'], isA<int>());
       expect(data['activeSims'], 1);
       expect(data['totalSims'], 2);

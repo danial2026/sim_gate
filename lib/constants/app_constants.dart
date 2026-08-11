@@ -9,8 +9,8 @@ class AppConstants {
   // App metadata
   // ---------------------------------------------------------------------------
   static const String appName = 'SimGate';
-  static const String appVersion = '0.0.1';
-  static const int buildNumber = 1;
+  static const String appVersion = '0.0.2';
+  static const int buildNumber = 2;
 
   // ---------------------------------------------------------------------------
   // Server defaults
