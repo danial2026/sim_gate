@@ -37,7 +37,12 @@ class TestHarness {
   /// (e.g. e2e) must keep real networking, which TestWidgetsFlutterBinding
   /// would stub out.
   static void _mockPermissionChannel() {
-    final binding = TestWidgetsFlutterBinding.instance;
+    TestWidgetsFlutterBinding? binding;
+    try {
+      binding = TestWidgetsFlutterBinding.instance;
+    } catch (_) {
+      return; // plain test() suite: no widget binding; keep real HTTP.
+    }
     if (binding == null) return;
     const channel = MethodChannel('flutter.baseflow.com/permissions/methods');
     binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
