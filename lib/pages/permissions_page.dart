@@ -94,7 +94,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                     if (!_allGranted) {
                       await _requestAll();
                     }
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     if (_allGranted) {
                       _navigateNext(context);
                     }

@@ -24,6 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Opens the token regeneration confirmation dialog.
   Future<void> _confirmRegenerate() async {
+    final configProvider = context.read<ConfigProvider>();
     final regenerate = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -63,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (regenerate == true) {
-      await context.read<ConfigProvider>().regenerateToken();
+      await configProvider.regenerateToken();
       if (!mounted) return;
       _toast(context, 'Token regenerated');
     }
@@ -71,7 +72,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Dialog for changing the port with validation.
   Future<void> _editPort() async {
-    final config = context.read<ConfigProvider>().config;
+    final configProvider = context.read<ConfigProvider>();
+    final config = configProvider.config;
     final controller = TextEditingController(text: '${config.serverPort}');
     final newPort = await showDialog<int>(
       context: context,
@@ -104,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (newPort != null) {
-      await context.read<ConfigProvider>().updatePort(newPort);
+      await configProvider.updatePort(newPort);
       if (!mounted) return;
       _toast(context, 'Port updated. API restart required.');
     }
@@ -112,7 +114,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Dialog for changing the IP with validation.
   Future<void> _editIp() async {
-    final config = context.read<ConfigProvider>().config;
+    final configProvider = context.read<ConfigProvider>();
+    final config = configProvider.config;
     final controller = TextEditingController(text: config.serverIp);
     final newIp = await showDialog<String>(
       context: context,
@@ -142,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (newIp != null) {
-      await context.read<ConfigProvider>().updateIp(newIp);
+      await configProvider.updateIp(newIp);
       if (!mounted) return;
       _toast(context, 'IP updated. API restart required.');
     }
@@ -150,6 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Confirms and clears all logs.
   Future<void> _clearLogs() async {
+    final logsProvider = context.read<LogsProvider>();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -174,7 +178,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
     if (confirmed == true) {
-      await context.read<LogsProvider>().clearAll();
+      await logsProvider.clearAll();
       if (!mounted) return;
       _toast(context, 'Logs cleared');
     }

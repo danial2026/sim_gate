@@ -97,6 +97,7 @@ class ApiEndpointPage extends StatelessWidget {
             icon: Icons.copy_outlined,
             onPressed: () async {
               await Clipboard.setData(ClipboardData(text: apiUrl));
+              if (!context.mounted) return;
               _toast(context, 'URL copied to clipboard');
             },
           ),
@@ -109,6 +110,7 @@ class ApiEndpointPage extends StatelessWidget {
                   text:
                       'curl -X GET "$apiUrl/sms/status?requestId=demo" \\\n'
                       '  -H "Authorization: Bearer ${config.accessToken ?? 'TOKEN'}"'));
+              if (!context.mounted) return;
               _toast(context, 'cURL copied to clipboard');
             },
           ),
