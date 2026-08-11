@@ -4,7 +4,5 @@
         <item name="android:windowSplashScreenBackground">#000000</item>
         <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_splash</item>
         <item name="android:windowSplashScreenIconBackgroundColor">#00000000</item>
-        <item name="android:postSplashScreenTheme">@style/NormalTheme</item>
-        <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
 </resources>

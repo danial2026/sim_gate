@@ -55,6 +55,15 @@ class _SimCardsPageState extends State<SimCardsPage> {
                               color: AppTheme.textSecondary, fontSize: 14),
                         ),
                       ),
+                      if (widget.inFlow) ...[
+                        const SizedBox(height: 32),
+                        PrimaryButton(
+                          label: 'Continue',
+                          icon: Icons.arrow_forward,
+                          onPressed: () => Navigator.of(context)
+                              .pushReplacementNamed('/config'),
+                        ),
+                      ],
                     ],
                   )
                 : ListView.builder(

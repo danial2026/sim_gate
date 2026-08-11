@@ -95,7 +95,7 @@ class SimGateApp extends StatelessWidget {
             case '/api-endpoint':
               return _fade(const ApiEndpointPage());
             case '/sim':
-              return _fade(const SimCardsPage());
+              return _fade(const SimCardsPage(inFlow: true));
             case '/dashboard':
               return _fade(const DashboardPage());
             case '/logs':
