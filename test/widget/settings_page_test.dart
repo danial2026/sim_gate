@@ -177,6 +177,13 @@ void main() {
         ],
       );
 
+      await tester.scrollUntilVisible(
+        find.text('API Docs (Swagger)'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('API Docs (Swagger)'));
+      await tester.pumpAndSettle();
       expect(find.text('API Docs (Swagger)'), findsOneWidget);
       final docsSwitch = find.descendant(
         of: find.ancestor(
