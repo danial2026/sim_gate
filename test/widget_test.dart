@@ -71,11 +71,12 @@ void main() {
     expect(find.text('SIM CARDS'), findsOneWidget);
     expect(find.text('SIM 1'), findsOneWidget);
 
-    // SIM selection -> Server configuration.
+    // SIM selection -> Server configuration (never the dashboard).
     await tester.tap(find.text('CONTINUE'));
     await settleDb(tester);
     expect(find.text('SERVER CONFIGURATION'), findsOneWidget);
     expect(find.text('START API'), findsOneWidget);
     expect(find.text('OPEN DASHBOARD'), findsNothing);
+    expect(find.text('DASHBOARD'), findsNothing);
   });
 }

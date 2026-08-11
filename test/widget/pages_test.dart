@@ -189,6 +189,77 @@ void main() {
       expect(find.byType(SmsActivityChart), findsOneWidget);
       expect(find.byType(SuccessRateChart), findsOneWidget);
     });
+
+    testWidgets('back button asks for confirmation before closing the app', (
+      tester,
+    ) async {
+      final platform = getIt<PlatformChannelService>() as FakePlatformService;
+      platform.setSims([
+        SimCard(
+          simId: 'sim-0',
+          slotNumber: 0,
+          name: 'SIM 1',
+          phoneNumber: '+1234000001',
+          carrier: 'TestNet',
+          signalStrength: 4,
+        ),
+      ]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ConfigProvider>(
+                create: (_) => ConfigProvider(
+                  configService: getIt<ConfigService>(),
+                  tokenService: getIt<TokenService>(),
+                )..load(),
+              ),
+              ChangeNotifierProvider<SimProvider>(
+                create: (_) => SimProvider(simService: getIt<SimService>()),
+              ),
+              ChangeNotifierProvider<SmsProvider>(
+                create: (_) => SmsProvider(
+                  smsService: getIt<SmsService>(),
+                  smsRepository: getIt<SmsRepository>(),
+                  simRepository: getIt<SimRepository>(),
+                ),
+              ),
+              ChangeNotifierProvider<ServerProvider>(
+                create: (_) => ServerProvider(
+                  httpServer: getIt<HttpServerService>(),
+                  retryManager: getIt<RetryManager>(),
+                ),
+              ),
+            ],
+            child: const DashboardPage(),
+          ),
+        ),
+      );
+      await settleDb(tester);
+
+      // Simulate the Android back button.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('CLOSE APP'), findsOneWidget);
+      expect(find.text('CANCEL'), findsOneWidget);
+      expect(find.text('EXIT'), findsOneWidget);
+
+      // Cancelling keeps the dashboard open.
+      await tester.tap(find.text('CANCEL'));
+      await tester.pumpAndSettle();
+      expect(find.text('CLOSE APP'), findsNothing);
+      expect(find.text('DASHBOARD'), findsOneWidget);
+
+      // Back again and confirming EXIT dismisses the dialog.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('EXIT'));
+      await tester.pumpAndSettle();
+      expect(find.text('CLOSE APP'), findsNothing);
+    });
   });
 
   group('ConfigPage', () {
@@ -315,6 +386,68 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
       expect(find.text('At least one SIM must remain active'), findsOneWidget);
+    });
+
+    testWidgets('Continue opens Server Configuration, not the dashboard', (
+      tester,
+    ) async {
+      final platform = getIt<PlatformChannelService>() as FakePlatformService;
+      platform.setSims([
+        SimCard(
+          simId: 'sim-0',
+          slotNumber: 0,
+          name: 'SIM 1',
+          phoneNumber: '+1234000001',
+          carrier: 'TestNet',
+          signalStrength: 4,
+        ),
+      ]);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ConfigProvider>(
+              create: (_) => ConfigProvider(
+                configService: getIt<ConfigService>(),
+                tokenService: getIt<TokenService>(),
+              )..load(),
+            ),
+            ChangeNotifierProvider<SimProvider>(
+              create: (_) => SimProvider(simService: getIt<SimService>()),
+            ),
+            ChangeNotifierProvider<ServerProvider>(
+              create: (_) => ServerProvider(
+                httpServer: getIt<HttpServerService>(),
+                retryManager: getIt<RetryManager>(),
+              ),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.darkTheme,
+            routes: {
+              '/config': (_) => const ConfigPage(),
+              '/dashboard': (_) => const DashboardPage(),
+            },
+            home: const SimCardsPage(inFlow: true),
+          ),
+        ),
+      );
+      await settleDb(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('CONTINUE'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('CONTINUE'));
+      await settleDb(tester);
+
+      // The next screen must be the Server Configuration page...
+      expect(find.text('SERVER CONFIGURATION'), findsOneWidget);
+      expect(find.text('START API'), findsOneWidget);
+      // ...and never the dashboard.
+      expect(find.byType(DashboardPage), findsNothing);
+      expect(find.text('DASHBOARD'), findsNothing);
     });
   });
 }
