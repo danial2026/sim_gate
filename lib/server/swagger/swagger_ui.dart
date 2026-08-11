@@ -522,24 +522,13 @@ function setupActions(card, ctx) {
   const bodyOut = card.querySelector(".resp-body");
   let controller = null;
 
-  const reset = () => {
-    if (controller) { controller.abort(); controller = null; }
-    spinner.style.display = "none";
-    execBtn.style.display = "none";
-    cancelBtn.style.display = "none";
-    tryBtn.style.display = "inline-block";
-    tryBtn.textContent = "Try it out";
-    tryBtn.disabled = false;
-    inputs.forEach(i => i.disabled = true);
-    if (bodyEl) bodyEl.disabled = true;
+  tryBtn.onclick = () => {
     response.style.display = "none";
     errBanner.style.display = "none";
-  };
-
-  tryBtn.onclick = () => {
     tryBtn.style.display = "none";
     execBtn.style.display = "inline-block";
     cancelBtn.style.display = "inline-block";
+    cancelBtn.disabled = false;
     inputs.forEach(i => i.disabled = false);
     if (bodyEl) bodyEl.disabled = false;
     tryBtn.textContent = "Reset";
@@ -589,8 +578,9 @@ function setupActions(card, ctx) {
       });
     } catch (e) {
       spinner.style.display = "none";
+      execBtn.style.display = "none";
+      cancelBtn.style.display = "none";
       execBtn.disabled = false;
-      cancelBtn.disabled = true;
       const isAbort = e.name === "AbortError";
       const msg = isAbort ? "Request cancelled by the user."
         : (needsAuth && !state.token)
@@ -603,6 +593,8 @@ function setupActions(card, ctx) {
       errBanner.style.display = "block";
       errBanner.textContent = msg;
       showCurl(curlEl, url, headers, bodyRaw, ctx.method.toUpperCase());
+      tryBtn.style.display = "inline-block";
+      tryBtn.textContent = "Reset";
       return;
     }
 
@@ -613,7 +605,6 @@ function setupActions(card, ctx) {
 
     spinner.style.display = "none";
     execBtn.disabled = false;
-    cancelBtn.disabled = true;
     response.style.display = "block";
 
     const cls = res.status >= 500 ? "status-5xx" : res.status >= 400 ? "status-4xx" : "status-2xx";
@@ -647,8 +638,8 @@ function setupActions(card, ctx) {
       bodyOut.textContent = raw || "(empty body)";
     }
     showCurl(curlEl, url, headers, bodyRaw, ctx.method.toUpperCase());
-    setTimeout(reset, 1);
     execBtn.style.display = "none";
+    cancelBtn.style.display = "none";
     tryBtn.style.display = "inline-block";
     tryBtn.textContent = "Reset";
   };
