@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/server/http_server.dart';
+import 'package:sim_gate/services/config_service.dart';
 import 'package:sim_gate/services/platform_channel_service.dart';
 import 'package:sim_gate/services/sim_service.dart';
 import 'package:sim_gate/services/token_service.dart';
@@ -420,6 +421,67 @@ void main() {
       client.close(force: true);
       expect(res.statusCode, 204);
       expect(res.headers.value('Access-Control-Allow-Origin'), '*');
+    });
+  });
+
+  group('Swagger docs', () {
+    test('returns 404 for docs when disabled', () async {
+      await getIt<ConfigService>().updateSwaggerEnabled(false);
+      final res = await request('GET', '/swagger.html');
+      expect(res.statusCode, 404);
+      final json = await readJson(res);
+      expect(json['success'], isFalse);
+    });
+
+    test('serves the html page when enabled', () async {
+      await getIt<ConfigService>().updateSwaggerEnabled(true);
+      final res = await request('GET', '/swagger.html');
+      expect(res.statusCode, 200);
+      expect(res.headers.value('content-type'), contains('text/html'));
+      final raw = await res.transform(utf8.decoder).join();
+      expect(raw, contains('SimGate API Docs'));
+      expect(raw, contains('swagger.json'));
+    });
+
+    test('serves an OpenAPI spec with live config values when enabled',
+        () async {
+      await getIt<ConfigService>().updateSwaggerEnabled(true);
+      final res = await request('GET', '/swagger.json');
+      expect(res.statusCode, 200);
+      final spec = await readJson(res);
+      expect(spec['openapi'], '3.0.3');
+      expect(spec['info']['title'], contains('SimGate'));
+      expect(spec['x-access-token'], token);
+      expect(spec['paths'], contains('/api/sms/send'));
+      expect(spec['paths'], contains('/api/sims/active'));
+
+      // Live config values are embedded as examples.
+      final send = spec['paths']['/api/sms/send']['post'];
+      final sendExample =
+          send['requestBody']['content']['application/json']['example'];
+      expect(sendExample['simId'], 'sim-0');
+      expect(sendExample['recipient'], '+1234000001');
+
+      final portExample = spec['paths']['/api/config/port']['put']
+          ['requestBody']['content']['application/json']['example'];
+      expect(portExample['port'], getIt<ConfigService>().load().serverPort);
+
+      // Bearer auth is declared.
+      expect(spec['security'], isNotEmpty);
+      expect(
+        spec['components']['securitySchemes']['bearerAuth']['scheme'],
+        'bearer',
+      );
+    });
+
+    test('spec examples reflect sim list changes', () async {
+      await getIt<ConfigService>().updateSwaggerEnabled(true);
+      final res = await request('GET', '/swagger.json');
+      final spec = await readJson(res);
+      final cards = spec['paths']['/api/sims/active']['get']['responses']
+          ['200']['content']['application/json']['example']['data']['simCards'];
+      expect(cards.length, 2);
+      expect(cards.first['simId'], 'sim-0');
     });
   });
 }

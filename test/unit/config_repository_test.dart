@@ -32,6 +32,7 @@ void main() {
       expect(config.maxLogEntries, 10000);
       expect(config.appTheme, AppThemeMode.system);
       expect(config.activeSimIds, isEmpty);
+      expect(config.enableSwagger, isFalse);
     });
 
     test('round-trips a full configuration', () async {
@@ -48,6 +49,7 @@ void main() {
           maxLogEntries: 500,
           appTheme: AppThemeMode.dark,
           activeSimIds: ['sim-1', 'sim-2'],
+          enableSwagger: true,
         ),
       );
       final loaded = repo.load();
@@ -61,6 +63,7 @@ void main() {
       expect(loaded.maxLogEntries, 500);
       expect(loaded.appTheme, AppThemeMode.dark);
       expect(loaded.activeSimIds, ['sim-1', 'sim-2']);
+      expect(loaded.enableSwagger, isTrue);
     });
 
     test('saveToken persists token and timestamp', () async {

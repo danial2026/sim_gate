@@ -159,8 +159,6 @@ void main() {
       );
     });
     testWidgets('switching theme to light flips the app brightness', (
-      tester,
-    ) async {
       tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
       addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
 
