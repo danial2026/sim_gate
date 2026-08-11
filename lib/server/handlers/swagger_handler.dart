@@ -46,7 +46,7 @@ class SwaggerHandler {
       config: config,
       sims: sims,
       appVersion: appVersion,
-      serverOrigin: request.url.origin,
+      serverOrigin: _serverOrigin(request),
     ).build();
     return Response.ok(
       encodeSpec(spec),
@@ -57,6 +57,16 @@ class SwaggerHandler {
   bool _enabled() {
     final config = configService.load();
     return config.enableSwagger == true;
+  }
+
+  /// Scheme + host + port the client used to reach this server.
+  ///
+  /// shelf request URIs are relative (no scheme), so `request.url.origin`
+  /// would throw. The `Host` header is guaranteed by HTTP/1.1 and reflects
+  /// exactly what the browser address bar shows (e.g. `192.168.0.119:3000`).
+  String _serverOrigin(Request request) {
+    final host = request.headers['host'] ?? 'localhost';
+    return 'http://$host';
   }
 
   Response _disabledResponse() => ApiResponse.error(
