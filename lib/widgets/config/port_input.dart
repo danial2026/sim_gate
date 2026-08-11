@@ -6,11 +6,7 @@ import '../../utils/validators.dart';
 
 /// Numeric port input with built-in validation.
 class PortInput extends StatelessWidget {
-  const PortInput({
-    super.key,
-    required this.controller,
-    this.onChanged,
-  });
+  const PortInput({super.key, required this.controller, this.onChanged});
 
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
@@ -45,10 +41,7 @@ class PortInput extends StatelessWidget {
           decoration: const InputDecoration(
             hintText: '3000',
             suffixText: '1024 - 65535',
-            suffixStyle: TextStyle(
-              color: AppTheme.textSecondary,
-              fontSize: 10,
-            ),
+            suffixStyle: TextStyle(color: AppTheme.textSecondary, fontSize: 10),
           ),
           onChanged: onChanged,
           validator: (value) {

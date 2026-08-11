@@ -6,11 +6,7 @@ import '../../utils/helpers.dart';
 
 /// Compact list of recent SMS requests for the dashboard.
 class RecentLogs extends StatelessWidget {
-  const RecentLogs({
-    super.key,
-    required this.logs,
-    this.onTap,
-  });
+  const RecentLogs({super.key, required this.logs, this.onTap});
 
   final List<SmsRequest> logs;
   final ValueChanged<SmsRequest>? onTap;
@@ -79,7 +75,10 @@ class _RecentLogTile extends StatelessWidget {
             Container(
               width: 6,
               height: 6,
-              decoration: BoxDecoration(color: _statusColor(), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: _statusColor(),
+                shape: BoxShape.circle,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -91,12 +90,16 @@ class _RecentLogTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        color: AppTheme.textPrimary, fontSize: 13),
+                      color: AppTheme.textPrimary,
+                      fontSize: 13,
+                    ),
                   ),
                   Text(
                     Formatters.formatRelative(request.createdAt),
                     style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 11),
+                      color: AppTheme.textSecondary,
+                      fontSize: 11,
+                    ),
                   ),
                 ],
               ),

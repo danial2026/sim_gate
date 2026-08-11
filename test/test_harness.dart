@@ -45,7 +45,9 @@ class TestHarness {
     }
     if (binding == null) return;
     const channel = MethodChannel('flutter.baseflow.com/permissions/methods');
-    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
       switch (call.method) {
         case 'checkPermissionStatus':
           return _permissionGranted;

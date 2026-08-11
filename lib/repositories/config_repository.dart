@@ -18,22 +18,25 @@ class ConfigRepository {
   /// Loads the full configuration, applying defaults for missing keys.
   AppConfiguration load() {
     return AppConfiguration(
-      serverIp: _prefs.getString(AppConstants.keyServerIp) ??
-          AppConstants.defaultIp,
-      serverPort: _prefs.getInt(AppConstants.keyServerPort) ??
-          AppConstants.defaultPort,
+      serverIp:
+          _prefs.getString(AppConstants.keyServerIp) ?? AppConstants.defaultIp,
+      serverPort:
+          _prefs.getInt(AppConstants.keyServerPort) ?? AppConstants.defaultPort,
       accessToken: _prefs.getString(AppConstants.keyAccessToken),
-      tokenGeneratedAt: _parseDate(_prefs.getString(AppConstants.keyTokenGeneratedAt)),
-      autoStartServer:
-          _prefs.getBool(AppConstants.keyAutoStartServer) ?? false,
+      tokenGeneratedAt: _parseDate(
+        _prefs.getString(AppConstants.keyTokenGeneratedAt),
+      ),
+      autoStartServer: _prefs.getBool(AppConstants.keyAutoStartServer) ?? false,
       logLevel: _prefs.getString(AppConstants.keyLogLevel) ?? 'info',
       logRetentionDays:
           _prefs.getInt(AppConstants.keyLogRetentionDays) ??
-              AppConstants.defaultLogRetentionDays,
-      maxLogEntries: _prefs.getInt(AppConstants.keyMaxLogEntries) ??
+          AppConstants.defaultLogRetentionDays,
+      maxLogEntries:
+          _prefs.getInt(AppConstants.keyMaxLogEntries) ??
           AppConstants.defaultMaxLogEntries,
       appTheme: AppThemeModeName.parse(
-          _prefs.getString(AppConstants.keyAppTheme)),
+        _prefs.getString(AppConstants.keyAppTheme),
+      ),
       activeSimIds: _decodeSimIds(_prefs.getString(AppConstants.keyActiveSims)),
     );
   }
@@ -43,12 +46,20 @@ class ConfigRepository {
     await _prefs.setString(AppConstants.keyServerIp, config.serverIp);
     await _prefs.setInt(AppConstants.keyServerPort, config.serverPort);
     await _prefs.setString(AppConstants.keyLogLevel, config.logLevel);
-    await _prefs.setInt(AppConstants.keyLogRetentionDays, config.logRetentionDays);
+    await _prefs.setInt(
+      AppConstants.keyLogRetentionDays,
+      config.logRetentionDays,
+    );
     await _prefs.setInt(AppConstants.keyMaxLogEntries, config.maxLogEntries);
     await _prefs.setString(AppConstants.keyAppTheme, config.appTheme.name);
-    await _prefs.setBool(AppConstants.keyAutoStartServer, config.autoStartServer);
+    await _prefs.setBool(
+      AppConstants.keyAutoStartServer,
+      config.autoStartServer,
+    );
     await _prefs.setString(
-        AppConstants.keyActiveSims, jsonEncode(config.activeSimIds));
+      AppConstants.keyActiveSims,
+      jsonEncode(config.activeSimIds),
+    );
     if (config.accessToken != null) {
       await saveToken(
         config.accessToken!,
@@ -61,7 +72,9 @@ class ConfigRepository {
   Future<void> saveToken(String token, DateTime generatedAt) async {
     await _prefs.setString(AppConstants.keyAccessToken, token);
     await _prefs.setString(
-        AppConstants.keyTokenGeneratedAt, generatedAt.toIso8601String());
+      AppConstants.keyTokenGeneratedAt,
+      generatedAt.toIso8601String(),
+    );
   }
 
   /// Persists the port only.

@@ -12,13 +12,10 @@ import '../utils/logger.dart';
 /// plus a SHA-256 digest. The token is generated once on first app launch and
 /// never auto-regenerated afterwards, per the project document.
 class TokenService {
-  TokenService({
-    required ConfigRepository config,
-    Uuid? uuid,
-    Logger? logger,
-  })  : _config = config,
-        _uuid = uuid ?? const Uuid(),
-        _logger = logger ?? Logger();
+  TokenService({required ConfigRepository config, Uuid? uuid, Logger? logger})
+    : _config = config,
+      _uuid = uuid ?? const Uuid(),
+      _logger = logger ?? Logger();
 
   final ConfigRepository _config;
   final Uuid _uuid;
@@ -40,8 +37,11 @@ class TokenService {
     final token = digest.toString();
     final now = DateTime.now().toUtc();
     await _config.saveToken(token, now);
-    _logger.info(LogComponent.auth, 'Access token regenerated',
-        details: {'generatedAt': now.toIso8601String()});
+    _logger.info(
+      LogComponent.auth,
+      'Access token regenerated',
+      details: {'generatedAt': now.toIso8601String()},
+    );
     return token;
   }
 

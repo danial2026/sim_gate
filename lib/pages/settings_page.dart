@@ -66,19 +66,25 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('CANCEL',
-                style: TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('REGENERATE',
-                style: TextStyle(
-                    color: AppTheme.errorColor,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2)),
+            child: const Text(
+              'REGENERATE',
+              style: TextStyle(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
           ),
         ],
       ),
@@ -104,7 +110,9 @@ class _SettingsPageState extends State<SettingsPage> {
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           style: const TextStyle(
-              color: AppTheme.textPrimary, fontFamily: AppTheme.monoFamily),
+            color: AppTheme.textPrimary,
+            fontFamily: AppTheme.monoFamily,
+          ),
         ),
         actions: [
           TextButton(
@@ -144,7 +152,9 @@ class _SettingsPageState extends State<SettingsPage> {
         content: TextField(
           controller: controller,
           style: const TextStyle(
-              color: AppTheme.textPrimary, fontFamily: AppTheme.monoFamily),
+            color: AppTheme.textPrimary,
+            fontFamily: AppTheme.monoFamily,
+          ),
         ),
         actions: [
           TextButton(
@@ -189,10 +199,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('CLEAR',
-                style: TextStyle(
-                    color: AppTheme.errorColor,
-                    fontWeight: FontWeight.w900)),
+            child: const Text(
+              'CLEAR',
+              style: TextStyle(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
           ),
         ],
       ),
@@ -219,8 +232,8 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: _tokenVisible
                 ? (config.accessToken ?? '—')
                 : (config.accessToken ?? '—').length > 8
-                    ? '${config.accessToken!.substring(0, 8)}...${config.accessToken!.substring(config.accessToken!.length - 4)}'
-                    : (config.accessToken ?? '—'),
+                ? '${config.accessToken!.substring(0, 8)}...${config.accessToken!.substring(config.accessToken!.length - 4)}'
+                : (config.accessToken ?? '—'),
             mono: true,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -235,11 +248,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       setState(() => _tokenVisible = !_tokenVisible),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.copy_outlined,
-                      size: 18, color: AppTheme.textSecondary),
+                  icon: const Icon(
+                    Icons.copy_outlined,
+                    size: 18,
+                    color: AppTheme.textSecondary,
+                  ),
                   onPressed: () async {
                     await Clipboard.setData(
-                        ClipboardData(text: config.accessToken ?? ''));
+                      ClipboardData(text: config.accessToken ?? ''),
+                    );
                     if (!context.mounted) return;
                     _toast(context, 'Token copied');
                   },
@@ -253,7 +270,9 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Text(
                 'Generated ${Formatters.formatRelative(config.tokenGeneratedAt!)}',
                 style: const TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 11),
+                  color: AppTheme.textSecondary,
+                  fontSize: 11,
+                ),
               ),
             ),
           SecondaryButton(
@@ -271,9 +290,10 @@ class _SettingsPageState extends State<SettingsPage> {
             mono: true,
             trailing: TextButton(
               onPressed: _editPort,
-              child: const Text('EDIT',
-                  style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w900)),
+              child: const Text(
+                'EDIT',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+              ),
             ),
           ),
           _SettingTile(
@@ -283,9 +303,10 @@ class _SettingsPageState extends State<SettingsPage> {
             mono: true,
             trailing: TextButton(
               onPressed: _editIp,
-              child: const Text('EDIT',
-                  style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w900)),
+              child: const Text(
+                'EDIT',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+              ),
             ),
           ),
           _SettingTile(
@@ -318,10 +339,10 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (v) {
                 if (v == null) return;
                 context.read<ConfigProvider>().updateLogSettings(
-                      level: v,
-                      retentionDays: config.logRetentionDays,
-                      maxEntries: config.maxLogEntries,
-                    );
+                  level: v,
+                  retentionDays: config.logRetentionDays,
+                  maxEntries: config.maxLogEntries,
+                );
               },
             ),
           ),
@@ -331,11 +352,14 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: 'Delete persisted app logs',
             trailing: TextButton(
               onPressed: _clearLogs,
-              child: const Text('CLEAR',
-                  style: TextStyle(
-                      color: AppTheme.errorColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900)),
+              child: const Text(
+                'CLEAR',
+                style: TextStyle(
+                  color: AppTheme.errorColor,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
             ),
           ),
           SecondaryButton(
@@ -355,10 +379,12 @@ class _SettingsPageState extends State<SettingsPage> {
               underline: const SizedBox(),
               dropdownColor: AppTheme.surfaceColor,
               items: AppThemeMode.values
-                  .map((m) => DropdownMenuItem(
-                        value: m,
-                        child: Text(m.name.toUpperCase()),
-                      ))
+                  .map(
+                    (m) => DropdownMenuItem(
+                      value: m,
+                      child: Text(m.name.toUpperCase()),
+                    ),
+                  )
                   .toList(),
               onChanged: (v) {
                 if (v != null) {
@@ -387,8 +413,7 @@ class _SettingsPageState extends State<SettingsPage> {
             'SimGate v${_packageInfo?.version ?? AppConstants.appVersion} — '
             'Self-Hosted SMS API',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: AppTheme.textSecondary, fontSize: 11),
+            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
           ),
         ],
       ),
@@ -440,11 +465,14 @@ class _SettingTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        color: AppTheme.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppTheme.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,

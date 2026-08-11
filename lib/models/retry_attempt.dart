@@ -34,21 +34,21 @@ class RetryAttempt {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'request_id': requestId,
-        'attempt_number': attemptNumber,
-        'status': success ? 'success' : 'failed',
-        'error_message': errorMessage,
-        'error_code': errorCode,
-        'attempted_at': attemptedAt.toIso8601String(),
-        'response_time_ms': responseTimeMs,
-      };
+    'id': id,
+    'request_id': requestId,
+    'attempt_number': attemptNumber,
+    'status': success ? 'success' : 'failed',
+    'error_message': errorMessage,
+    'error_code': errorCode,
+    'attempted_at': attemptedAt.toIso8601String(),
+    'response_time_ms': responseTimeMs,
+  };
 
   /// API-style JSON representation.
   Map<String, dynamic> toApiJson() => {
-        'attempt': attemptNumber,
-        'status': success ? 'sent' : 'failed',
-        'timestamp': attemptedAt.toIso8601String(),
-        'message': success ? 'SMS sent successfully' : (errorMessage ?? 'Failed'),
-      };
+    'attempt': attemptNumber,
+    'status': success ? 'sent' : 'failed',
+    'timestamp': attemptedAt.toIso8601String(),
+    'message': success ? 'SMS sent successfully' : (errorMessage ?? 'Failed'),
+  };
 }

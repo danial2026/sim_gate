@@ -4,17 +4,7 @@ import 'dart:async';
 enum LogLevel { debug, info, warning, error }
 
 /// Component tags used to categorize log lines (matches the document).
-enum LogComponent {
-  sms,
-  api,
-  sim,
-  server,
-  auth,
-  database,
-  ui,
-  retry,
-  config,
-}
+enum LogComponent { sms, api, sim, server, auth, database, ui, retry, config }
 
 extension LogComponentName on LogComponent {
   String get label => name.toUpperCase();
@@ -42,14 +32,14 @@ class LogEntry {
 
   /// Serializes the entry to JSON for persistence and export.
   Map<String, dynamic> toJson() => {
-        'timestamp': timestamp.toIso8601String(),
-        'level': level.name.toUpperCase(),
-        'component': component.label,
-        'message': message,
-        if (details != null) 'details': details,
-        if (stackTrace != null) 'stackTrace': stackTrace,
-        if (requestId != null) 'requestId': requestId,
-      };
+    'timestamp': timestamp.toIso8601String(),
+    'level': level.name.toUpperCase(),
+    'component': component.label,
+    'message': message,
+    if (details != null) 'details': details,
+    if (stackTrace != null) 'stackTrace': stackTrace,
+    if (requestId != null) 'requestId': requestId,
+  };
 
   @override
   String toString() =>
@@ -81,7 +71,7 @@ class ConsoleLogSink implements LogSink {
 /// Respects a minimum [LogLevel] (configurable from Settings).
 class Logger {
   Logger({this.minLevel = LogLevel.info, List<LogSink>? sinks})
-      : _sinks = sinks ?? [const ConsoleLogSink()];
+    : _sinks = sinks ?? [const ConsoleLogSink()];
 
   /// Mutable minimum level. Lower-level entries are dropped.
   LogLevel minLevel;
@@ -105,30 +95,32 @@ class Logger {
     String message, {
     Map<String, dynamic>? details,
     String? requestId,
-  }) =>
-      _record(LogEntry(
-        timestamp: DateTime.now().toUtc(),
-        level: LogLevel.debug,
-        component: component,
-        message: message,
-        details: details,
-        requestId: requestId,
-      ));
+  }) => _record(
+    LogEntry(
+      timestamp: DateTime.now().toUtc(),
+      level: LogLevel.debug,
+      component: component,
+      message: message,
+      details: details,
+      requestId: requestId,
+    ),
+  );
 
   void info(
     LogComponent component,
     String message, {
     Map<String, dynamic>? details,
     String? requestId,
-  }) =>
-      _record(LogEntry(
-        timestamp: DateTime.now().toUtc(),
-        level: LogLevel.info,
-        component: component,
-        message: message,
-        details: details,
-        requestId: requestId,
-      ));
+  }) => _record(
+    LogEntry(
+      timestamp: DateTime.now().toUtc(),
+      level: LogLevel.info,
+      component: component,
+      message: message,
+      details: details,
+      requestId: requestId,
+    ),
+  );
 
   void warning(
     LogComponent component,
@@ -136,16 +128,17 @@ class Logger {
     Map<String, dynamic>? details,
     String? stackTrace,
     String? requestId,
-  }) =>
-      _record(LogEntry(
-        timestamp: DateTime.now().toUtc(),
-        level: LogLevel.warning,
-        component: component,
-        message: message,
-        details: details,
-        stackTrace: stackTrace,
-        requestId: requestId,
-      ));
+  }) => _record(
+    LogEntry(
+      timestamp: DateTime.now().toUtc(),
+      level: LogLevel.warning,
+      component: component,
+      message: message,
+      details: details,
+      stackTrace: stackTrace,
+      requestId: requestId,
+    ),
+  );
 
   void error(
     LogComponent component,
@@ -154,16 +147,17 @@ class Logger {
     StackTrace? stackTrace,
     Map<String, dynamic>? details,
     String? requestId,
-  }) =>
-      _record(LogEntry(
-        timestamp: DateTime.now().toUtc(),
-        level: LogLevel.error,
-        component: component,
-        message: message,
-        details: details,
-        stackTrace: stackTrace?.toString() ?? error?.toString(),
-        requestId: requestId,
-      ));
+  }) => _record(
+    LogEntry(
+      timestamp: DateTime.now().toUtc(),
+      level: LogLevel.error,
+      component: component,
+      message: message,
+      details: details,
+      stackTrace: stackTrace?.toString() ?? error?.toString(),
+      requestId: requestId,
+    ),
+  );
 
   /// Convenience helper used by long-running services to log a Future result.
   Future<T> guard<T>(

@@ -122,32 +122,32 @@ class SimCard {
 
   /// Serializes for persistence.
   Map<String, dynamic> toMap() => {
-        'sim_id': simId,
-        'slot_number': slotNumber,
-        'name': name,
-        'phone_number': phoneNumber,
-        'carrier': carrier,
-        'last_signal_strength': signalStrength,
-        'network_type': networkType.label,
-        'is_active': isActive ? 1 : 0,
-        'is_roaming': isRoaming ? 1 : 0,
-        'sim_state': state.name,
-        'last_updated': (lastUpdated ?? DateTime.now().toUtc()).toIso8601String(),
-      };
+    'sim_id': simId,
+    'slot_number': slotNumber,
+    'name': name,
+    'phone_number': phoneNumber,
+    'carrier': carrier,
+    'last_signal_strength': signalStrength,
+    'network_type': networkType.label,
+    'is_active': isActive ? 1 : 0,
+    'is_roaming': isRoaming ? 1 : 0,
+    'sim_state': state.name,
+    'last_updated': (lastUpdated ?? DateTime.now().toUtc()).toIso8601String(),
+  };
 
   /// API-style JSON representation.
   Map<String, dynamic> toApiJson() => {
-        'simId': simId,
-        'slotNumber': slotNumber,
-        'name': name,
-        'phoneNumber': phoneNumber,
-        'carrier': carrier,
-        'signalStrength': signalStrength,
-        'networkType': networkType.label,
-        'isActive': isActive,
-        'isRoaming': isRoaming,
-        'state': state.name,
-      };
+    'simId': simId,
+    'slotNumber': slotNumber,
+    'name': name,
+    'phoneNumber': phoneNumber,
+    'carrier': carrier,
+    'signalStrength': signalStrength,
+    'networkType': networkType.label,
+    'isActive': isActive,
+    'isRoaming': isRoaming,
+    'state': state.name,
+  };
 
   /// Returns `true` when the SIM can be used for sending.
   bool get canSend => isActive && state == SimState.ready;

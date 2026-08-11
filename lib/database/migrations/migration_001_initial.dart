@@ -55,8 +55,12 @@ Future<void> migration001Initial(Database db) async {
       FOREIGN KEY(request_id) REFERENCES sms_requests(request_id) ON DELETE CASCADE
     )
   ''');
-  batch.execute('CREATE INDEX idx_request_id_retry ON retry_attempts(request_id)');
-  batch.execute('CREATE INDEX idx_attempt_number ON retry_attempts(attempt_number)');
+  batch.execute(
+    'CREATE INDEX idx_request_id_retry ON retry_attempts(request_id)',
+  );
+  batch.execute(
+    'CREATE INDEX idx_attempt_number ON retry_attempts(attempt_number)',
+  );
 
   // --- app_logs ------------------------------------------------------------
   batch.execute('''
@@ -122,7 +126,9 @@ Future<void> migration001Initial(Database db) async {
   ''');
   batch.execute('CREATE INDEX idx_client_ip ON api_access_log(client_ip)');
   batch.execute('CREATE INDEX idx_endpoint ON api_access_log(endpoint)');
-  batch.execute('CREATE INDEX idx_timestamp_access ON api_access_log(timestamp)');
+  batch.execute(
+    'CREATE INDEX idx_timestamp_access ON api_access_log(timestamp)',
+  );
 
   await batch.commit(noResult: true);
 }

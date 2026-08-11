@@ -21,8 +21,9 @@ import '../test_harness.dart';
 /// then settles the UI. Use after actions that trigger database calls.
 Future<void> settleDb(WidgetTester tester) async {
   for (var i = 0; i < 5; i++) {
-    await tester
-        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
     await tester.pump(const Duration(milliseconds: 100));
   }
   await tester.pumpAndSettle();
@@ -59,27 +60,31 @@ void main() {
       expect(find.text('API ENDPOINT'), findsOneWidget);
       expect(find.byType(QrImageView), findsOneWidget);
       expect(find.textContaining('http://'), findsWidgets);
-      await tester.scrollUntilVisible(find.text('COPY URL'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('COPY URL'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('COPY URL'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('COPY AS CURL'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('COPY AS CURL'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('COPY AS CURL'), findsOneWidget);
     });
   });
 
   group('SimCardsPage', () {
     testWidgets('shows no-sims state when nothing detected', (tester) async {
-      final platform =
-          getIt<PlatformChannelService>() as FakePlatformService;
+      final platform = getIt<PlatformChannelService>() as FakePlatformService;
       platform.setSims([]);
 
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.darkTheme,
           home: ChangeNotifierProvider<SimProvider>(
-            create: (_) =>
-                SimProvider(simService: getIt<SimService>()),
+            create: (_) => SimProvider(simService: getIt<SimService>()),
             child: const SimCardsPage(),
           ),
         ),
@@ -90,8 +95,7 @@ void main() {
     });
 
     testWidgets('lists detected SIM cards with toggles', (tester) async {
-      final platform =
-          getIt<PlatformChannelService>() as FakePlatformService;
+      final platform = getIt<PlatformChannelService>() as FakePlatformService;
       platform.setSims([
         SimCard(
           simId: 'sim-0',
@@ -115,8 +119,7 @@ void main() {
         MaterialApp(
           theme: AppTheme.darkTheme,
           home: ChangeNotifierProvider<SimProvider>(
-            create: (_) =>
-                SimProvider(simService: getIt<SimService>()),
+            create: (_) => SimProvider(simService: getIt<SimService>()),
             child: const SimCardsPage(),
           ),
         ),
@@ -132,11 +135,12 @@ void main() {
       await tester.tap(find.byType(Switch).first);
       await settleDb(tester);
 
-      // Deactivating the last remaining active SIM is rejected with a toast.
-      await tester.tap(find.byType(Switch).first);
+      // Deactivating the last remaining active SIM (sim-1) is rejected.
+      await tester.tap(find.byType(Switch).at(1));
       for (var i = 0; i < 3; i++) {
         await tester.runAsync(
-            () => Future<void>.delayed(const Duration(milliseconds: 50)));
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
         await tester.pump(const Duration(milliseconds: 100));
       }
       expect(find.text('At least one SIM must remain active'), findsOneWidget);

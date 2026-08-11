@@ -27,6 +27,7 @@ class _ConfigPageState extends State<ConfigPage> {
 
     return SimGateScaffold(
       title: 'Server Configuration',
+      showBack: false,
       body: ListView(
         children: [
           const Text(
@@ -58,8 +59,9 @@ class _ConfigPageState extends State<ConfigPage> {
             icon: Icons.power_settings_new_outlined,
             label: 'STATUS',
             value: running ? 'Running' : 'Stopped',
-            valueColor:
-                running ? AppTheme.successColor : AppTheme.textSecondary,
+            valueColor: running
+                ? AppTheme.successColor
+                : AppTheme.textSecondary,
             trailing: running
                 ? Text(
                     Formatters.formatDuration(server.uptime),
@@ -77,8 +79,8 @@ class _ConfigPageState extends State<ConfigPage> {
             value: _tokenVisible
                 ? (config.accessToken ?? '—')
                 : (config.accessToken == null
-                    ? '—'
-                    : '${config.accessToken!.substring(0, 6)}...${config.accessToken!.substring(config.accessToken!.length - 4)}'),
+                      ? '—'
+                      : '${config.accessToken!.substring(0, 6)}...${config.accessToken!.substring(config.accessToken!.length - 4)}'),
             mono: true,
             trailing: IconButton(
               icon: Icon(
@@ -86,8 +88,7 @@ class _ConfigPageState extends State<ConfigPage> {
                 color: AppTheme.textSecondary,
                 size: 18,
               ),
-              onPressed: () =>
-                  setState(() => _tokenVisible = !_tokenVisible),
+              onPressed: () => setState(() => _tokenVisible = !_tokenVisible),
             ),
           ),
           if (config.tokenGeneratedAt != null)
@@ -96,7 +97,9 @@ class _ConfigPageState extends State<ConfigPage> {
               child: Text(
                 'Generated ${Formatters.formatRelative(config.tokenGeneratedAt!)}',
                 style: const TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 11),
+                  color: AppTheme.textSecondary,
+                  fontSize: 11,
+                ),
               ),
             ),
           const SizedBox(height: 24),
@@ -184,8 +187,7 @@ class _ConfigCard extends StatelessWidget {
                   style: TextStyle(
                     color: valueColor ?? AppTheme.textPrimary,
                     fontSize: 15,
-                    fontFamily:
-                        mono ? AppTheme.monoFamily : null,
+                    fontFamily: mono ? AppTheme.monoFamily : null,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

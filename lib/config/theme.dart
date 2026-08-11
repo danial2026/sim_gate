@@ -28,8 +28,10 @@ class AppTheme {
 
   // Opacity helpers (per the design guide) -----------------------------------
   static Color surfaceTint() => const Color(0xFFFFFFFF).withValues(alpha: 0.05);
-  static Color subtleBorder() => const Color(0xFFFFFFFF).withValues(alpha: 0.10);
-  static Color secondaryText() => const Color(0xFFFFFFFF).withValues(alpha: 0.50);
+  static Color subtleBorder() =>
+      const Color(0xFFFFFFFF).withValues(alpha: 0.10);
+  static Color secondaryText() =>
+      const Color(0xFFFFFFFF).withValues(alpha: 0.50);
   static Color hintIcon() => const Color(0xFFFFFFFF).withValues(alpha: 0.30);
 
   /// Monospace family used for IPs, tokens, and technical data.
@@ -58,10 +60,7 @@ class AppTheme {
           fontWeight: FontWeight.w800,
           letterSpacing: -0.5,
         ),
-        titleLarge: TextStyle(
-          color: textPrimary,
-          fontWeight: FontWeight.w700,
-        ),
+        titleLarge: TextStyle(color: textPrimary, fontWeight: FontWeight.w700),
         bodyLarge: TextStyle(color: textPrimary, fontSize: 16),
         bodyMedium: TextStyle(color: textSecondary, fontSize: 14),
       ),
@@ -110,7 +109,10 @@ class AppTheme {
         ),
         labelStyle: const TextStyle(color: textSecondary, fontSize: 14),
         hintStyle: const TextStyle(color: Color(0xFF333333), fontSize: 14),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
 
       // Buttons -------------------------------------------------------------
@@ -121,7 +123,9 @@ class AppTheme {
           elevation: 0,
           minimumSize: const Size.fromHeight(64),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w900,
@@ -136,7 +140,9 @@ class AppTheme {
           side: BorderSide(color: subtleBorder()),
           minimumSize: const Size.fromHeight(56),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w900,

@@ -16,8 +16,8 @@ typedef Migration = Future<void> Function(Database db);
 /// (sqflite_android on Android).
 class DatabaseHelper {
   DatabaseHelper({DatabaseFactory? factory, String? pathOverride})
-      : _factoryOverride = factory,
-        _pathOverride = pathOverride;
+    : _factoryOverride = factory,
+      _pathOverride = pathOverride;
 
   final DatabaseFactory? _factoryOverride;
   final String? _pathOverride;
@@ -26,9 +26,7 @@ class DatabaseHelper {
   final _logger = Logger(minLevel: LogLevel.info);
 
   /// Migrations applied in ascending order. New migrations append to this list.
-  static final List<Migration> migrations = [
-    migration001Initial,
-  ];
+  static final List<Migration> migrations = [migration001Initial];
 
   /// Optional factory override for tests (e.g. `databaseFactoryFfi`).
   static DatabaseFactory? overrideFactory;
@@ -38,7 +36,8 @@ class DatabaseHelper {
     if (_db != null && _db!.isOpen) return _db!;
 
     final factory = _factoryOverride ?? overrideFactory ?? databaseFactory;
-    final path = _pathOverride ??
+    final path =
+        _pathOverride ??
         p.join(await factory.getDatabasesPath(), AppConstants.databaseName);
 
     _db = await factory.openDatabase(
@@ -56,7 +55,11 @@ class DatabaseHelper {
             LogComponent.database,
             'Upgrading database $oldVersion -> $newVersion',
           );
-          for (var i = oldVersion; i < newVersion && i < migrations.length; i++) {
+          for (
+            var i = oldVersion;
+            i < newVersion && i < migrations.length;
+            i++
+          ) {
             await migrations[i](db);
           }
         },
@@ -76,7 +79,8 @@ class DatabaseHelper {
   /// Convenience wrapper for deletion (used by tests to reset state).
   Future<void> deleteDatabase() async {
     final factory = _factoryOverride ?? overrideFactory ?? databaseFactory;
-    final path = _pathOverride ??
+    final path =
+        _pathOverride ??
         p.join(await factory.getDatabasesPath(), AppConstants.databaseName);
     await factory.deleteDatabase(path);
     _db = null;

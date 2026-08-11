@@ -6,11 +6,7 @@ import 'signal_indicator.dart';
 
 /// A single SIM card row in the SIM management list.
 class SimCardItem extends StatelessWidget {
-  const SimCardItem({
-    super.key,
-    required this.sim,
-    required this.onToggle,
-  });
+  const SimCardItem({super.key, required this.sim, required this.onToggle});
 
   final SimCard sim;
   final ValueChanged<bool> onToggle;
@@ -76,8 +72,7 @@ class SimCardItem extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppTheme.dividerColor,
                   borderRadius: BorderRadius.circular(6),
@@ -110,10 +105,7 @@ class SimCardItem extends StatelessWidget {
                   ),
                 ),
               ),
-              Switch.adaptive(
-                value: sim.isActive,
-                onChanged: onToggle,
-              ),
+              Switch.adaptive(value: sim.isActive, onChanged: onToggle),
             ],
           ),
         ],

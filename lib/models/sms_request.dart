@@ -109,26 +109,26 @@ class SmsRequest {
 
   /// Serializes the request for persistence or API responses.
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'request_id': requestId,
-        'sim_id': simId,
-        'recipient': recipient,
-        'message': message,
-        'message_length': messageLength,
-        'status': status.name,
-        'max_retries': maxRetries,
-        'current_retry_count': currentRetryCount,
-        'last_error': lastError,
-        'priority': priority.name,
-        'created_at': createdAt.toIso8601String(),
-        'sent_at': sentAt?.toIso8601String(),
-        'cancelled_at': cancelledAt?.toIso8601String(),
-        'last_retry_at': lastRetryAt?.toIso8601String(),
-        'next_retry_at': nextRetryAt?.toIso8601String(),
-        'expires_at': expiresAt?.toIso8601String(),
-        'client_ip': clientIp,
-        'metadata': metadata,
-      };
+    'id': id,
+    'request_id': requestId,
+    'sim_id': simId,
+    'recipient': recipient,
+    'message': message,
+    'message_length': messageLength,
+    'status': status.name,
+    'max_retries': maxRetries,
+    'current_retry_count': currentRetryCount,
+    'last_error': lastError,
+    'priority': priority.name,
+    'created_at': createdAt.toIso8601String(),
+    'sent_at': sentAt?.toIso8601String(),
+    'cancelled_at': cancelledAt?.toIso8601String(),
+    'last_retry_at': lastRetryAt?.toIso8601String(),
+    'next_retry_at': nextRetryAt?.toIso8601String(),
+    'expires_at': expiresAt?.toIso8601String(),
+    'client_ip': clientIp,
+    'metadata': metadata,
+  };
 
   /// API-style JSON representation (without the full message body).
   Map<String, dynamic> toApiResponseJson({bool detailed = false}) {

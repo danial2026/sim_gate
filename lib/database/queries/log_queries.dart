@@ -16,8 +16,7 @@ class LogQueries {
   /// Inserts a single log row.
   Future<void> insert(AppLog log) async {
     final map = log.toMap();
-    map['details'] =
-        log.details == null ? null : jsonEncode(log.details);
+    map['details'] = log.details == null ? null : jsonEncode(log.details);
     await _db.insert(_table, map, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -78,8 +77,9 @@ class LogQueries {
 
   /// Trims the table to the most recent [maxEntries] rows.
   Future<int> trim(int maxEntries) async {
-    final countRows =
-        await _db.rawQuery('SELECT COUNT(*) as count FROM $_table');
+    final countRows = await _db.rawQuery(
+      'SELECT COUNT(*) as count FROM $_table',
+    );
     final count = (countRows.first['count'] as num).toInt();
     if (count <= maxEntries) return 0;
     final excess = count - maxEntries;
@@ -102,8 +102,11 @@ class RetryQueries {
   static const String _table = 'retry_attempts';
 
   Future<void> insert(RetryAttempt attempt) async {
-    await _db.insert(_table, attempt.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.insert(
+      _table,
+      attempt.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   /// Returns all attempts for a request, ordered by attempt number.
@@ -150,14 +153,19 @@ class AccessLogQueries {
   static const String _table = 'api_access_log';
 
   Future<void> insert(ApiAccessLog entry) async {
-    await _db.insert(_table, entry.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.insert(
+      _table,
+      entry.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   /// Returns the count of currently connected clients (unique IPs in last minute).
   Future<int> connectedClients() async {
-    final since =
-        DateTime.now().toUtc().subtract(const Duration(minutes: 1)).toIso8601String();
+    final since = DateTime.now()
+        .toUtc()
+        .subtract(const Duration(minutes: 1))
+        .toIso8601String();
     final rows = await _db.rawQuery(
       'SELECT COUNT(DISTINCT client_ip) as count FROM $_table WHERE timestamp >= ?',
       [since],

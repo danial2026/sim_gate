@@ -6,10 +6,8 @@ import '../utils/logger.dart';
 
 /// Holds the list of SIM cards and exposes refresh/toggle operations.
 class SimProvider extends ChangeNotifier {
-  SimProvider({
-    required this.simService,
-    Logger? logger,
-  }) : _logger = logger ?? Logger();
+  SimProvider({required this.simService, Logger? logger})
+    : _logger = logger ?? Logger();
 
   final SimService simService;
   final Logger _logger;
@@ -31,8 +29,12 @@ class SimProvider extends ChangeNotifier {
     try {
       _sims = await simService.refresh();
     } catch (e, st) {
-      _logger.error(LogComponent.sim, 'Refresh failed',
-          error: e, stackTrace: st);
+      _logger.error(
+        LogComponent.sim,
+        'Refresh failed',
+        error: e,
+        stackTrace: st,
+      );
       _error = e.toString();
     } finally {
       _isLoading = false;

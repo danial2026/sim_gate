@@ -12,9 +12,9 @@ class SmsService {
     required SmsRepository repository,
     required PlatformChannelService platform,
     Logger? logger,
-  })  : _repo = repository,
-        _platform = platform,
-        _logger = logger ?? Logger();
+  }) : _repo = repository,
+       _platform = platform,
+       _logger = logger ?? Logger();
 
   final SmsRepository _repo;
   final PlatformChannelService _platform;
@@ -42,7 +42,8 @@ class SmsService {
     }
     if (!MessageValidator.isValid(message)) {
       throw ArgumentError(
-          'Message must be 1-${AppConstants.maxMessageLength} chars');
+        'Message must be 1-${AppConstants.maxMessageLength} chars',
+      );
     }
     final request = await _repo.create(
       simId: simId,
@@ -52,8 +53,12 @@ class SmsService {
       priority: priority,
       clientIp: clientIp,
     );
-    _logger.info(LogComponent.sms, 'SMS queued',
-        details: {'requestId': request.requestId}, requestId: request.requestId);
+    _logger.info(
+      LogComponent.sms,
+      'SMS queued',
+      details: {'requestId': request.requestId},
+      requestId: request.requestId,
+    );
     return request;
   }
 
@@ -107,8 +112,11 @@ class SmsService {
 
   /// Cancels a pending/retrying request.
   Future<int> cancel(String requestId) async {
-    _logger.info(LogComponent.sms, 'Cancelling SMS request',
-        requestId: requestId);
+    _logger.info(
+      LogComponent.sms,
+      'Cancelling SMS request',
+      requestId: requestId,
+    );
     return _repo.cancel(requestId);
   }
 

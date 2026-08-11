@@ -7,10 +7,7 @@ import '../api_response.dart';
 
 /// Configuration + log-retention PUT endpoints.
 class ConfigHandler {
-  ConfigHandler({
-    required this.configService,
-    required this.logsRepo,
-  });
+  ConfigHandler({required this.configService, required this.logsRepo});
 
   final ConfigService configService;
   final LogsRepository logsRepo;
@@ -23,8 +20,10 @@ class ConfigHandler {
     }
     final port = (body['port'] as num?)?.toInt();
     if (!PortValidator.isValid(port)) {
-      return ApiResponse.error(PortValidator.errorMessage(port) ?? 'Invalid port',
-          status: 400);
+      return ApiResponse.error(
+        PortValidator.errorMessage(port) ?? 'Invalid port',
+        status: 400,
+      );
     }
     try {
       await configService.updatePort(port!);
@@ -69,12 +68,16 @@ class ConfigHandler {
     final days = (body['retentionDays'] as num?)?.toInt();
     final entries = (body['maxEntries'] as num?)?.toInt();
     if (days == null || days < 1) {
-      return ApiResponse.error('retentionDays must be a positive integer',
-          status: 400);
+      return ApiResponse.error(
+        'retentionDays must be a positive integer',
+        status: 400,
+      );
     }
     if (entries == null || entries < 1) {
-      return ApiResponse.error('maxEntries must be a positive integer',
-          status: 400);
+      return ApiResponse.error(
+        'maxEntries must be a positive integer',
+        status: 400,
+      );
     }
     final config = configService.load();
     final updated = config.copyWith(

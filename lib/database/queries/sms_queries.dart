@@ -11,24 +11,28 @@ class SmsQueries {
 
   /// Inserts a new request row.
   Future<void> insert(SmsRequest request) async {
-    await _db.insert(_table, request.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.insert(
+      _table,
+      request.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   /// Updates mutable columns (status, retry counters, timestamps).
   Future<int> update(SmsRequest request) async {
-    return _db.update(_table, request.toMap(),
-        where: 'request_id = ?', whereArgs: [request.requestId]);
+    return _db.update(
+      _table,
+      request.toMap(),
+      where: 'request_id = ?',
+      whereArgs: [request.requestId],
+    );
   }
 
   /// Cancels a pending/retrying request.
   Future<int> cancel(String requestId, DateTime at) async {
     return _db.update(
       _table,
-      {
-        'status': 'cancelled',
-        'cancelled_at': at.toIso8601String(),
-      },
+      {'status': 'cancelled', 'cancelled_at': at.toIso8601String()},
       where: 'request_id = ? AND status IN (?, ?)',
       whereArgs: [requestId, 'pending', 'retrying'],
     );
@@ -36,8 +40,12 @@ class SmsQueries {
 
   /// Returns a single request by [requestId] or `null`.
   Future<SmsRequest?> getById(String requestId) async {
-    final rows = await _db.query(_table,
-        where: 'request_id = ?', whereArgs: [requestId], limit: 1);
+    final rows = await _db.query(
+      _table,
+      where: 'request_id = ?',
+      whereArgs: [requestId],
+      limit: 1,
+    );
     if (rows.isEmpty) return null;
     return SmsRequest.fromMap(rows.first);
   }
@@ -111,7 +119,10 @@ class SmsQueries {
     final rows = await _db.rawQuery(
       'SELECT status, COUNT(*) as count FROM $_table GROUP BY status',
     );
-    return {for (final r in rows) (r['status'] as String): (r['count'] as num).toInt()};
+    return {
+      for (final r in rows)
+        (r['status'] as String): (r['count'] as num).toInt(),
+    };
   }
 
   /// Average response time in milliseconds across sent requests.
@@ -184,13 +195,22 @@ class SmsQueries {
     final buckets = <DateTime, int>{};
     for (final row in rows) {
       final created = DateTime.parse(row['created_at'] as String).toUtc();
-      final bucket = DateTime.utc(created.year, created.month, created.day, created.hour);
+      final bucket = DateTime.utc(
+        created.year,
+        created.month,
+        created.day,
+        created.hour,
+      );
       buckets[bucket] = (buckets[bucket] ?? 0) + 1;
     }
     // Fill missing buckets so charts render a continuous line.
     final now = DateTime.now().toUtc();
-    final start = DateTime.utc(now.year, now.month, now.day, now.hour)
-        .subtract(Duration(hours: hours - 1));
+    final start = DateTime.utc(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+    ).subtract(Duration(hours: hours - 1));
     final result = <({DateTime hour, int count})>[];
     for (var h = 0; h < hours; h++) {
       final bucket = start.add(Duration(hours: h));

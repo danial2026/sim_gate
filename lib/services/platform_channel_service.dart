@@ -43,8 +43,8 @@ abstract class PlatformChannelService {
 /// [MethodChannel]-backed implementation.
 class MethodChannelPlatformService implements PlatformChannelService {
   MethodChannelPlatformService({Logger? logger})
-      : _logger = logger ?? Logger(),
-        _channel = const MethodChannel('com.example.sim_gate/platform');
+    : _logger = logger ?? Logger(),
+      _channel = const MethodChannel('com.example.sim_gate/platform');
 
   final Logger _logger;
   final MethodChannel _channel;
@@ -63,8 +63,11 @@ class MethodChannelPlatformService implements PlatformChannelService {
         'message': message,
       });
       sw.stop();
-      _logger.info(LogComponent.sms, 'SMS sent via platform',
-          details: {'simId': simId, 'recipient': recipient});
+      _logger.info(
+        LogComponent.sms,
+        'SMS sent via platform',
+        details: {'simId': simId, 'recipient': recipient},
+      );
       return SmsSendResult(
         success: true,
         responseTimeMs: sw.elapsedMilliseconds,
@@ -97,8 +100,12 @@ class MethodChannelPlatformService implements PlatformChannelService {
           .map((m) => _parseSim(Map<String, dynamic>.from(m)))
           .toList();
     } on PlatformException catch (e) {
-      _logger.error(LogComponent.sim, 'detectSims failed',
-          error: e, stackTrace: StackTrace.current);
+      _logger.error(
+        LogComponent.sim,
+        'detectSims failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return const [];
     }
   }
@@ -106,19 +113,26 @@ class MethodChannelPlatformService implements PlatformChannelService {
   @override
   Future<List<NetworkInterface>> networkInterfaces() async {
     try {
-      final result =
-          await _channel.invokeMethod<List<dynamic>>('networkInterfaces');
+      final result = await _channel.invokeMethod<List<dynamic>>(
+        'networkInterfaces',
+      );
       if (result == null) return const [];
       return result
           .cast<Map>()
-          .map((m) => NetworkInterface(
-                name: m['name'] as String,
-                address: m['address'] as String,
-              ))
+          .map(
+            (m) => NetworkInterface(
+              name: m['name'] as String,
+              address: m['address'] as String,
+            ),
+          )
           .toList();
     } on PlatformException catch (e) {
-      _logger.error(LogComponent.server, 'networkInterfaces failed',
-          error: e, stackTrace: StackTrace.current);
+      _logger.error(
+        LogComponent.server,
+        'networkInterfaces failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return const [];
     }
   }
@@ -128,7 +142,8 @@ class MethodChannelPlatformService implements PlatformChannelService {
       simId: m['simId'] as String,
       slotNumber: (m['slotNumber'] as num).toInt(),
       name:
-          (m['name'] as String?) ?? 'SIM ${(m['slotNumber'] as num).toInt() + 1}',
+          (m['name'] as String?) ??
+          'SIM ${(m['slotNumber'] as num).toInt() + 1}',
       phoneNumber: m['phoneNumber'] as String?,
       carrier: m['carrier'] as String?,
       signalStrength: (m['signalStrength'] as num?)?.toInt() ?? 0,
@@ -150,10 +165,10 @@ class FakePlatformService implements PlatformChannelService {
     List<NetworkInterface>? interfaces,
     bool sendSucceeds = true,
     Duration sendDelay = Duration.zero,
-  })  : _sims = sims ?? const [],
-        _interfaces = interfaces ?? const [],
-        _sendSucceeds = sendSucceeds,
-        _sendDelay = sendDelay;
+  }) : _sims = sims ?? const [],
+       _interfaces = interfaces ?? const [],
+       _sendSucceeds = sendSucceeds,
+       _sendDelay = sendDelay;
 
   List<SimCard> _sims;
   List<NetworkInterface> _interfaces;
@@ -174,11 +189,7 @@ class FakePlatformService implements PlatformChannelService {
     required String recipient,
     required String message,
   }) async {
-    lastSendArgs = {
-      'simId': simId,
-      'recipient': recipient,
-      'message': message,
-    };
+    lastSendArgs = {'simId': simId, 'recipient': recipient, 'message': message};
     if (_sendDelay != Duration.zero) {
       await Future.delayed(_sendDelay);
     }

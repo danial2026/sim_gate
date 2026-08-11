@@ -26,22 +26,28 @@ Middleware authMiddleware({
       }
       final header = request.headers['authorization'];
       if (header == null || !header.startsWith('Bearer ')) {
-        log.warning(LogComponent.auth, 'Missing auth header',
-            details: {'path': request.url.path});
-        return ApiResponse.error('Unauthorized: missing or invalid token',
-            status: 401);
+        log.warning(
+          LogComponent.auth,
+          'Missing auth header',
+          details: {'path': request.url.path},
+        );
+        return ApiResponse.error(
+          'Unauthorized: missing or invalid token',
+          status: 401,
+        );
       }
       final presented = header.substring(7).trim();
       if (!tokenService.validate(presented)) {
-        log.warning(LogComponent.auth, 'Invalid token',
-            details: {'path': request.url.path});
+        log.warning(
+          LogComponent.auth,
+          'Invalid token',
+          details: {'path': request.url.path},
+        );
         return ApiResponse.error('Unauthorized: invalid token', status: 401);
       }
       // Provide the validated request via context so handlers can use it.
       return innerHandler(
-        request.change(
-          context: {'validatedToken': presented},
-        ),
+        request.change(context: {'validatedToken': presented}),
       );
     };
   };

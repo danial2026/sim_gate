@@ -9,9 +9,9 @@ class SimService {
     required SimRepository repository,
     required PlatformChannelService platform,
     Logger? logger,
-  })  : _repo = repository,
-        _platform = platform,
-        _logger = logger ?? Logger();
+  }) : _repo = repository,
+       _platform = platform,
+       _logger = logger ?? Logger();
 
   final SimRepository _repo;
   final PlatformChannelService _platform;
@@ -25,8 +25,11 @@ class SimService {
       return const [];
     }
     await _repo.syncAll(sims);
-    _logger.info(LogComponent.sim, 'SIM list refreshed',
-        details: {'count': sims.length});
+    _logger.info(
+      LogComponent.sim,
+      'SIM list refreshed',
+      details: {'count': sims.length},
+    );
     return _repo.getAll();
   }
 
@@ -38,19 +41,27 @@ class SimService {
 
   /// Toggles a SIM active. Enforces at least one active SIM when [requireOne]
   /// is true; returns the resulting active state, or throws if disallowed.
-  Future<bool> toggle(String simId, bool activate,
-      {bool requireOne = true}) async {
+  Future<bool> toggle(
+    String simId,
+    bool activate, {
+    bool requireOne = true,
+  }) async {
     if (!activate && requireOne) {
       final active = await _repo.getActive();
       if (active.length <= 1) {
-        _logger.warning(LogComponent.sim,
-            'Refusing to deactivate last active SIM $simId');
+        _logger.warning(
+          LogComponent.sim,
+          'Refusing to deactivate last active SIM $simId',
+        );
         throw StateError('At least one SIM must remain active');
       }
     }
     await _repo.setActive(simId, activate);
-    _logger.info(LogComponent.sim, 'SIM toggled',
-        details: {'simId': simId, 'active': activate});
+    _logger.info(
+      LogComponent.sim,
+      'SIM toggled',
+      details: {'simId': simId, 'active': activate},
+    );
     return activate;
   }
 

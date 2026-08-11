@@ -56,25 +56,37 @@ void main() {
   }
 
   group('SettingsPage', () {
-    testWidgets('renders the token, server and logging sections',
-        (tester) async {
-      await pumpPage(tester, const SettingsPage(),
-          providers: defaultProviders());
+    testWidgets('renders the token, server and logging sections', (
+      tester,
+    ) async {
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: defaultProviders(),
+      );
 
       expect(find.text('ACCESS TOKEN'), findsOneWidget);
       expect(find.text('SERVER SETTINGS'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('LOGGING'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('LOGGING'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('LOGGING'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('ABOUT'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('ABOUT'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('ABOUT'), findsOneWidget);
     });
 
-    testWidgets('regenerate token shows the warning dialog',
-        (tester) async {
-      await pumpPage(tester, const SettingsPage(),
-          providers: defaultProviders());
+    testWidgets('regenerate token shows the warning dialog', (tester) async {
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: defaultProviders(),
+      );
 
       await tester.tap(find.text('REGENERATE TOKEN'));
       await tester.pumpAndSettle();
@@ -85,10 +97,14 @@ void main() {
       expect(find.text('REGENERATE'), findsOneWidget);
     });
 
-    testWidgets('cancelling the regeneration dialog keeps the token',
-        (tester) async {
-      await pumpPage(tester, const SettingsPage(),
-          providers: defaultProviders());
+    testWidgets('cancelling the regeneration dialog keeps the token', (
+      tester,
+    ) async {
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: defaultProviders(),
+      );
 
       await tester.tap(find.text('REGENERATE TOKEN'));
       await tester.pumpAndSettle();
@@ -99,14 +115,19 @@ void main() {
     });
 
     testWidgets('clear logs asks for confirmation', (tester) async {
-      await pumpPage(tester, const SettingsPage(),
-          providers: defaultProviders());
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: defaultProviders(),
+      );
 
-      await tester.scrollUntilVisible(find.text('CLEAR'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('CLEAR'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       // Nudge the tile fully into view so the trailing button is hittable.
-      await tester.drag(
-          find.byType(Scrollable).first, const Offset(0, -120));
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -120));
       await tester.pumpAndSettle();
       await tester.tap(find.text('CLEAR'));
       await tester.pumpAndSettle();
@@ -116,11 +137,17 @@ void main() {
     });
 
     testWidgets('shows package version from package_info', (tester) async {
-      await pumpPage(tester, const SettingsPage(),
-          providers: defaultProviders());
+      await pumpPage(
+        tester,
+        const SettingsPage(),
+        providers: defaultProviders(),
+      );
 
-      await tester.scrollUntilVisible(find.text('ABOUT'), 200,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('ABOUT'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('ABOUT'), findsOneWidget);
       expect(find.text('App Version'), findsOneWidget);
       // Loading state (no package_info plugin in tests) or a version string.

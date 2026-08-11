@@ -56,28 +56,33 @@ class SimGateApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => ConfigProvider(
-                  configService: configService,
-                  tokenService: tokenService,
-                  logger: logger,
-                )..load()),
+          create: (_) => ConfigProvider(
+            configService: configService,
+            tokenService: tokenService,
+            logger: logger,
+          )..load(),
+        ),
         ChangeNotifierProvider(
-            create: (_) => SimProvider(simService: simService, logger: logger)),
+          create: (_) => SimProvider(simService: simService, logger: logger),
+        ),
         ChangeNotifierProvider(
-            create: (_) => SmsProvider(
-                  smsService: smsService,
-                  smsRepository: smsRepo,
-                  simRepository: simRepo,
-                  logger: logger,
-                )),
+          create: (_) => SmsProvider(
+            smsService: smsService,
+            smsRepository: smsRepo,
+            simRepository: simRepo,
+            logger: logger,
+          ),
+        ),
         ChangeNotifierProvider(
-            create: (_) => LogsProvider(logsRepository: logsRepo, logger: logger)),
+          create: (_) => LogsProvider(logsRepository: logsRepo, logger: logger),
+        ),
         ChangeNotifierProvider(
-            create: (_) => ServerProvider(
-                  httpServer: httpServer,
-                  retryManager: retryManager,
-                  logger: logger,
-                )),
+          create: (_) => ServerProvider(
+            httpServer: httpServer,
+            retryManager: retryManager,
+            logger: logger,
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'SimGate',

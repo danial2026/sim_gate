@@ -70,8 +70,9 @@ class ApiEndpointPage extends StatelessWidget {
           const SectionHeader('URL'),
           _UrlTile(label: 'Base URL', value: apiUrl),
           _UrlTile(
-              label: 'Auth Header',
-              value: 'Authorization: Bearer ${config.accessToken ?? '—'}'),
+            label: 'Auth Header',
+            value: 'Authorization: Bearer ${config.accessToken ?? '—'}',
+          ),
           const SectionHeader('Example'),
           Container(
             padding: const EdgeInsets.all(16),
@@ -106,10 +107,13 @@ class ApiEndpointPage extends StatelessWidget {
             label: 'Copy as cURL',
             icon: Icons.terminal,
             onPressed: () async {
-              await Clipboard.setData(ClipboardData(
+              await Clipboard.setData(
+                ClipboardData(
                   text:
                       'curl -X GET "$apiUrl/sms/status?requestId=demo" \\\n'
-                      '  -H "Authorization: Bearer ${config.accessToken ?? 'TOKEN'}"'));
+                      '  -H "Authorization: Bearer ${config.accessToken ?? 'TOKEN'}"',
+                ),
+              );
               if (!context.mounted) return;
               _toast(context, 'cURL copied to clipboard');
             },

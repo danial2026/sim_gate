@@ -18,8 +18,7 @@ void main() {
   setUp(() async {
     harness = await TestHarness.create();
     // Ensure a SIM exists so the dashboard has data to show.
-    final platform =
-        getIt<PlatformChannelService>() as FakePlatformService;
+    final platform = getIt<PlatformChannelService>() as FakePlatformService;
     platform.setSims([
       SimCard(
         simId: 'sim-0',

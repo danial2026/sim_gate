@@ -38,8 +38,8 @@ class SmsHandler {
     final simId = body['simId'] as String?;
     final recipient = body['recipient'] as String?;
     final message = body['message'] as String?;
-    final maxRetries = (body['maxRetries'] as num?)?.toInt() ??
-        AppConstants.defaultMaxRetries;
+    final maxRetries =
+        (body['maxRetries'] as num?)?.toInt() ?? AppConstants.defaultMaxRetries;
     final priority = _parsePriority(body['priority'] as String?);
 
     if (simId == null || simId.isEmpty) {
@@ -50,12 +50,15 @@ class SmsHandler {
     }
     if (!MessageValidator.isValid(message)) {
       return ApiResponse.error(
-          'Message must be 1-${AppConstants.maxMessageLength} chars',
-          status: 400);
+        'Message must be 1-${AppConstants.maxMessageLength} chars',
+        status: 400,
+      );
     }
     if (maxRetries < 0 || maxRetries > AppConstants.maxAllowedRetries) {
-      return ApiResponse.error('maxRetries must be 0-${AppConstants.maxAllowedRetries}',
-          status: 400);
+      return ApiResponse.error(
+        'maxRetries must be 0-${AppConstants.maxAllowedRetries}',
+        status: 400,
+      );
     }
 
     final clientIp = request.requestedUri.host;
@@ -99,8 +102,10 @@ class SmsHandler {
     }
     final rows = await _sms.cancel(requestId);
     if (rows == 0) {
-      return ApiResponse.error('Request not found or not cancellable',
-          status: 404);
+      return ApiResponse.error(
+        'Request not found or not cancellable',
+        status: 404,
+      );
     }
     return ApiResponse.ok({
       'requestId': requestId,

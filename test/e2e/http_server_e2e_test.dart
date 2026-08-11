@@ -105,8 +105,7 @@ void main() {
     });
 
     test('protected endpoints reject wrong token', () async {
-      final res =
-          await request('GET', '/api/server/info', authToken: 'wrong');
+      final res = await request('GET', '/api/server/info', authToken: 'wrong');
       expect(res.statusCode, 401);
     });
 
@@ -118,11 +117,16 @@ void main() {
 
   group('POST /api/sms/send', () {
     test('sends successfully with a valid body', () async {
-      final res = await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'recipient': '+1234567890',
-        'message': 'Hello via HTTP',
-      });
+      final res = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': '+1234567890',
+          'message': 'Hello via HTTP',
+        },
+      );
       expect(res.statusCode, 200);
       final json = await readJson(res);
       expect(json['success'], isTrue);
@@ -132,30 +136,38 @@ void main() {
     });
 
     test('returns 400 for a missing recipient', () async {
-      final res = await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'message': 'no recipient',
-      });
+      final res = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {'simId': 'sim-0', 'message': 'no recipient'},
+      );
       expect(res.statusCode, 400);
       final json = await readJson(res);
       expect(json['success'], isFalse);
     });
 
     test('returns 400 for an invalid recipient format', () async {
-      final res = await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'recipient': 'not-a-number',
-        'message': 'hello',
-      });
+      final res = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': 'not-a-number',
+          'message': 'hello',
+        },
+      );
       expect(res.statusCode, 400);
     });
 
     test('returns 400 for an empty message', () async {
-      final res = await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'recipient': '+1234567890',
-        'message': '',
-      });
+      final res = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {'simId': 'sim-0', 'recipient': '+1234567890', 'message': ''},
+      );
       expect(res.statusCode, 400);
     });
 
@@ -172,18 +184,24 @@ void main() {
 
   group('GET /api/sms/status', () {
     test('returns the full lifecycle for a sent request', () async {
-      final send = await request('POST', '/api/sms/send',
-          authToken: token,
-          body: {
-            'simId': 'sim-0',
-            'recipient': '+1234567890',
-            'message': 'track me',
-          });
+      final send = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': '+1234567890',
+          'message': 'track me',
+        },
+      );
       final sendJson = await readJson(send);
       final requestId = sendJson['data']['requestId'];
 
-      final res = await request('GET', '/api/sms/status?requestId=$requestId',
-          authToken: token);
+      final res = await request(
+        'GET',
+        '/api/sms/status?requestId=$requestId',
+        authToken: token,
+      );
       final json = await readJson(res);
       expect(json['success'], isTrue);
       expect(json['data']['status'], 'sent');
@@ -191,24 +209,32 @@ void main() {
     });
 
     test('returns 404 for unknown requests', () async {
-      final res = await request('GET', '/api/sms/status?requestId=missing',
-          authToken: token);
+      final res = await request(
+        'GET',
+        '/api/sms/status?requestId=missing',
+        authToken: token,
+      );
       expect(res.statusCode, 404);
     });
 
     test('detailed=true includes retry history', () async {
-      final send = await request('POST', '/api/sms/send',
-          authToken: token, body: {
-            'simId': 'sim-0',
-            'recipient': '+1234567890',
-            'message': 'with history',
-          });
+      final send = await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': '+1234567890',
+          'message': 'with history',
+        },
+      );
       final sendJson = await readJson(send);
       final requestId = sendJson['data']['requestId'];
       final res = await request(
-          'GET',
-          '/api/sms/status?requestId=$requestId&detailed=true',
-          authToken: token);
+        'GET',
+        '/api/sms/status?requestId=$requestId&detailed=true',
+        authToken: token,
+      );
       final json = await readJson(res);
       final history = json['data']['retryHistory'] as List;
       expect(history, isNotEmpty);
@@ -218,11 +244,16 @@ void main() {
 
   group('GET /api/sms/logs', () {
     test('lists sent requests with pagination metadata', () async {
-      await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'recipient': '+1234567890',
-        'message': 'log me',
-      });
+      await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': '+1234567890',
+          'message': 'log me',
+        },
+      );
       final res = await request('GET', '/api/sms/logs', authToken: token);
       final json = await readJson(res);
       expect(json['success'], isTrue);
@@ -232,14 +263,21 @@ void main() {
     });
 
     test('filters by status and search', () async {
-      await request('POST', '/api/sms/send', authToken: token, body: {
-        'simId': 'sim-0',
-        'recipient': '+1111111111',
-        'message': 'needle message',
-      });
+      await request(
+        'POST',
+        '/api/sms/send',
+        authToken: token,
+        body: {
+          'simId': 'sim-0',
+          'recipient': '+1111111111',
+          'message': 'needle message',
+        },
+      );
       final res = await request(
-          'GET', '/api/sms/logs?status=sent&searchQuery=needle',
-          authToken: token);
+        'GET',
+        '/api/sms/logs?status=sent&searchQuery=needle',
+        authToken: token,
+      );
       final json = await readJson(res);
       expect(json['data']['total'], 1);
     });
@@ -260,8 +298,12 @@ void main() {
 
   group('POST /api/sims/activate', () {
     test('activates a sim card', () async {
-      final res = await request('POST', '/api/sims/activate',
-          authToken: token, body: {'simId': 'sim-1', 'activate': true});
+      final res = await request(
+        'POST',
+        '/api/sims/activate',
+        authToken: token,
+        body: {'simId': 'sim-1', 'activate': true},
+      );
       final json = await readJson(res);
       expect(json['success'], isTrue);
       expect(json['data']['isActive'], isTrue);
@@ -272,8 +314,12 @@ void main() {
     });
 
     test('rejects deactivating the last active sim', () async {
-      final res = await request('POST', '/api/sims/activate',
-          authToken: token, body: {'simId': 'sim-0', 'activate': false});
+      final res = await request(
+        'POST',
+        '/api/sims/activate',
+        authToken: token,
+        body: {'simId': 'sim-0', 'activate': false},
+      );
       expect(res.statusCode, 409);
     });
   });
@@ -294,12 +340,20 @@ void main() {
 
   group('PUT /api/config/port', () {
     test('validates the port range', () async {
-      final res = await request('PUT', '/api/config/port',
-          authToken: token, body: {'port': 80});
+      final res = await request(
+        'PUT',
+        '/api/config/port',
+        authToken: token,
+        body: {'port': 80},
+      );
       expect(res.statusCode, 400);
 
-      final ok = await request('PUT', '/api/config/port',
-          authToken: token, body: {'port': 8080});
+      final ok = await request(
+        'PUT',
+        '/api/config/port',
+        authToken: token,
+        body: {'port': 8080},
+      );
       final json = await readJson(ok);
       expect(json['success'], isTrue);
       expect(json['data']['newPort'], 8080);
@@ -308,12 +362,20 @@ void main() {
 
   group('PUT /api/config/ip', () {
     test('validates the ip format', () async {
-      final bad = await request('PUT', '/api/config/ip',
-          authToken: token, body: {'ip': '999.1.1.1'});
+      final bad = await request(
+        'PUT',
+        '/api/config/ip',
+        authToken: token,
+        body: {'ip': '999.1.1.1'},
+      );
       expect(bad.statusCode, 400);
 
-      final ok = await request('PUT', '/api/config/ip',
-          authToken: token, body: {'ip': '192.168.1.10'});
+      final ok = await request(
+        'PUT',
+        '/api/config/ip',
+        authToken: token,
+        body: {'ip': '192.168.1.10'},
+      );
       final json = await readJson(ok);
       expect(json['success'], isTrue);
       expect(json['data']['newIP'], '192.168.1.10');
@@ -322,17 +384,27 @@ void main() {
 
   group('POST /api/token/regenerate', () {
     test('invalidates the old token', () async {
-      final res = await request('POST', '/api/token/regenerate',
-          authToken: token, body: {});
+      final res = await request(
+        'POST',
+        '/api/token/regenerate',
+        authToken: token,
+        body: {},
+      );
       final json = await readJson(res);
       expect(json['success'], isTrue);
       expect(json['data']['newToken'], isNotEmpty);
 
-      final oldToken = await request('GET', '/api/server/info',
-          authToken: token);
+      final oldToken = await request(
+        'GET',
+        '/api/server/info',
+        authToken: token,
+      );
       expect(oldToken.statusCode, 401);
-      final newToken = await request('GET', '/api/server/info',
-          authToken: json['data']['newToken']);
+      final newToken = await request(
+        'GET',
+        '/api/server/info',
+        authToken: json['data']['newToken'],
+      );
       expect(newToken.statusCode, 200);
     });
   });
@@ -341,7 +413,9 @@ void main() {
     test('responds to preflight OPTIONS', () async {
       final client = HttpClient();
       final req = await client.openUrl(
-          'OPTIONS', Uri.parse('$baseUrl/api/sms/send'));
+        'OPTIONS',
+        Uri.parse('$baseUrl/api/sms/send'),
+      );
       final res = await req.close();
       client.close(force: true);
       expect(res.statusCode, 204);

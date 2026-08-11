@@ -41,7 +41,10 @@ void main() {
     test('queue rejects invalid recipients', () async {
       expect(
         () => smsService.queue(
-            simId: 'sim-0', recipient: 'abc', message: 'hello'),
+          simId: 'sim-0',
+          recipient: 'abc',
+          message: 'hello',
+        ),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -49,7 +52,10 @@ void main() {
     test('queue rejects empty messages', () async {
       expect(
         () => smsService.queue(
-            simId: 'sim-0', recipient: '+1234567890', message: ''),
+          simId: 'sim-0',
+          recipient: '+1234567890',
+          message: '',
+        ),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -57,7 +63,10 @@ void main() {
     test('queue rejects oversized messages', () async {
       expect(
         () => smsService.queue(
-            simId: 'sim-0', recipient: '+1234567890', message: 'x' * 1601),
+          simId: 'sim-0',
+          recipient: '+1234567890',
+          message: 'x' * 1601,
+        ),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -65,7 +74,10 @@ void main() {
     test('queue rejects empty simId', () async {
       expect(
         () => smsService.queue(
-            simId: '', recipient: '+1234567890', message: 'hi'),
+          simId: '',
+          recipient: '+1234567890',
+          message: 'hi',
+        ),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -96,14 +108,16 @@ void main() {
 
     test('cancel flips pending to cancelled', () async {
       final request = await smsService.queue(
-          simId: 'sim-0', recipient: '+1234567890', message: 'hi');
+        simId: 'sim-0',
+        recipient: '+1234567890',
+        message: 'hi',
+      );
       final rows = await smsService.cancel(request.requestId);
       expect(rows, 1);
     });
 
     test('detailedStatus throws for unknown requests', () async {
-      expect(smsService.detailedStatus('missing'),
-          throwsA(isA<StateError>()));
+      expect(smsService.detailedStatus('missing'), throwsA(isA<StateError>()));
     });
   });
 
@@ -115,26 +129,24 @@ void main() {
     });
 
     test('toggle enforces at least one active sim', () async {
-      expect(() => simService.toggle('sim-0', false),
-          throwsA(isA<StateError>()));
+      expect(
+        () => simService.toggle('sim-0', false),
+        throwsA(isA<StateError>()),
+      );
       // With requireOne disabled it succeeds.
-      final toggled = await simService.toggle('sim-0', false, requireOne: false);
+      final toggled = await simService.toggle(
+        'sim-0',
+        false,
+        requireOne: false,
+      );
       expect(toggled, isFalse);
       expect(await simService.activeCount(), 0);
     });
 
     test('toggle activates/deactivates freely when multiple exist', () async {
       platform.setSims([
-        SimCard(
-            simId: 'sim-0',
-            slotNumber: 0,
-            name: 'SIM 1',
-            isActive: true),
-        SimCard(
-            simId: 'sim-1',
-            slotNumber: 1,
-            name: 'SIM 2',
-            isActive: true),
+        SimCard(simId: 'sim-0', slotNumber: 0, name: 'SIM 1', isActive: true),
+        SimCard(simId: 'sim-1', slotNumber: 1, name: 'SIM 2', isActive: true),
       ]);
       await simService.refresh();
       await simService.toggle('sim-0', false);

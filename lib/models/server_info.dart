@@ -53,29 +53,29 @@ class ServerInfo {
 
   /// Builds the JSON returned by `GET /api/server/info`.
   Map<String, dynamic> toApiJson() => {
-        'serverStatus': serverStatus,
-        'listeningIP': listeningIp,
-        'listeningPort': listeningPort,
-        'uptime': _formatDuration(uptime),
-        'startTime': startTime.toIso8601String(),
-        'version': version,
-        'androidVersion': androidVersion,
-        'deviceName': deviceName,
-        'deviceManufacturer': deviceManufacturer,
-        'activeSims': activeSims,
-        'totalSims': totalSims,
-        'databaseSize': databaseSize,
-        'totalRequests': totalRequests,
-        'successfulRequests': successfulRequests,
-        'failedRequests': failedRequests,
-        'pendingRequests': pendingRequests,
-        'averageResponseTime': averageResponseTime,
-        'connectedClients': connectedClients,
-        'batteryLevel': batteryLevel,
-        'isCharging': isCharging,
-        'networkConnected': networkConnected,
-        'networkType': networkType,
-      };
+    'serverStatus': serverStatus,
+    'listeningIP': listeningIp,
+    'listeningPort': listeningPort,
+    'uptime': _formatDuration(uptime),
+    'startTime': startTime.toIso8601String(),
+    'version': version,
+    'androidVersion': androidVersion,
+    'deviceName': deviceName,
+    'deviceManufacturer': deviceManufacturer,
+    'activeSims': activeSims,
+    'totalSims': totalSims,
+    'databaseSize': databaseSize,
+    'totalRequests': totalRequests,
+    'successfulRequests': successfulRequests,
+    'failedRequests': failedRequests,
+    'pendingRequests': pendingRequests,
+    'averageResponseTime': averageResponseTime,
+    'connectedClients': connectedClients,
+    'batteryLevel': batteryLevel,
+    'isCharging': isCharging,
+    'networkConnected': networkConnected,
+    'networkType': networkType,
+  };
 
   static String _formatDuration(Duration d) {
     final hours = d.inHours.toString().padLeft(2, '0');
@@ -107,14 +107,14 @@ class DashboardStats {
 
   /// Empty-state factory used before the first refresh.
   factory DashboardStats.empty() => const DashboardStats(
-        totalSent: 0,
-        totalFailed: 0,
-        totalPending: 0,
-        averageResponseTimeMs: 0,
-        activeSimCount: 0,
-        totalSimCount: 0,
-        recentLogs: [],
-      );
+    totalSent: 0,
+    totalFailed: 0,
+    totalPending: 0,
+    averageResponseTimeMs: 0,
+    activeSimCount: 0,
+    totalSimCount: 0,
+    recentLogs: [],
+  );
 
   /// Builds a snapshot from aggregate counts plus recent requests.
   factory DashboardStats.fromCounts({
@@ -127,8 +127,8 @@ class DashboardStats {
     return DashboardStats(
       totalSent: counts[SmsStatus.sent] ?? 0,
       totalFailed: counts[SmsStatus.failed] ?? 0,
-      totalPending: (counts[SmsStatus.pending] ?? 0) +
-          (counts[SmsStatus.retrying] ?? 0),
+      totalPending:
+          (counts[SmsStatus.pending] ?? 0) + (counts[SmsStatus.retrying] ?? 0),
       averageResponseTimeMs: averageResponseTimeMs,
       activeSimCount: activeSimCount,
       totalSimCount: totalSimCount,

@@ -13,10 +13,10 @@ class RetryManager {
     required SmsRepository repository,
     Duration interval = const Duration(seconds: 5),
     Logger? logger,
-  })  : _sms = smsService,
-        _repo = repository,
-        _interval = interval,
-        _logger = logger ?? Logger();
+  }) : _sms = smsService,
+       _repo = repository,
+       _interval = interval,
+       _logger = logger ?? Logger();
 
   final SmsService _sms;
   final SmsRepository _repo;
@@ -32,8 +32,11 @@ class RetryManager {
   /// Starts the retry loop. Calling while already running is a no-op.
   void start() {
     if (_timer != null) return;
-    _logger.info(LogComponent.retry, 'Retry manager started',
-        details: {'intervalMs': _interval.inMilliseconds});
+    _logger.info(
+      LogComponent.retry,
+      'Retry manager started',
+      details: {'intervalMs': _interval.inMilliseconds},
+    );
     _timer = Timer.periodic(_interval, (_) => _tick());
     // Fire an immediate tick so the first pass doesn't wait an interval.
     _tick();
@@ -68,13 +71,20 @@ class RetryManager {
         processed++;
       }
       if (processed > 0) {
-        _logger.info(LogComponent.retry, 'Retry pass complete',
-            details: {'processed': processed});
+        _logger.info(
+          LogComponent.retry,
+          'Retry pass complete',
+          details: {'processed': processed},
+        );
       }
       return processed;
     } catch (e, st) {
-      _logger.error(LogComponent.retry, 'Retry pass failed',
-          error: e, stackTrace: st);
+      _logger.error(
+        LogComponent.retry,
+        'Retry pass failed',
+        error: e,
+        stackTrace: st,
+      );
       rethrow;
     } finally {
       _running = false;

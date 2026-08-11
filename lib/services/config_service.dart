@@ -8,11 +8,9 @@ import '../utils/validators.dart';
 /// Wraps [ConfigRepository] with validation and change notifications, used by
 /// the settings page and the API PUT /config endpoints.
 class ConfigService {
-  ConfigService({
-    required ConfigRepository repository,
-    Logger? logger,
-  })  : _repo = repository,
-        _logger = logger ?? Logger();
+  ConfigService({required ConfigRepository repository, Logger? logger})
+    : _repo = repository,
+      _logger = logger ?? Logger();
 
   final ConfigRepository _repo;
   final Logger _logger;
@@ -28,8 +26,7 @@ class ConfigService {
       throw ArgumentError(PortValidator.errorMessage(port) ?? 'Invalid port');
     }
     await _repo.savePort(port);
-    _logger.info(LogComponent.config, 'Port updated',
-        details: {'port': port});
+    _logger.info(LogComponent.config, 'Port updated', details: {'port': port});
   }
 
   /// Updates the listening IP after validating format.
@@ -44,15 +41,21 @@ class ConfigService {
   /// Updates the auto-start flag.
   Future<void> updateAutoStart(bool value) async {
     await _repo.saveAutoStart(value);
-    _logger.info(LogComponent.config, 'Auto-start updated',
-        details: {'value': value});
+    _logger.info(
+      LogComponent.config,
+      'Auto-start updated',
+      details: {'value': value},
+    );
   }
 
   /// Updates the active SIM id list.
   Future<void> updateActiveSims(List<String> ids) async {
     await _repo.saveActiveSims(ids);
-    _logger.info(LogComponent.config, 'Active SIMs updated',
-        details: {'count': ids.length});
+    _logger.info(
+      LogComponent.config,
+      'Active SIMs updated',
+      details: {'count': ids.length},
+    );
   }
 
   /// Persists the full configuration object.

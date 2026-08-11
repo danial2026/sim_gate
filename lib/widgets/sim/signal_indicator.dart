@@ -14,14 +14,16 @@ class SignalIndicator extends StatelessWidget {
     for (var i = 0; i < 4; i++) {
       final active = i < strength;
       final height = size * (0.5 + 0.15 * i);
-      bars.add(Container(
-        width: size * 0.22,
-        height: height,
-        decoration: BoxDecoration(
-          color: active ? AppTheme.successColor : AppTheme.dividerColor,
-          borderRadius: BorderRadius.circular(1),
+      bars.add(
+        Container(
+          width: size * 0.22,
+          height: height,
+          decoration: BoxDecoration(
+            color: active ? AppTheme.successColor : AppTheme.dividerColor,
+            borderRadius: BorderRadius.circular(1),
+          ),
         ),
-      ));
+      );
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,

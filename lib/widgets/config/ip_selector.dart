@@ -66,12 +66,17 @@ class IpSelector extends StatelessWidget {
                     fontSize: 14,
                   ),
                   items: deduped
-                      .map((iface) => DropdownMenuItem(
-                            value: iface.address,
-                            child: Text('${iface.name}  ·  ${iface.address}',
-                                style: const TextStyle(
-                                    fontFamily: AppTheme.monoFamily)),
-                          ))
+                      .map(
+                        (iface) => DropdownMenuItem(
+                          value: iface.address,
+                          child: Text(
+                            '${iface.name}  ·  ${iface.address}',
+                            style: const TextStyle(
+                              fontFamily: AppTheme.monoFamily,
+                            ),
+                          ),
+                        ),
+                      )
                       .toList(),
                   onChanged: (v) {
                     if (v != null) onChanged(v);
@@ -88,8 +93,8 @@ class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key});
   @override
   Widget build(BuildContext context) => const SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      );
+    width: 24,
+    height: 24,
+    child: CircularProgressIndicator(strokeWidth: 2),
+  );
 }

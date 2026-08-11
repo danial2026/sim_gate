@@ -42,8 +42,7 @@ class SmsProvider extends ChangeNotifier {
       final total = await simRepository.totalCount();
       _stats = DashboardStats.fromCounts(
         counts: {
-          for (final e in counts.entries)
-            SmsStatus.fromName(e.key): e.value,
+          for (final e in counts.entries) SmsStatus.fromName(e.key): e.value,
         },
         averageResponseTimeMs: avgMs,
         activeSimCount: active,
@@ -51,8 +50,12 @@ class SmsProvider extends ChangeNotifier {
         recentLogs: _recent,
       );
     } catch (e, st) {
-      _logger.error(LogComponent.sms, 'Refresh failed',
-          error: e, stackTrace: st);
+      _logger.error(
+        LogComponent.sms,
+        'Refresh failed',
+        error: e,
+        stackTrace: st,
+      );
     } finally {
       _isLoading = false;
       notifyListeners();

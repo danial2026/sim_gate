@@ -50,9 +50,14 @@ Future<void> setup() async {
 
   // Services.
   final platform = MethodChannelPlatformService(logger: getIt<Logger>());
-  final tokenService = TokenService(config: configRepo, logger: getIt<Logger>());
-  final configService =
-      ConfigService(repository: configRepo, logger: getIt<Logger>());
+  final tokenService = TokenService(
+    config: configRepo,
+    logger: getIt<Logger>(),
+  );
+  final configService = ConfigService(
+    repository: configRepo,
+    logger: getIt<Logger>(),
+  );
   final smsService = SmsService(
     repository: smsRepo,
     platform: platform,
@@ -120,13 +125,18 @@ Future<void> setupForTest({
   final fakePlatform = platform ?? FakePlatformService();
   getIt.registerSingleton<PlatformChannelService>(fakePlatform);
 
-  final tokenService =
-      TokenService(config: configRepo, logger: logger);
+  final tokenService = TokenService(config: configRepo, logger: logger);
   final configService = ConfigService(repository: configRepo, logger: logger);
-  final smsService =
-      SmsService(repository: smsRepo, platform: fakePlatform, logger: logger);
-  final simService =
-      SimService(repository: simRepo, platform: fakePlatform, logger: logger);
+  final smsService = SmsService(
+    repository: smsRepo,
+    platform: fakePlatform,
+    logger: logger,
+  );
+  final simService = SimService(
+    repository: simRepo,
+    platform: fakePlatform,
+    logger: logger,
+  );
   final retryManager = RetryManager(
     smsService: smsService,
     repository: smsRepo,

@@ -39,13 +39,15 @@ class _LogsPageState extends State<LogsPage> {
       limit: _pageSize,
       offset: offset,
       status: _statusFilter == 'all' ? null : _statusFilter,
-      searchQuery:
-          _searchController.text.isEmpty ? null : _searchController.text,
+      searchQuery: _searchController.text.isEmpty
+          ? null
+          : _searchController.text,
     );
     final total = await provider.totalCount(
       status: _statusFilter == 'all' ? null : _statusFilter,
-      searchQuery:
-          _searchController.text.isEmpty ? null : _searchController.text,
+      searchQuery: _searchController.text.isEmpty
+          ? null
+          : _searchController.text,
     );
     if (mounted) {
       setState(() {
@@ -75,8 +77,11 @@ class _LogsPageState extends State<LogsPage> {
                   ),
                   decoration: const InputDecoration(
                     hintText: 'Search recipient or message',
-                    prefixIcon: Icon(Icons.search,
-                        size: 18, color: AppTheme.textSecondary),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 18,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                   onSubmitted: (_) => _load(),
                 ),
@@ -99,7 +104,9 @@ class _LogsPageState extends State<LogsPage> {
                     DropdownMenuItem(value: 'failed', child: Text('Failed')),
                     DropdownMenuItem(value: 'pending', child: Text('Pending')),
                     DropdownMenuItem(
-                        value: 'retrying', child: Text('Retrying')),
+                      value: 'retrying',
+                      child: Text('Retrying'),
+                    ),
                   ],
                   onChanged: (v) {
                     if (v == null) return;
@@ -115,30 +122,32 @@ class _LogsPageState extends State<LogsPage> {
             child: _loading && _logs.isEmpty
                 ? const Center(child: LoadingIndicator())
                 : _logs.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No logs found',
-                          style: TextStyle(
-                              color: AppTheme.textSecondary, fontSize: 13),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: _logs.length,
-                        itemBuilder: (_, i) {
-                          final log = _logs[i];
-                          return _LogTile(
-                            request: log,
-                            onRetry: log.canRetry
-                                ? () async {
-                                      await context
-                                          .read<SmsProvider>()
-                                          .cancel(log.requestId);
-                                      _load();
-                                    }
-                                : null,
-                          );
-                        },
+                ? const Center(
+                    child: Text(
+                      'No logs found',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 13,
                       ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _logs.length,
+                    itemBuilder: (_, i) {
+                      final log = _logs[i];
+                      return _LogTile(
+                        request: log,
+                        onRetry: log.canRetry
+                            ? () async {
+                                await context.read<SmsProvider>().cancel(
+                                  log.requestId,
+                                );
+                                _load();
+                              }
+                            : null,
+                      );
+                    },
+                  ),
           ),
           if (_logs.length < _total)
             Padding(
@@ -219,7 +228,9 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                     width: 6,
                     height: 6,
                     decoration: BoxDecoration(
-                        color: _statusColor(), shape: BoxShape.circle),
+                      color: _statusColor(),
+                      shape: BoxShape.circle,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -240,12 +251,16 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: AppTheme.textSecondary, fontSize: 12),
+                            color: AppTheme.textSecondary,
+                            fontSize: 12,
+                          ),
                         ),
                         Text(
                           Formatters.formatRelative(r.createdAt),
                           style: const TextStyle(
-                              color: AppTheme.textSecondary, fontSize: 10),
+                            color: AppTheme.textSecondary,
+                            fontSize: 10,
+                          ),
                         ),
                       ],
                     ),
@@ -272,9 +287,7 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                     ],
                   ),
                   Icon(
-                    _expanded
-                        ? Icons.expand_less
-                        : Icons.expand_more,
+                    _expanded ? Icons.expand_less : Icons.expand_more,
                     color: AppTheme.textSecondary,
                     size: 18,
                   ),
@@ -294,12 +307,14 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                   _DetailRow(label: 'Recipient', value: r.recipient),
                   _DetailRow(label: 'Message', value: r.message),
                   _DetailRow(
-                      label: 'Created',
-                      value: Formatters.formatDateTime(r.createdAt)),
+                    label: 'Created',
+                    value: Formatters.formatDateTime(r.createdAt),
+                  ),
                   if (r.sentAt != null)
                     _DetailRow(
-                        label: 'Sent',
-                        value: Formatters.formatDateTime(r.sentAt!)),
+                      label: 'Sent',
+                      value: Formatters.formatDateTime(r.sentAt!),
+                    ),
                   if (r.lastError != null)
                     _DetailRow(label: 'Error', value: r.lastError!),
                   if (widget.onRetry != null) ...[

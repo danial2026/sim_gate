@@ -5,10 +5,7 @@ import '../../config/theme.dart';
 
 /// Line chart of SMS activity per hour over the last 24 hours.
 class SmsActivityChart extends StatelessWidget {
-  const SmsActivityChart({
-    super.key,
-    required this.data,
-  });
+  const SmsActivityChart({super.key, required this.data});
 
   /// List of `(hour, count)` pairs (ascending by hour).
   final List<({DateTime hour, int count})> data;
@@ -92,51 +89,59 @@ class SuccessRateChart extends StatelessWidget {
     final total = sent + failed + pending;
     final sections = <PieChartSectionData>[];
     if (total == 0) {
-      sections.add(PieChartSectionData(
-        value: 1,
-        color: AppTheme.dividerColor,
-        radius: 36,
-        showTitle: false,
-      ));
+      sections.add(
+        PieChartSectionData(
+          value: 1,
+          color: AppTheme.dividerColor,
+          radius: 36,
+          showTitle: false,
+        ),
+      );
     } else {
       if (sent > 0) {
-        sections.add(PieChartSectionData(
-          value: sent.toDouble(),
-          color: AppTheme.successColor,
-          radius: 36,
-          title: '$sent',
-          titleStyle: const TextStyle(
-            color: AppTheme.backgroundColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
+        sections.add(
+          PieChartSectionData(
+            value: sent.toDouble(),
+            color: AppTheme.successColor,
+            radius: 36,
+            title: '$sent',
+            titleStyle: const TextStyle(
+              color: AppTheme.backgroundColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-        ));
+        );
       }
       if (failed > 0) {
-        sections.add(PieChartSectionData(
-          value: failed.toDouble(),
-          color: AppTheme.errorColor,
-          radius: 36,
-          title: '$failed',
-          titleStyle: const TextStyle(
-            color: AppTheme.backgroundColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
+        sections.add(
+          PieChartSectionData(
+            value: failed.toDouble(),
+            color: AppTheme.errorColor,
+            radius: 36,
+            title: '$failed',
+            titleStyle: const TextStyle(
+              color: AppTheme.backgroundColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-        ));
+        );
       }
       if (pending > 0) {
-        sections.add(PieChartSectionData(
-          value: pending.toDouble(),
-          color: AppTheme.warningColor,
-          radius: 36,
-          title: '$pending',
-          titleStyle: const TextStyle(
-            color: AppTheme.backgroundColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
+        sections.add(
+          PieChartSectionData(
+            value: pending.toDouble(),
+            color: AppTheme.warningColor,
+            radius: 36,
+            title: '$pending',
+            titleStyle: const TextStyle(
+              color: AppTheme.backgroundColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-        ));
+        );
       }
     }
     final rate = total == 0 ? 0.0 : (sent / total) * 100;
@@ -166,11 +171,13 @@ class SuccessRateChart extends StatelessWidget {
               SizedBox(
                 width: 96,
                 height: 96,
-                child: PieChart(PieChartData(
-                  sections: sections,
-                  centerSpaceRadius: 24,
-                  sectionsSpace: 2,
-                )),
+                child: PieChart(
+                  PieChartData(
+                    sections: sections,
+                    centerSpaceRadius: 24,
+                    sectionsSpace: 2,
+                  ),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -188,13 +195,20 @@ class SuccessRateChart extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _Legend(
-                        color: AppTheme.successColor, label: 'Sent', value: sent),
+                      color: AppTheme.successColor,
+                      label: 'Sent',
+                      value: sent,
+                    ),
                     _Legend(
-                        color: AppTheme.errorColor, label: 'Failed', value: failed),
+                      color: AppTheme.errorColor,
+                      label: 'Failed',
+                      value: failed,
+                    ),
                     _Legend(
-                        color: AppTheme.warningColor,
-                        label: 'Pending',
-                        value: pending),
+                      color: AppTheme.warningColor,
+                      label: 'Pending',
+                      value: pending,
+                    ),
                   ],
                 ),
               ),
@@ -207,8 +221,11 @@ class SuccessRateChart extends StatelessWidget {
 }
 
 class _Legend extends StatelessWidget {
-  const _Legend(
-      {required this.color, required this.label, required this.value});
+  const _Legend({
+    required this.color,
+    required this.label,
+    required this.value,
+  });
   final Color color;
   final String label;
   final int value;
@@ -225,16 +242,20 @@ class _Legend extends StatelessWidget {
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 8),
-          Text(label,
-              style: const TextStyle(
-                  color: AppTheme.textSecondary, fontSize: 11)),
+          Text(
+            label,
+            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+          ),
           const Spacer(),
-          Text('$value',
-              style: const TextStyle(
-                  color: AppTheme.textPrimary,
-                  fontSize: 12,
-                  fontFamily: AppTheme.monoFamily,
-                  fontWeight: FontWeight.w700)),
+          Text(
+            '$value',
+            style: const TextStyle(
+              color: AppTheme.textPrimary,
+              fontSize: 12,
+              fontFamily: AppTheme.monoFamily,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );

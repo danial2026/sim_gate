@@ -36,18 +36,20 @@ void main() {
 
     test('round-trips a full configuration', () async {
       final repo = ConfigRepository(prefs!);
-      await repo.save(AppConfiguration(
-        serverIp: '192.168.1.10',
-        serverPort: 8080,
-        accessToken: 'abc123',
-        tokenGeneratedAt: DateTime.utc(2026, 1, 1),
-        autoStartServer: true,
-        logLevel: 'debug',
-        logRetentionDays: 7,
-        maxLogEntries: 500,
-        appTheme: AppThemeMode.dark,
-        activeSimIds: ['sim-1', 'sim-2'],
-      ));
+      await repo.save(
+        AppConfiguration(
+          serverIp: '192.168.1.10',
+          serverPort: 8080,
+          accessToken: 'abc123',
+          tokenGeneratedAt: DateTime.utc(2026, 1, 1),
+          autoStartServer: true,
+          logLevel: 'debug',
+          logRetentionDays: 7,
+          maxLogEntries: 500,
+          appTheme: AppThemeMode.dark,
+          activeSimIds: ['sim-1', 'sim-2'],
+        ),
+      );
       final loaded = repo.load();
       expect(loaded.serverIp, '192.168.1.10');
       expect(loaded.serverPort, 8080);
@@ -123,11 +125,13 @@ void main() {
 
     test('apiUrlWithToken includes the token', () async {
       final repo = ConfigRepository(prefs!);
-      await repo.save(AppConfiguration(
-        serverIp: '0.0.0.0',
-        serverPort: 3000,
-        accessToken: 'tok123',
-      ));
+      await repo.save(
+        AppConfiguration(
+          serverIp: '0.0.0.0',
+          serverPort: 3000,
+          accessToken: 'tok123',
+        ),
+      );
       final config = repo.load();
       expect(config.apiUrl, 'http://0.0.0.0:3000/api');
       expect(config.apiUrlWithToken, 'http://0.0.0.0:3000/api?token=tok123');

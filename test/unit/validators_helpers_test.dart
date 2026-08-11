@@ -81,29 +81,45 @@ void main() {
 
   group('Formatters', () {
     test('formats durations as HH:MM:SS', () {
-      expect(Formatters.formatDuration(const Duration(hours: 2, minutes: 30, seconds: 45)),
-          '02:30:45');
+      expect(
+        Formatters.formatDuration(
+          const Duration(hours: 2, minutes: 30, seconds: 45),
+        ),
+        '02:30:45',
+      );
       expect(Formatters.formatDuration(Duration.zero), '00:00:00');
     });
 
     test('formats relative times', () {
       final now = DateTime.utc(2026, 1, 1, 12, 0, 0);
       expect(
-          Formatters.formatRelative(now.subtract(const Duration(seconds: 30)),
-              now: now),
-          '30s ago');
+        Formatters.formatRelative(
+          now.subtract(const Duration(seconds: 30)),
+          now: now,
+        ),
+        '30s ago',
+      );
       expect(
-          Formatters.formatRelative(now.subtract(const Duration(minutes: 5)),
-              now: now),
-          '5m ago');
+        Formatters.formatRelative(
+          now.subtract(const Duration(minutes: 5)),
+          now: now,
+        ),
+        '5m ago',
+      );
       expect(
-          Formatters.formatRelative(now.subtract(const Duration(hours: 3)),
-              now: now),
-          '3h ago');
+        Formatters.formatRelative(
+          now.subtract(const Duration(hours: 3)),
+          now: now,
+        ),
+        '3h ago',
+      );
       expect(
-          Formatters.formatRelative(now.subtract(const Duration(days: 2)),
-              now: now),
-          '2d ago');
+        Formatters.formatRelative(
+          now.subtract(const Duration(days: 2)),
+          now: now,
+        ),
+        '2d ago',
+      );
     });
 
     test('formats byte sizes', () {
@@ -124,8 +140,10 @@ void main() {
       logger.info(LogComponent.sms, 'info');
       logger.warning(LogComponent.sms, 'warn');
       logger.error(LogComponent.sms, 'err');
-      expect(entries.map((e) => e.level).toList(),
-          [LogLevel.warning, LogLevel.error]);
+      expect(entries.map((e) => e.level).toList(), [
+        LogLevel.warning,
+        LogLevel.error,
+      ]);
     });
 
     test('serializes to JSON with request id', () {

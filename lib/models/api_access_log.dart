@@ -27,16 +27,16 @@ class ApiAccessLog {
   final String? errorMessage;
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'request_id': requestId,
-        'client_ip': clientIp,
-        'endpoint': endpoint,
-        'method': method,
-        'status_code': statusCode,
-        'response_time_ms': responseTimeMs,
-        'request_body_size': requestBodySize,
-        'response_body_size': responseBodySize,
-        'timestamp': timestamp.toIso8601String(),
-        'error_message': errorMessage,
-      };
+    'id': id,
+    'request_id': requestId,
+    'client_ip': clientIp,
+    'endpoint': endpoint,
+    'method': method,
+    'status_code': statusCode,
+    'response_time_ms': responseTimeMs,
+    'request_body_size': requestBodySize,
+    'response_body_size': responseBodySize,
+    'timestamp': timestamp.toIso8601String(),
+    'error_message': errorMessage,
+  };
 }

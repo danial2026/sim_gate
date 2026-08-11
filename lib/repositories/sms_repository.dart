@@ -11,8 +11,7 @@ import '../models/sms_request.dart';
 /// Repository that mediates between services and the `sms_requests` +
 /// `retry_attempts` tables.
 class SmsRepository {
-  SmsRepository(this._dbHelper, {Uuid? uuid})
-      : _uuid = uuid ?? const Uuid();
+  SmsRepository(this._dbHelper, {Uuid? uuid}) : _uuid = uuid ?? const Uuid();
 
   final DatabaseHelper _dbHelper;
   final Uuid _uuid;
@@ -188,7 +187,9 @@ class SmsRepository {
   }
 
   /// Per-hour send activity for the dashboard chart.
-  Future<List<({DateTime hour, int count})>> hourlyActivity({int hours = 24}) async {
+  Future<List<({DateTime hour, int count})>> hourlyActivity({
+    int hours = 24,
+  }) async {
     await ensureOpen();
     return _sms.hourlyActivity(hours: hours);
   }

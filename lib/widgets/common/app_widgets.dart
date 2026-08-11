@@ -68,8 +68,9 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              destructive ? AppTheme.errorColor : AppTheme.accentColor,
+          backgroundColor: destructive
+              ? AppTheme.errorColor
+              : AppTheme.accentColor,
           foregroundColor: AppTheme.backgroundColor,
           disabledBackgroundColor: AppTheme.accentColor.withValues(alpha: 0.05),
           disabledForegroundColor: AppTheme.accentColor.withValues(alpha: 0.30),
@@ -156,11 +157,7 @@ class SecondaryButton extends StatelessWidget {
 
 /// Status badge with a colored dot + uppercase label.
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({
-    super.key,
-    required this.label,
-    required this.color,
-  });
+  const StatusBadge({super.key, required this.label, required this.color});
 
   final String label;
   final Color color;
@@ -241,11 +238,7 @@ class SimGateScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: SimGateAppBar(
-        title: title,
-        actions: actions,
-        showBack: showBack,
-      ),
+      appBar: SimGateAppBar(title: title, actions: actions, showBack: showBack),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),

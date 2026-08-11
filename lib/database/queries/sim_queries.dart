@@ -13,8 +13,7 @@ class SimQueries {
   Future<void> upsert(SimCard sim) async {
     final map = sim.toMap();
     map['id'] = sim.simId;
-    await _db.insert(_table, map,
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _db.insert(_table, map, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   /// Upserts many SIMs in a single batch.

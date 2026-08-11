@@ -31,8 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _load());
-    _timer = Timer.periodic(
-        const Duration(seconds: 3), (_) => _load());
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _load());
   }
 
   @override
@@ -59,10 +58,7 @@ class _DashboardPageState extends State<DashboardPage> {
       title: 'Dashboard',
       showBack: false,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh, size: 18),
-          onPressed: _load,
-        ),
+        IconButton(icon: const Icon(Icons.refresh, size: 18), onPressed: _load),
         IconButton(
           icon: const Icon(Icons.settings_outlined, size: 18),
           onPressed: () => Navigator.of(context).pushNamed('/settings'),
@@ -75,10 +71,12 @@ class _DashboardPageState extends State<DashboardPage> {
           children: [
             _StatusCard(running: running, server: server),
             const SectionHeader('Quick Access'),
-            _QuickAccess(onConfigure: () => Navigator.of(context).pushNamed('/config'),
-                onSims: () => Navigator.of(context).pushNamed('/sim'),
-                onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
-                onSettings: () => Navigator.of(context).pushNamed('/settings')),
+            _QuickAccess(
+              onConfigure: () => Navigator.of(context).pushNamed('/config'),
+              onSims: () => Navigator.of(context).pushNamed('/sim'),
+              onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
+              onSettings: () => Navigator.of(context).pushNamed('/settings'),
+            ),
             const SectionHeader('Statistics'),
             _StatGrid(stats: stats),
             const SectionHeader('Recent'),
@@ -124,9 +122,10 @@ class _StatusCard extends StatelessWidget {
             : AppTheme.surfaceColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-            color: running
-                ? AppTheme.successColor.withValues(alpha: 0.4)
-                : AppTheme.dividerColor),
+          color: running
+              ? AppTheme.successColor.withValues(alpha: 0.4)
+              : AppTheme.dividerColor,
+        ),
       ),
       child: Row(
         children: [
@@ -197,13 +196,29 @@ class _QuickAccess extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _QuickButton(icon: Icons.router_outlined, label: 'Configure', onTap: onConfigure),
+          _QuickButton(
+            icon: Icons.router_outlined,
+            label: 'Configure',
+            onTap: onConfigure,
+          ),
           const SizedBox(width: 8),
-          _QuickButton(icon: Icons.sim_card_outlined, label: 'SIM Cards', onTap: onSims),
+          _QuickButton(
+            icon: Icons.sim_card_outlined,
+            label: 'SIM Cards',
+            onTap: onSims,
+          ),
           const SizedBox(width: 8),
-          _QuickButton(icon: Icons.qr_code_outlined, label: 'API', onTap: onApi),
+          _QuickButton(
+            icon: Icons.qr_code_outlined,
+            label: 'API',
+            onTap: onApi,
+          ),
           const SizedBox(width: 8),
-          _QuickButton(icon: Icons.settings_outlined, label: 'Settings', onTap: onSettings),
+          _QuickButton(
+            icon: Icons.settings_outlined,
+            label: 'Settings',
+            onTap: onSettings,
+          ),
         ],
       ),
     );
@@ -211,8 +226,11 @@ class _QuickAccess extends StatelessWidget {
 }
 
 class _QuickButton extends StatelessWidget {
-  const _QuickButton(
-      {required this.icon, required this.label, required this.onTap});
+  const _QuickButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -337,8 +355,9 @@ class _SignalGrid extends StatelessWidget {
                     child: Container(
                       height: 8 + 12.0 * i,
                       decoration: BoxDecoration(
-                        color: AppTheme.successColor
-                            .withValues(alpha: 0.4 + 0.15 * i),
+                        color: AppTheme.successColor.withValues(
+                          alpha: 0.4 + 0.15 * i,
+                        ),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

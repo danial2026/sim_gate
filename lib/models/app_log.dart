@@ -35,14 +35,14 @@ class AppLog {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'log_level': level.name.toUpperCase(),
-        'component': component.label,
-        'message': message,
-        'details': details,
-        'timestamp': timestamp.toIso8601String(),
-        'stack_trace': stackTrace,
-      };
+    'id': id,
+    'log_level': level.name.toUpperCase(),
+    'component': component.label,
+    'message': message,
+    'details': details,
+    'timestamp': timestamp.toIso8601String(),
+    'stack_trace': stackTrace,
+  };
 
   static LogComponent _parseComponent(String value) {
     return LogComponent.values.firstWhere(

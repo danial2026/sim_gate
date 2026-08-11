@@ -50,10 +50,15 @@ void main() {
 
     test('cancels only pending/retrying requests', () async {
       final pending = await repo.create(
-          simId: 'sim-1', recipient: '+1', message: 'a' * 7);
+        simId: 'sim-1',
+        recipient: '+1',
+        message: 'a' * 7,
+      );
       expect(await repo.cancel(pending.requestId), 1);
-      expect((await repo.getById(pending.requestId))!.status,
-          SmsStatus.cancelled);
+      expect(
+        (await repo.getById(pending.requestId))!.status,
+        SmsStatus.cancelled,
+      );
 
       // Cancelling again has no effect.
       expect(await repo.cancel(pending.requestId), 0);
@@ -61,7 +66,10 @@ void main() {
 
     test('records a successful retry and marks sent', () async {
       final request = await repo.create(
-          simId: 'sim-1', recipient: '+1234567890', message: 'ping');
+        simId: 'sim-1',
+        recipient: '+1234567890',
+        message: 'ping',
+      );
       final attempt = await repo.recordRetry(
         request: request,
         success: true,
@@ -84,15 +92,23 @@ void main() {
         message: 'ping',
         maxRetries: 2,
       );
-      await repo.recordRetry(request: request, success: false,
-          errorMessage: 'e1');
-      expect((await repo.getById(request.requestId))!.status,
-          SmsStatus.retrying);
+      await repo.recordRetry(
+        request: request,
+        success: false,
+        errorMessage: 'e1',
+      );
+      expect(
+        (await repo.getById(request.requestId))!.status,
+        SmsStatus.retrying,
+      );
       expect((await repo.getById(request.requestId))!.currentRetryCount, 1);
       expect((await repo.getById(request.requestId))!.nextRetryAt, isNotNull);
 
       await repo.recordRetry(
-          request: request, success: false, errorMessage: 'e2');
+        request: request,
+        success: false,
+        errorMessage: 'e2',
+      );
       final updated = await repo.getById(request.requestId);
       expect(updated!.status, SmsStatus.failed);
       expect(updated.currentRetryCount, 2);
@@ -101,9 +117,15 @@ void main() {
 
     test('pending() lists only pending/retrying', () async {
       final a = await repo.create(
-          simId: 's', recipient: '+1', message: 'x' * 7);
+        simId: 's',
+        recipient: '+1',
+        message: 'x' * 7,
+      );
       final b = await repo.create(
-          simId: 's', recipient: '+2', message: 'y' * 7);
+        simId: 's',
+        recipient: '+2',
+        message: 'y' * 7,
+      );
       await repo.recordRetry(request: b, success: true);
 
       final pending = await repo.pending();
@@ -112,8 +134,7 @@ void main() {
 
     test('recent returns newest first', () async {
       for (var i = 0; i < 5; i++) {
-        await repo.create(
-            simId: 's', recipient: '+1', message: 'm$i' * 3);
+        await repo.create(simId: 's', recipient: '+1', message: 'm$i' * 3);
         // Small delay to make created_at ordering deterministic.
         await Future<void>.delayed(const Duration(milliseconds: 5));
       }
@@ -122,9 +143,16 @@ void main() {
     });
 
     test('query filters by status and searches text', () async {
-      await repo.create(simId: 's1', recipient: '+1111111111', message: 'alpha');
+      await repo.create(
+        simId: 's1',
+        recipient: '+1111111111',
+        message: 'alpha',
+      );
       var failed = await repo.create(
-          simId: 's1', recipient: '+2222222222', message: 'beta');
+        simId: 's1',
+        recipient: '+2222222222',
+        message: 'beta',
+      );
       // Exhaust all 3 retries so the request ends in 'failed'.
       for (var i = 0; i < failed.maxRetries; i++) {
         await repo.recordRetry(request: failed, success: false);
@@ -143,9 +171,15 @@ void main() {
 
     test('countsByStatus groups correctly', () async {
       final a = await repo.create(
-          simId: 's', recipient: '+1', message: 'x' * 7);
+        simId: 's',
+        recipient: '+1',
+        message: 'x' * 7,
+      );
       final b = await repo.create(
-          simId: 's', recipient: '+2', message: 'y' * 7);
+        simId: 's',
+        recipient: '+2',
+        message: 'y' * 7,
+      );
       await repo.recordRetry(request: a, success: true);
       await repo.recordRetry(request: b, success: false);
 
@@ -156,9 +190,15 @@ void main() {
 
     test('averageResponseTimeMs aggregates', () async {
       final r1 = await repo.create(
-          simId: 's', recipient: '+1', message: 'x' * 7);
+        simId: 's',
+        recipient: '+1',
+        message: 'x' * 7,
+      );
       final r2 = await repo.create(
-          simId: 's', recipient: '+2', message: 'y' * 7);
+        simId: 's',
+        recipient: '+2',
+        message: 'y' * 7,
+      );
       await repo.recordRetry(request: r1, success: true, responseTimeMs: 100);
       await repo.recordRetry(request: r2, success: true, responseTimeMs: 200);
       expect(await repo.averageResponseTimeMs(), 150);
@@ -175,7 +215,10 @@ void main() {
 
     test('detailedJson includes retry history', () async {
       final request = await repo.create(
-          simId: 's', recipient: '+1234567890', message: 'hi');
+        simId: 's',
+        recipient: '+1234567890',
+        message: 'hi',
+      );
       await repo.recordRetry(request: request, success: true);
       final json = await repo.detailedJson(request.requestId);
       expect(json['requestId'], request.requestId);

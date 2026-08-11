@@ -68,7 +68,10 @@ class HttpServerService {
     final sms = SmsHandler(smsService);
     final sim = SimHandler(simService);
     final token = TokenHandler(tokenService);
-    final config = ConfigHandler(configService: configService, logsRepo: logsRepo);
+    final config = ConfigHandler(
+      configService: configService,
+      logsRepo: logsRepo,
+    );
     final boundIp = _server?.address.address;
     final boundPort = _server?.port;
     final server = ServerHandler(
@@ -102,7 +105,8 @@ class HttpServerService {
     shelf.Handler handler = router;
     handler = _corsMiddleware(handler);
     handler = loggingMiddleware(logsRepository: logsRepo, logger: _logger)(
-        handler);
+      handler,
+    );
     handler = authMiddleware(
       tokenService: tokenService,
       publicPaths: public,
@@ -134,13 +138,20 @@ class HttpServerService {
       // Port 0 => OS-assigned ephemeral port; report the actual bound one.
       final boundIp = _server!.address.address;
       final boundPort = _server!.port;
-      _logger.info(LogComponent.server, 'Server started',
-          details: {'ip': boundIp, 'port': boundPort});
+      _logger.info(
+        LogComponent.server,
+        'Server started',
+        details: {'ip': boundIp, 'port': boundPort},
+      );
       return 'http://$boundIp:$boundPort';
     } catch (e, st) {
       _setState(ServerState.stopped);
-      _logger.error(LogComponent.server, 'Failed to start server',
-          error: e, stackTrace: st);
+      _logger.error(
+        LogComponent.server,
+        'Failed to start server',
+        error: e,
+        stackTrace: st,
+      );
       rethrow;
     }
   }
@@ -184,11 +195,10 @@ class HttpServerService {
   }
 
   Map<String, String> _corsHeaders() => const {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers':
-            'Authorization, Content-Type, Accept',
-      };
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type, Accept',
+  };
 }
 
 // ---------------------------------------------------------------------------

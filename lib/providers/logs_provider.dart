@@ -6,10 +6,8 @@ import '../utils/logger.dart';
 
 /// Holds app log query state for the (future) detailed app-logs view.
 class LogsProvider extends ChangeNotifier {
-  LogsProvider({
-    required this.logsRepository,
-    Logger? logger,
-  }) : _logger = logger ?? Logger();
+  LogsProvider({required this.logsRepository, Logger? logger})
+    : _logger = logger ?? Logger();
 
   final LogsRepository logsRepository;
   final Logger _logger;
@@ -27,8 +25,12 @@ class LogsProvider extends ChangeNotifier {
     try {
       _logs = await logsRepository.query(limit: limit);
     } catch (e, st) {
-      _logger.error(LogComponent.database, 'Log load failed',
-          error: e, stackTrace: st);
+      _logger.error(
+        LogComponent.database,
+        'Log load failed',
+        error: e,
+        stackTrace: st,
+      );
     } finally {
       _isLoading = false;
       notifyListeners();
