@@ -5,7 +5,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../config/theme.dart';
 import '../providers/config_provider.dart';
-import '../utils/helpers.dart';
 import '../widgets/common/app_widgets.dart';
 
 /// Page 3: Display the API endpoint URL + QR code for sharing.
@@ -169,6 +168,3 @@ class _UrlTile extends StatelessWidget {
     );
   }
 }
-
-// Used to silence unused import warnings when Formatters is not referenced.
-void _silence(Formatters f) {}
