@@ -113,10 +113,14 @@ void main() {
       expect(find.text('+1234000001'), findsOneWidget);
       expect(find.byType(Switch), findsNWidgets(2));
 
-      // Toggling the second SIM off should be rejected (last active guard).
+      // Deactivating one of two active SIMs is allowed.
       await tester.tap(find.byType(Switch).first);
       await tester.pumpAndSettle();
-      expect(find.textContaining('must remain active'), findsNothing);
+
+      // Deactivating the last remaining active SIM is rejected with a toast.
+      await tester.tap(find.byType(Switch).first);
+      await tester.pumpAndSettle();
+      expect(find.text('At least one SIM must remain active'), findsOneWidget);
     });
   });
 }

@@ -6,31 +6,42 @@ import 'package:sim_gate/database/database_helper.dart';
 
 /// Shared test helpers for DB-backed tests.
 ///
-/// Sets up an in-memory FFI database and mock prefs so tests never touch the
-/// platform channels or a real device.
+/// Each harness gets a *unique* in-memory SQLite database (the FFI factory
+/// caches databases by path, so reusing `:memory:` across tests re-opens the
+/// same schema and breaks migrations). Tests never touch platform channels.
 class TestHarness {
-  TestHarness._();
+  TestHarness._(this._dbPath);
 
-  final DatabaseHelper dbHelper = DatabaseHelper(pathOverride: inMemoryDbPath);
+  final String _dbPath;
   SharedPreferences? prefs;
 
-  /// Path that forces an in-memory DB (per-open).
-  static const String inMemoryDbPath = ':memory:';
+  static int _counter = 0;
+
+  /// Builds a unique shared-memory DB path, e.g.
+  /// `file:sim_gate_test_3?mode=memory&cache=shared`.
+  static String nextDbPath() {
+    _counter++;
+    return 'file:sim_gate_test_$_counter?mode=memory&cache=shared';
+  }
 
   /// Creates a fresh harness and rewires the DI container.
   static Future<TestHarness> create() async {
     sqfliteFfiInit();
     SharedPreferences.setMockInitialValues({});
-    final harness = TestHarness._();
+    final harness = TestHarness._(nextDbPath());
     harness.prefs = await SharedPreferences.getInstance();
     DatabaseHelper.overrideFactory = databaseFactoryFfi;
-    await setupForTest(prefs: harness.prefs!, dbPath: inMemoryDbPath);
+    await setupForTest(prefs: harness.prefs!, dbPath: harness._dbPath);
     return harness;
   }
 
-  /// Drops the in-memory database between tests.
+  /// Closes the registered database and resets DI between tests.
   Future<void> dispose() async {
-    await dbHelper.deleteDatabase();
+    try {
+      await getIt<DatabaseHelper>().close();
+    } catch (_) {
+      // Ignore double-close.
+    }
     await resetGetIt();
   }
 }

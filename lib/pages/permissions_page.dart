@@ -29,28 +29,44 @@ class _PermissionsPageState extends State<PermissionsPage> {
 
   /// Reads the current permission statuses from the platform.
   Future<void> _refreshStatuses() async {
-    final results = await Future.wait(_granted.keys.map((p) => p.status));
-    setState(() {
-      for (var i = 0; i < results.length; i++) {
-        _granted[_granted.keys.elementAt(i)] = results[i].isGranted;
-      }
-      _checking = false;
-    });
+    try {
+      final results = await Future.wait(_granted.keys.map((p) => p.status));
+      if (!mounted) return;
+      setState(() {
+        for (var i = 0; i < results.length; i++) {
+          _granted[_granted.keys.elementAt(i)] = results[i].isGranted;
+        }
+        _checking = false;
+      });
+    } catch (_) {
+      // Platform channel unavailable (e.g. during tests); degrade gracefully.
+      if (!mounted) return;
+      setState(() => _checking = false);
+    }
   }
 
   /// Requests a single permission and updates state.
   Future<void> _request(Permission p) async {
-    final result = await p.request();
-    setState(() => _granted[p] = result.isGranted);
+    try {
+      final result = await p.request();
+      if (!mounted) return;
+      setState(() => _granted[p] = result.isGranted);
+    } catch (_) {
+      // Ignore platform failures; the card keeps showing "GRANT".
+    }
   }
 
   /// Requests all permissions sequentially.
   Future<void> _requestAll() async {
     for (final p in _granted.keys) {
-      final result = await p.request();
-      _granted[p] = result.isGranted;
+      try {
+        final result = await p.request();
+        if (mounted) _granted[p] = result.isGranted;
+      } catch (_) {
+        // Ignore platform failures.
+      }
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   bool get _allGranted => _granted.values.every((v) => v);
