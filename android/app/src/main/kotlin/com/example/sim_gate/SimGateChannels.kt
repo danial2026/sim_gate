@@ -94,20 +94,12 @@ class SimGateChannels(
             val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
             val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-            val subscriptions: List<SubscriptionInfo> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                subscriptionManager.activeSubscriptionInfoList
-            } else {
-                @Suppress("DEPRECATION")
-                subscriptionManager.activeSubscriptionInfoList
-            }
+            val subscriptions: List<SubscriptionInfo> =
+                subscriptionManager.activeSubscriptionInfoList ?: emptyList()
 
             val list = mutableListOf<Map<String, Any?>>()
             for (sub in subscriptions) {
-                val phoneId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    sub.phoneId
-                } else {
-                    0
-                }
+                val phoneId = sub.simSlotIndex
                 val simId = "${sub.simSlotIndex}_${sub.subscriptionId}"
                 list.add(
                     mapOf(
@@ -204,12 +196,11 @@ private class SmsManagerFactory {
     companion object {
         @Suppress("DEPRECATION")
         fun create(context: Context, simId: String?): android.telephony.SmsManager {
-            val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // SIM ids from detectSims are "<slot>_<subId>"; parse the subId.
                 val subId = simId?.substringAfter('_')?.toIntOrNull()
                 if (subId != null) {
-                    manager.createForSubscriptionId(subId)
+                    android.telephony.SmsManager.getSmsManagerForSubscriptionId(subId)
                 } else {
                     android.telephony.SmsManager.getDefault()
                 }
