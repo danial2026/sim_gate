@@ -49,11 +49,11 @@ class ApiEndpointPage extends StatelessWidget {
                 version: QrVersions.auto,
                 size: 240,
                 backgroundColor: AppTheme.surfaceColor,
-                eyeStyle: QrEyeStyle(
+                eyeStyle: const QrEyeStyle(
                   eyeShape: QrEyeShape.square,
                   color: AppTheme.textPrimary,
                 ),
-                dataModuleStyle: QrDataModuleStyle(
+                dataModuleStyle: const QrDataModuleStyle(
                   dataModuleShape: QrDataModuleShape.square,
                   color: AppTheme.textPrimary,
                 ),

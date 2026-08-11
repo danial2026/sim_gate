@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../config/theme.dart';
@@ -21,6 +22,21 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _tokenVisible = false;
+
+  /// App version info loaded via package_info_plus at startup.
+  PackageInfo? _packageInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPackageInfo();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() => _packageInfo = info);
+  }
 
   /// Opens the token regeneration confirmation dialog.
   Future<void> _confirmRegenerate() async {
@@ -220,6 +236,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPressed: () async {
                     await Clipboard.setData(
                         ClipboardData(text: config.accessToken ?? ''));
+                    if (!context.mounted) return;
                     _toast(context, 'Token copied');
                   },
                 ),
@@ -348,10 +365,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SectionHeader('About'),
-          const _SettingTile(
+          _SettingTile(
             icon: Icons.info_outline,
             title: 'App Version',
-            subtitle: '0.0.1 (1)',
+            subtitle: _packageInfo == null
+                ? 'Loading...'
+                : '${_packageInfo!.version} (${_packageInfo!.buildNumber})',
             mono: true,
           ),
           const _SettingTile(
@@ -361,7 +380,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'SimGate v${AppConstants.appVersion} — Self-Hosted SMS API',
+            'SimGate v${_packageInfo?.version ?? AppConstants.appVersion} — '
+            'Self-Hosted SMS API',
             textAlign: TextAlign.center,
             style: const TextStyle(
                 color: AppTheme.textSecondary, fontSize: 11),

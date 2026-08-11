@@ -81,15 +81,13 @@ class ConsoleLogSink implements LogSink {
 /// Respects a minimum [LogLevel] (configurable from Settings).
 class Logger {
   Logger({LogLevel minLevel = LogLevel.info, List<LogSink>? sinks})
-      : _minLevel = minLevel,
+      : minLevel = minLevel,
         _sinks = sinks ?? [const ConsoleLogSink()];
 
-  LogLevel _minLevel;
-  final List<LogSink> _sinks;
-
   /// Mutable minimum level. Lower-level entries are dropped.
-  set minLevel(LogLevel level) => _minLevel = level;
-  LogLevel get minLevel => _minLevel;
+  LogLevel minLevel;
+
+  final List<LogSink> _sinks;
 
   void attachSink(LogSink sink) => _sinks.add(sink);
   void detachSink(LogSink sink) => _sinks.remove(sink);
@@ -97,7 +95,7 @@ class Logger {
 
   /// Records a log entry. Internal helper that fans out to sinks.
   void _record(LogEntry entry) {
-    if (entry.level.index < _minLevel.index) return;
+    if (entry.level.index < minLevel.index) return;
     for (final sink in _sinks) {
       sink.write(entry);
     }

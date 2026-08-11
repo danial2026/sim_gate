@@ -41,6 +41,7 @@ dependencies:
 
   # Android integration
   permission_handler: ^11.2.0
+  package_info_plus: ^8.0.0
 
 # -----------------------------------------------------------------------------
 # Dev dependencies (testing & tooling)
