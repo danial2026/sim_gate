@@ -547,7 +547,7 @@ class SwaggerSpecBuilder {
     required String summary,
     required String operationId,
     required Map<String, dynamic> responses,
-    Map<String, dynamic>? parameters,
+    List<Map<String, dynamic>>? parameters,
     Map<String, dynamic>? requestBody,
     String method = 'get',
     String? description,
@@ -587,6 +587,7 @@ class SwaggerSpecBuilder {
     String description, {
     bool required = false,
     Map<String, dynamic>? schema,
+    Object? example,
   }) {
     return {
       'name': name,
@@ -594,6 +595,7 @@ class SwaggerSpecBuilder {
       'description': description,
       'required': required,
       'schema': schema ?? {'type': 'string'},
+      if (example != null) 'example': example,
     };
   }
 

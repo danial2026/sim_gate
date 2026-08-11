@@ -336,7 +336,7 @@ class _SettingsPageState extends State<SettingsPage> {
               value: config.enableSwagger,
               onChanged: (v) async {
                 await context.read<ConfigProvider>().updateSwaggerEnabled(v);
-                if (!mounted) return;
+                if (!context.mounted) return;
                 _toast(
                   context,
                   v
