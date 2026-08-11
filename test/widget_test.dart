@@ -58,9 +58,7 @@ void main() {
     expect(find.text('Grant Permissions'), findsOneWidget);
   });
 
-  testWidgets('onboarding flow ends on the server config page', (
-    tester,
-  ) async {
+  testWidgets('onboarding flow ends on the server config page', (tester) async {
     await tester.pumpWidget(const SimGateApp());
     await settleDb(tester);
 

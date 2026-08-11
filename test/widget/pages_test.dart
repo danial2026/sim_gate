@@ -44,7 +44,15 @@ Future<void> settleDb(WidgetTester tester) async {
 
 /// HttpServerService that never binds sockets; flips state via its stream.
 class _FakeHttpServer extends HttpServerService {
-  _FakeHttpServer({required super.smsService, required super.simService, required super.smsRepo, required super.simRepo, required super.logsRepo, required super.tokenService, required super.configService});
+  _FakeHttpServer({
+    required super.smsService,
+    required super.simService,
+    required super.smsRepo,
+    required super.simRepo,
+    required super.logsRepo,
+    required super.tokenService,
+    required super.configService,
+  });
 
   final _states = StreamController<ServerState>.broadcast();
   bool running = false;
@@ -229,11 +237,17 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('STOP API'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('OPEN DASHBOARD'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('OPEN DASHBOARD'), findsOneWidget);
     });
   });
 
-  group('SimCardsPage', () {    testWidgets('shows no-sims state when nothing detected', (tester) async {
+  group('SimCardsPage', () {
+    testWidgets('shows no-sims state when nothing detected', (tester) async {
       final platform = getIt<PlatformChannelService>() as FakePlatformService;
       platform.setSims([]);
 
