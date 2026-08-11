@@ -30,7 +30,7 @@ class SimHandler {
 
   /// `POST /api/sims/activate`
   Future<Response> _activate(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }

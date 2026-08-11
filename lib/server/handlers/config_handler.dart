@@ -17,7 +17,7 @@ class ConfigHandler {
 
   /// `PUT /api/config/port`
   Future<Response> updatePort(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }
@@ -40,7 +40,7 @@ class ConfigHandler {
 
   /// `PUT /api/config/ip`
   Future<Response> updateIp(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }
@@ -62,7 +62,7 @@ class ConfigHandler {
 
   /// `PUT /api/logs/retention`
   Future<Response> updateRetention(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }

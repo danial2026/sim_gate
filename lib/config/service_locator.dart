@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite_common_ffi/sqflite_common_ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../database/database_helper.dart';
 import '../repositories/config_repository.dart';

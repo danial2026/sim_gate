@@ -69,9 +69,13 @@ class ApiResponse {
 }
 
 /// Parses a JSON request body into a [Map]. Returns `null` on parse failure.
-Map<String, dynamic>? parseJsonBody(Request request) {
+///
+/// Note: shelf requests are streamed, so this must be awaited.
+Future<Map<String, dynamic>?> parseJsonBody(Request request) async {
   try {
-    final decoded = jsonDecode(request.body);
+    final body = await request.readAsString();
+    if (body.isEmpty) return null;
+    final decoded = jsonDecode(body);
     if (decoded is Map<String, dynamic>) return decoded;
   } catch (_) {
     return null;

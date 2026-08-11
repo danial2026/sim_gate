@@ -31,7 +31,7 @@ class ConfigProvider extends ChangeNotifier {
       _config = configService.load();
       await tokenService.ensureToken();
       _config = configService.load();
-      _logger.setMinLevelString(_config.logLevel);
+      _logger.minLevel = parseLogLevel(_config.logLevel);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -80,7 +80,7 @@ class ConfigProvider extends ChangeNotifier {
     );
     await configService.save(updated);
     _config = configService.load();
-    _logger.setMinLevelString(level);
+    _logger.minLevel = parseLogLevel(level);
     notifyListeners();
   }
 

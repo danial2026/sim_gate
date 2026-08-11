@@ -33,7 +33,7 @@ class SmsHandler {
 
   /// `POST /api/sms/send`
   Future<Response> _send(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }
@@ -85,7 +85,7 @@ class SmsHandler {
 
   /// `POST /api/sms/cancel`
   Future<Response> _cancel(Request request) async {
-    final body = parseJsonBody(request);
+    final body = await parseJsonBody(request);
     if (body == null) {
       return ApiResponse.error('Invalid JSON body', status: 400);
     }

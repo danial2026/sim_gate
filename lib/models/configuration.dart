@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 enum AppThemeMode { light, dark, system }
 
 extension AppThemeModeName on AppThemeMode {
-  String get name => super.toString().split('.').last;
+  String get name => toString().split('.').last;
 
   static AppThemeMode parse(String? value) {
     if (value == null) return AppThemeMode.system;

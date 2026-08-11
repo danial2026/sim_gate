@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
 import '../database/database_helper.dart';
+import '../database/queries/log_queries.dart';
 import '../database/queries/sms_queries.dart';
 import '../models/retry_attempt.dart';
 import '../models/sms_request.dart';
