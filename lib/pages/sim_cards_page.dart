@@ -36,7 +36,7 @@ class _SimCardsPageState extends State<SimCardsPage> {
     return SimGateScaffold(
       title: 'SIM Cards',
       body: RefreshIndicator(
-        color: AppTheme.accentColor,
+        color: AppTheme.of(context).accent,
         onRefresh: _refresh,
         child: sim.isLoading && sim.sims.isEmpty
             ? const Center(child: LoadingIndicator())
@@ -45,17 +45,17 @@ class _SimCardsPageState extends State<SimCardsPage> {
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
                   const SizedBox(height: 64),
-                  const Icon(
+                  Icon(
                     Icons.sim_card_outlined,
                     size: 48,
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.of(context).textSecondary,
                   ),
                   const SizedBox(height: 16),
-                  const Center(
+                  Center(
                     child: Text(
                       'No SIM Cards Available',
                       style: TextStyle(
-                        color: AppTheme.textSecondary,
+                        color: AppTheme.of(context).textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -93,8 +93,8 @@ class _SimCardsPageState extends State<SimCardsPage> {
                             sim.activeSims.isEmpty
                                 ? 'Activate at least one SIM to continue'
                                 : '${sim.activeSims.length} SIM(s) selected for the gateway',
-                            style: const TextStyle(
-                              color: AppTheme.textSecondary,
+                            style: TextStyle(
+                              color: AppTheme.of(context).textSecondary,
                               fontSize: 11,
                             ),
                           ),

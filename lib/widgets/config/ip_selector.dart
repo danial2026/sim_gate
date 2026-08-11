@@ -33,10 +33,10 @@ class IpSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'LISTENING ADDRESS',
           style: TextStyle(
-            color: AppTheme.textSecondary,
+            color: AppTheme.of(context).textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w900,
             letterSpacing: 2.0,
@@ -46,9 +46,9 @@ class IpSelector extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceColor,
+            color: AppTheme.of(context).surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppTheme.dividerColor),
+            border: Border.all(color: AppTheme.of(context).divider),
           ),
           child: isLoading
               ? const Padding(
@@ -59,9 +59,9 @@ class IpSelector extends StatelessWidget {
                   value: selected,
                   isExpanded: true,
                   underline: const SizedBox(),
-                  dropdownColor: AppTheme.surfaceColor,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  dropdownColor: AppTheme.of(context).surface,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontFamily: AppTheme.monoFamily,
                     fontSize: 14,
                   ),

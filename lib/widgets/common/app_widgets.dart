@@ -23,18 +23,18 @@ class SimGateAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.of(context).background,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
       automaticallyImplyLeading: showBack,
       title: Text(
         title.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w900,
           letterSpacing: 2.0,
-          color: AppTheme.textPrimary,
+          color: AppTheme.of(context).textPrimary,
         ),
       ),
       actions: actions,
@@ -70,10 +70,14 @@ class PrimaryButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: destructive
               ? AppTheme.errorColor
-              : AppTheme.accentColor,
-          foregroundColor: AppTheme.backgroundColor,
-          disabledBackgroundColor: AppTheme.accentColor.withValues(alpha: 0.05),
-          disabledForegroundColor: AppTheme.accentColor.withValues(alpha: 0.30),
+              : AppTheme.of(context).accent,
+          foregroundColor: AppTheme.of(context).background,
+          disabledBackgroundColor: AppTheme.of(
+            context,
+          ).accent.withValues(alpha: 0.05),
+          disabledForegroundColor: AppTheme.of(
+            context,
+          ).accent.withValues(alpha: 0.30),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -85,12 +89,12 @@ class PrimaryButton extends StatelessWidget {
           ),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: AppTheme.backgroundColor,
+                  color: AppTheme.of(context).background,
                 ),
               )
             : Row(
@@ -129,8 +133,8 @@ class SecondaryButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppTheme.textPrimary,
-          side: BorderSide(color: AppTheme.subtleBorder()),
+          foregroundColor: AppTheme.of(context).textPrimary,
+          side: BorderSide(color: AppTheme.of(context).subtleBorder),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -206,8 +210,8 @@ class SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24, bottom: 8),
       child: Text(
         text.toUpperCase(),
-        style: const TextStyle(
-          color: AppTheme.textSecondary,
+        style: TextStyle(
+          color: AppTheme.of(context).textSecondary,
           fontSize: 12,
           fontWeight: FontWeight.w900,
           letterSpacing: 2.0,
@@ -237,7 +241,7 @@ class SimGateScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.of(context).background,
       appBar: SimGateAppBar(title: title, actions: actions, showBack: showBack),
       body: SafeArea(
         child: Padding(
@@ -262,7 +266,7 @@ class LoadingIndicator extends StatelessWidget {
       height: 24,
       child: CircularProgressIndicator(
         strokeWidth: 2,
-        color: color ?? AppTheme.accentColor,
+        color: color ?? AppTheme.of(context).accent,
       ),
     );
   }

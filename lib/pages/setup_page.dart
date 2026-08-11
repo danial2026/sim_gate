@@ -81,20 +81,20 @@ class _SetupPageState extends State<SetupPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Configure Server',
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.of(context).textPrimary,
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Choose the network interface and port the API will listen on.',
                       style: TextStyle(
-                        color: AppTheme.textSecondary,
+                        color: AppTheme.of(context).textSecondary,
                         fontSize: 13,
                       ),
                     ),
@@ -145,15 +145,17 @@ class _ServerStatusChip extends StatelessWidget {
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: running ? AppTheme.successColor : AppTheme.textSecondary,
+            color: running
+                ? AppTheme.successColor
+                : AppTheme.of(context).textSecondary,
             shape: BoxShape.circle,
           ),
         ),
         const SizedBox(width: 8),
         Text(
           running ? 'Server running' : 'Server stopped',
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
+          style: TextStyle(
+            color: AppTheme.of(context).textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,

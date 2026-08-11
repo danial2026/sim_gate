@@ -57,19 +57,22 @@ class _SettingsPageState extends State<SettingsPage> {
             letterSpacing: 2.0,
           ),
         ),
-        content: const Text(
+        content: Text(
           'Generating a new token will invalidate the current token. '
           'All servers using the old token will need to be updated. '
           'This action cannot be undone.',
-          style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+          style: TextStyle(
+            color: AppTheme.of(context).textSecondary,
+            fontSize: 13,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text(
+            child: Text(
               'CANCEL',
               style: TextStyle(
-                color: AppTheme.textSecondary,
+                color: AppTheme.of(context).textSecondary,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.2,
               ),
@@ -109,8 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
           controller: controller,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
+          style: TextStyle(
+            color: AppTheme.of(context).textPrimary,
             fontFamily: AppTheme.monoFamily,
           ),
         ),
@@ -151,8 +154,8 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('EDIT IP'),
         content: TextField(
           controller: controller,
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
+          style: TextStyle(
+            color: AppTheme.of(context).textPrimary,
             fontFamily: AppTheme.monoFamily,
           ),
         ),
@@ -188,9 +191,12 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('CLEAR LOGS'),
-        content: const Text(
+        content: Text(
           'This will delete all app logs. This cannot be undone.',
-          style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+          style: TextStyle(
+            color: AppTheme.of(context).textSecondary,
+            fontSize: 13,
+          ),
         ),
         actions: [
           TextButton(
@@ -242,16 +248,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   icon: Icon(
                     _tokenVisible ? Icons.visibility_off : Icons.visibility,
                     size: 18,
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.of(context).textSecondary,
                   ),
                   onPressed: () =>
                       setState(() => _tokenVisible = !_tokenVisible),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.copy_outlined,
                     size: 18,
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.of(context).textSecondary,
                   ),
                   onPressed: () async {
                     await Clipboard.setData(
@@ -269,8 +275,8 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.only(left: 8),
               child: Text(
                 'Generated ${Formatters.formatRelative(config.tokenGeneratedAt!)}',
-                style: const TextStyle(
-                  color: AppTheme.textSecondary,
+                style: TextStyle(
+                  color: AppTheme.of(context).textSecondary,
                   fontSize: 11,
                 ),
               ),
@@ -329,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: DropdownButton<String>(
               value: config.logLevel,
               underline: const SizedBox(),
-              dropdownColor: AppTheme.surfaceColor,
+              dropdownColor: AppTheme.of(context).surface,
               items: const [
                 DropdownMenuItem(value: 'debug', child: Text('Debug')),
                 DropdownMenuItem(value: 'info', child: Text('Info')),
@@ -377,7 +383,7 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: DropdownButton<AppThemeMode>(
               value: config.appTheme,
               underline: const SizedBox(),
-              dropdownColor: AppTheme.surfaceColor,
+              dropdownColor: AppTheme.of(context).surface,
               items: AppThemeMode.values
                   .map(
                     (m) => DropdownMenuItem(
@@ -413,7 +419,10 @@ class _SettingsPageState extends State<SettingsPage> {
             'SimGate v${_packageInfo?.version ?? AppConstants.appVersion} — '
             'Self-Hosted SMS API',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 11,
+            ),
           ),
         ],
       ),
@@ -424,7 +433,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppTheme.surfaceColor,
+        backgroundColor: AppTheme.of(context).surface,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -453,13 +462,13 @@ class _SettingTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppTheme.textSecondary, size: 20),
+          Icon(icon, color: AppTheme.of(context).textSecondary, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -467,8 +476,8 @@ class _SettingTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
@@ -479,7 +488,7 @@ class _SettingTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 12,
                     fontFamily: mono ? AppTheme.monoFamily : null,
                   ),

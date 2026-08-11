@@ -71,16 +71,16 @@ class _LogsPageState extends State<LogsPage> {
               Expanded(
                 child: TextField(
                   controller: _searchController,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontSize: 13,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Search recipient or message',
                     prefixIcon: Icon(
                       Icons.search,
                       size: 18,
-                      color: AppTheme.textSecondary,
+                      color: AppTheme.of(context).textSecondary,
                     ),
                   ),
                   onSubmitted: (_) => _load(),
@@ -90,14 +90,14 @@ class _LogsPageState extends State<LogsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceColor,
+                  color: AppTheme.of(context).surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.dividerColor),
+                  border: Border.all(color: AppTheme.of(context).divider),
                 ),
                 child: DropdownButton<String>(
                   value: _statusFilter,
                   underline: const SizedBox(),
-                  dropdownColor: AppTheme.surfaceColor,
+                  dropdownColor: AppTheme.of(context).surface,
                   items: const [
                     DropdownMenuItem(value: 'all', child: Text('All')),
                     DropdownMenuItem(value: 'sent', child: Text('Sent')),
@@ -122,11 +122,11 @@ class _LogsPageState extends State<LogsPage> {
             child: _loading && _logs.isEmpty
                 ? const Center(child: LoadingIndicator())
                 : _logs.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'No logs found',
                       style: TextStyle(
-                        color: AppTheme.textSecondary,
+                        color: AppTheme.of(context).textSecondary,
                         fontSize: 13,
                       ),
                     ),
@@ -199,9 +199,9 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
       case SmsStatus.retrying:
         return AppTheme.warningColor;
       case SmsStatus.pending:
-        return AppTheme.textSecondary;
+        return AppTheme.of(context).textSecondary;
       case SmsStatus.cancelled:
-        return AppTheme.textSecondary;
+        return AppTheme.of(context).textSecondary;
     }
   }
 
@@ -211,9 +211,9 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         children: [
@@ -239,8 +239,8 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                       children: [
                         Text(
                           PhoneNumberValidator.mask(r.recipient),
-                          style: const TextStyle(
-                            color: AppTheme.textPrimary,
+                          style: TextStyle(
+                            color: AppTheme.of(context).textPrimary,
                             fontFamily: AppTheme.monoFamily,
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
@@ -250,15 +250,15 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                           r.messagePreview,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppTheme.textSecondary,
+                          style: TextStyle(
+                            color: AppTheme.of(context).textSecondary,
                             fontSize: 12,
                           ),
                         ),
                         Text(
                           Formatters.formatRelative(r.createdAt),
-                          style: const TextStyle(
-                            color: AppTheme.textSecondary,
+                          style: TextStyle(
+                            color: AppTheme.of(context).textSecondary,
                             fontSize: 10,
                           ),
                         ),
@@ -279,8 +279,8 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                       ),
                       Text(
                         'retries: ${r.currentRetryCount}/${r.maxRetries}',
-                        style: const TextStyle(
-                          color: AppTheme.textSecondary,
+                        style: TextStyle(
+                          color: AppTheme.of(context).textSecondary,
                           fontSize: 10,
                         ),
                       ),
@@ -288,7 +288,7 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
                   ),
                   Icon(
                     _expanded ? Icons.expand_less : Icons.expand_more,
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.of(context).textSecondary,
                     size: 18,
                   ),
                 ],
@@ -301,7 +301,7 @@ class _ExpandableLogTileState extends State<_ExpandableLogTile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Divider(color: AppTheme.dividerColor),
+                  Divider(color: AppTheme.of(context).divider),
                   const SizedBox(height: 8),
                   _DetailRow(label: 'Request ID', value: r.requestId),
                   _DetailRow(label: 'Recipient', value: r.recipient),
@@ -350,8 +350,8 @@ class _DetailRow extends StatelessWidget {
             width: 88,
             child: Text(
               label.toUpperCase(),
-              style: const TextStyle(
-                color: AppTheme.textSecondary,
+              style: TextStyle(
+                color: AppTheme.of(context).textSecondary,
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.2,
@@ -361,8 +361,8 @@ class _DetailRow extends StatelessWidget {
           Expanded(
             child: SelectableText(
               value,
-              style: const TextStyle(
-                color: AppTheme.textPrimary,
+              style: TextStyle(
+                color: AppTheme.of(context).textPrimary,
                 fontFamily: AppTheme.monoFamily,
                 fontSize: 12,
               ),

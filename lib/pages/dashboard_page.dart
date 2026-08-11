@@ -65,7 +65,7 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ],
       body: RefreshIndicator(
-        color: AppTheme.accentColor,
+        color: AppTheme.of(context).accent,
         onRefresh: _load,
         child: ListView(
           children: [
@@ -119,12 +119,12 @@ class _StatusCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: running
             ? AppTheme.successColor.withValues(alpha: 0.05)
-            : AppTheme.surfaceColor,
+            : AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: running
               ? AppTheme.successColor.withValues(alpha: 0.4)
-              : AppTheme.dividerColor,
+              : AppTheme.of(context).divider,
         ),
       ),
       child: Row(
@@ -133,7 +133,9 @@ class _StatusCard extends StatelessWidget {
             width: 10,
             height: 10,
             decoration: BoxDecoration(
-              color: running ? AppTheme.successColor : AppTheme.textSecondary,
+              color: running
+                  ? AppTheme.successColor
+                  : AppTheme.of(context).textSecondary,
               shape: BoxShape.circle,
             ),
           ),
@@ -144,8 +146,8 @@ class _StatusCard extends StatelessWidget {
               children: [
                 Text(
                   running ? 'Running' : 'Stopped',
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   ),
@@ -153,8 +155,8 @@ class _StatusCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   '${config.serverIp}:${config.serverPort}',
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontFamily: AppTheme.monoFamily,
                     fontSize: 12,
                   ),
@@ -165,8 +167,8 @@ class _StatusCard extends StatelessWidget {
           if (running)
             Text(
               Formatters.formatDuration(server.uptime),
-              style: const TextStyle(
-                color: AppTheme.textPrimary,
+              style: TextStyle(
+                color: AppTheme.of(context).textPrimary,
                 fontFamily: AppTheme.monoFamily,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -243,18 +245,18 @@ class _QuickButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceColor,
+          color: AppTheme.of(context).surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: AppTheme.of(context).divider),
         ),
         child: Row(
           children: [
-            Icon(icon, color: AppTheme.textPrimary, size: 16),
+            Icon(icon, color: AppTheme.of(context).textPrimary, size: 16),
             const SizedBox(width: 6),
             Text(
               label.toUpperCase(),
-              style: const TextStyle(
-                color: AppTheme.textPrimary,
+              style: TextStyle(
+                color: AppTheme.of(context).textPrimary,
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.2,
@@ -329,17 +331,17 @@ class _SignalGrid extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'SIGNAL STRENGTH',
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.of(context).textSecondary,
               fontSize: 10,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,

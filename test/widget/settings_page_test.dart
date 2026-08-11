@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
 import 'package:sim_gate/config/theme.dart';
+import 'package:sim_gate/models/configuration.dart';
 import 'package:sim_gate/pages/settings_page.dart';
 import 'package:sim_gate/providers/config_provider.dart';
 import 'package:sim_gate/providers/logs_provider.dart';
@@ -155,6 +156,54 @@ void main() {
         find.text('Loading...').evaluate().isNotEmpty ||
             find.textContaining('0.0.1').evaluate().isNotEmpty,
         isTrue,
+      );
+    });
+    testWidgets('switching theme to light flips the app brightness', (
+      tester,
+    ) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+
+      // Mirror main.dart wiring: themeMode follows the ConfigProvider.
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: defaultProviders(),
+          child: Consumer<ConfigProvider>(
+            builder: (context, config, _) => MaterialApp(
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: config.config.appTheme.toMaterial(),
+              home: const SettingsPage(),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        Theme.of(tester.element(find.byType(SettingsPage))).brightness,
+        Brightness.dark,
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('Theme'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.byType(DropdownButton<AppThemeMode>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButton<AppThemeMode>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('LIGHT').last);
+      await tester.pumpAndSettle();
+
+      expect(
+        Theme.of(tester.element(find.byType(SettingsPage))).brightness,
+        Brightness.light,
+      );
+      expect(
+        AppTheme.of(tester.element(find.byType(SettingsPage))).background,
+        AppPalette.light.background,
       );
     });
   });

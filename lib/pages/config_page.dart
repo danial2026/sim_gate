@@ -30,19 +30,22 @@ class _ConfigPageState extends State<ConfigPage> {
       showBack: false,
       body: ListView(
         children: [
-          const Text(
+          Text(
             'Server Configuration',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.of(context).textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.w900,
               letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Review the configuration before starting the API server.',
-            style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 13,
+            ),
           ),
           const SectionHeader('Settings'),
           _ConfigCard(
@@ -61,12 +64,12 @@ class _ConfigPageState extends State<ConfigPage> {
             value: running ? 'Running' : 'Stopped',
             valueColor: running
                 ? AppTheme.successColor
-                : AppTheme.textSecondary,
+                : AppTheme.of(context).textSecondary,
             trailing: running
                 ? Text(
                     Formatters.formatDuration(server.uptime),
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                    style: TextStyle(
+                      color: AppTheme.of(context).textSecondary,
                       fontFamily: AppTheme.monoFamily,
                       fontSize: 12,
                     ),
@@ -85,7 +88,7 @@ class _ConfigPageState extends State<ConfigPage> {
             trailing: IconButton(
               icon: Icon(
                 _tokenVisible ? Icons.visibility_off : Icons.visibility,
-                color: AppTheme.textSecondary,
+                color: AppTheme.of(context).textSecondary,
                 size: 18,
               ),
               onPressed: () => setState(() => _tokenVisible = !_tokenVisible),
@@ -96,8 +99,8 @@ class _ConfigPageState extends State<ConfigPage> {
               padding: const EdgeInsets.only(left: 8, top: 4),
               child: Text(
                 'Generated ${Formatters.formatRelative(config.tokenGeneratedAt!)}',
-                style: const TextStyle(
-                  color: AppTheme.textSecondary,
+                style: TextStyle(
+                  color: AppTheme.of(context).textSecondary,
                   fontSize: 11,
                 ),
               ),
@@ -160,13 +163,13 @@ class _ConfigCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppTheme.textSecondary, size: 20),
+          Icon(icon, color: AppTheme.of(context).textSecondary, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -174,8 +177,8 @@ class _ConfigCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -185,7 +188,7 @@ class _ConfigCard extends StatelessWidget {
                 Text(
                   value,
                   style: TextStyle(
-                    color: valueColor ?? AppTheme.textPrimary,
+                    color: valueColor ?? AppTheme.of(context).textPrimary,
                     fontSize: 15,
                     fontFamily: mono ? AppTheme.monoFamily : null,
                     fontWeight: FontWeight.w700,

@@ -24,17 +24,17 @@ class SmsActivityChart extends StatelessWidget {
       height: 160,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'SMS ACTIVITY · 24H',
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.of(context).textSecondary,
               fontSize: 10,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
@@ -92,7 +92,7 @@ class SuccessRateChart extends StatelessWidget {
       sections.add(
         PieChartSectionData(
           value: 1,
-          color: AppTheme.dividerColor,
+          color: AppTheme.of(context).divider,
           radius: 36,
           showTitle: false,
         ),
@@ -105,8 +105,8 @@ class SuccessRateChart extends StatelessWidget {
             color: AppTheme.successColor,
             radius: 36,
             title: '$sent',
-            titleStyle: const TextStyle(
-              color: AppTheme.backgroundColor,
+            titleStyle: TextStyle(
+              color: AppTheme.of(context).background,
               fontSize: 12,
               fontWeight: FontWeight.w900,
             ),
@@ -120,8 +120,8 @@ class SuccessRateChart extends StatelessWidget {
             color: AppTheme.errorColor,
             radius: 36,
             title: '$failed',
-            titleStyle: const TextStyle(
-              color: AppTheme.backgroundColor,
+            titleStyle: TextStyle(
+              color: AppTheme.of(context).background,
               fontSize: 12,
               fontWeight: FontWeight.w900,
             ),
@@ -135,8 +135,8 @@ class SuccessRateChart extends StatelessWidget {
             color: AppTheme.warningColor,
             radius: 36,
             title: '$pending',
-            titleStyle: const TextStyle(
-              color: AppTheme.backgroundColor,
+            titleStyle: TextStyle(
+              color: AppTheme.of(context).background,
               fontSize: 12,
               fontWeight: FontWeight.w900,
             ),
@@ -149,17 +149,17 @@ class SuccessRateChart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'SUCCESS RATE',
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.of(context).textSecondary,
               fontSize: 10,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
@@ -186,8 +186,8 @@ class SuccessRateChart extends StatelessWidget {
                   children: [
                     Text(
                       '${rate.toStringAsFixed(1)}%',
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
+                      style: TextStyle(
+                        color: AppTheme.of(context).textPrimary,
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
                         fontFamily: AppTheme.monoFamily,
@@ -244,13 +244,16 @@ class _Legend extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             label,
-            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 11,
+            ),
           ),
           const Spacer(),
           Text(
             '$value',
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
+            style: TextStyle(
+              color: AppTheme.of(context).textPrimary,
               fontSize: 12,
               fontFamily: AppTheme.monoFamily,
               fontWeight: FontWeight.w700,

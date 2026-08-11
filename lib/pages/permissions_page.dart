@@ -86,21 +86,21 @@ class _PermissionsPageState extends State<PermissionsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Grant Permissions',
                           style: TextStyle(
-                            color: AppTheme.textPrimary,
+                            color: AppTheme.of(context).textPrimary,
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
                             letterSpacing: -0.5,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
+                        Text(
                           'SimGate needs these permissions to send SMS, read SIM cards, '
                           'and serve API requests.',
                           style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: AppTheme.of(context).textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -205,13 +205,13 @@ class _PermissionCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Row(
         children: [
-          Icon(_icon, color: AppTheme.textPrimary, size: 22),
+          Icon(_icon, color: AppTheme.of(context).textPrimary, size: 22),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -219,8 +219,8 @@ class _PermissionCard extends StatelessWidget {
               children: [
                 Text(
                   _title,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
@@ -228,8 +228,8 @@ class _PermissionCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   _description,
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -245,8 +245,8 @@ class _PermissionCard extends StatelessWidget {
               : TextButton(
                   onPressed: onGrant,
                   style: TextButton.styleFrom(
-                    foregroundColor: AppTheme.accentColor,
-                    side: BorderSide(color: AppTheme.subtleBorder()),
+                    foregroundColor: AppTheme.of(context).accent,
+                    side: BorderSide(color: AppTheme.of(context).subtleBorder),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

@@ -19,13 +19,13 @@ class StatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valueColor = color ?? AppTheme.textPrimary;
+    final valueColor = color ?? AppTheme.of(context).textPrimary;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,14 +33,14 @@ class StatsCard extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 16, color: AppTheme.textSecondary),
+                Icon(icon, size: 16, color: AppTheme.of(context).textSecondary),
                 const SizedBox(width: 6),
               ],
               Expanded(
                 child: Text(
                   label.toUpperCase(),
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,

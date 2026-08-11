@@ -19,7 +19,9 @@ class SignalIndicator extends StatelessWidget {
           width: size * 0.22,
           height: height,
           decoration: BoxDecoration(
-            color: active ? AppTheme.successColor : AppTheme.dividerColor,
+            color: active
+                ? AppTheme.successColor
+                : AppTheme.of(context).divider,
             borderRadius: BorderRadius.circular(1),
           ),
         ),

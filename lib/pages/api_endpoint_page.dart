@@ -21,41 +21,44 @@ class ApiEndpointPage extends StatelessWidget {
       title: 'API Endpoint',
       body: ListView(
         children: [
-          const Text(
+          Text(
             'API Endpoint',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.of(context).textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.w900,
               letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Scan the QR code or copy the URL to connect a client.',
-            style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 13,
+            ),
           ),
           const SectionHeader('QR Code'),
           Center(
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceColor,
+                color: AppTheme.of(context).surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.dividerColor),
+                border: Border.all(color: AppTheme.of(context).divider),
               ),
               child: QrImageView(
                 data: apiUrlWithToken,
                 version: QrVersions.auto,
                 size: 240,
-                backgroundColor: AppTheme.surfaceColor,
-                eyeStyle: const QrEyeStyle(
+                backgroundColor: AppTheme.of(context).surface,
+                eyeStyle: QrEyeStyle(
                   eyeShape: QrEyeShape.square,
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.of(context).textPrimary,
                 ),
-                dataModuleStyle: const QrDataModuleStyle(
+                dataModuleStyle: QrDataModuleStyle(
                   dataModuleShape: QrDataModuleShape.square,
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.of(context).textPrimary,
                 ),
                 errorStateBuilder: (_, error) => Center(
                   child: Text(
@@ -77,15 +80,15 @@ class ApiEndpointPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceColor,
+              color: AppTheme.of(context).surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.dividerColor),
+              border: Border.all(color: AppTheme.of(context).divider),
             ),
             child: SelectableText(
               'curl -X GET "$apiUrl/sms/status?requestId=demo" \\\n'
               '  -H "Authorization: Bearer ${config.accessToken ?? 'TOKEN'}"',
-              style: const TextStyle(
-                color: AppTheme.textPrimary,
+              style: TextStyle(
+                color: AppTheme.of(context).textPrimary,
                 fontFamily: AppTheme.monoFamily,
                 fontSize: 12,
                 height: 1.5,
@@ -133,7 +136,7 @@ class ApiEndpointPage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppTheme.surfaceColor,
+        backgroundColor: AppTheme.of(context).surface,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -151,17 +154,17 @@ class _UrlTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label.toUpperCase(),
-            style: const TextStyle(
-              color: AppTheme.textSecondary,
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
               fontSize: 10,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
@@ -170,8 +173,8 @@ class _UrlTile extends StatelessWidget {
           const SizedBox(height: 6),
           SelectableText(
             value,
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
+            style: TextStyle(
+              color: AppTheme.of(context).textPrimary,
               fontFamily: AppTheme.monoFamily,
               fontSize: 13,
             ),

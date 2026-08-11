@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'config/service_locator.dart';
 import 'config/theme.dart';
+import 'models/configuration.dart';
 import 'providers/config_provider.dart';
 import 'providers/logs_provider.dart';
 import 'providers/server_provider.dart';
@@ -84,32 +85,36 @@ class SimGateApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp(
-        title: 'SimGate',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
-        initialRoute: '/',
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/':
-              return _fade(const PermissionsPage());
-            case '/setup':
-              return _fade(const SetupPage());
-            case '/config':
-              return _fade(const ConfigPage());
-            case '/api-endpoint':
-              return _fade(const ApiEndpointPage());
-            case '/sim':
-              return _fade(const SimCardsPage(inFlow: true));
-            case '/dashboard':
-              return _fade(const DashboardPage());
-            case '/logs':
-              return _fade(const LogsPage());
-            case '/settings':
-              return _fade(const SettingsPage());
-          }
-          return null;
-        },
+      child: Consumer<ConfigProvider>(
+        builder: (context, config, _) => MaterialApp(
+          title: 'SimGate',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: config.config.appTheme.toMaterial(),
+          initialRoute: '/',
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return _fade(const PermissionsPage());
+              case '/setup':
+                return _fade(const SetupPage());
+              case '/config':
+                return _fade(const ConfigPage());
+              case '/api-endpoint':
+                return _fade(const ApiEndpointPage());
+              case '/sim':
+                return _fade(const SimCardsPage(inFlow: true));
+              case '/dashboard':
+                return _fade(const DashboardPage());
+              case '/logs':
+                return _fade(const LogsPage());
+              case '/settings':
+                return _fade(const SettingsPage());
+            }
+            return null;
+          },
+        ),
       ),
     );
   }

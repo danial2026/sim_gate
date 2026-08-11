@@ -43,7 +43,6 @@ class TestHarness {
     } catch (_) {
       return; // plain test() suite: no widget binding; keep real HTTP.
     }
-    if (binding == null) return;
     const channel = MethodChannel('flutter.baseflow.com/permissions/methods');
     binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
       call,

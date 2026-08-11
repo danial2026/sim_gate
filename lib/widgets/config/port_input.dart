@@ -16,10 +16,10 @@ class PortInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'PORT',
           style: TextStyle(
-            color: AppTheme.textSecondary,
+            color: AppTheme.of(context).textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w900,
             letterSpacing: 2.0,
@@ -33,15 +33,18 @@ class PortInput extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(5),
           ],
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
+          style: TextStyle(
+            color: AppTheme.of(context).textPrimary,
             fontFamily: AppTheme.monoFamily,
             fontSize: 14,
           ),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: '3000',
             suffixText: '1024 - 65535',
-            suffixStyle: TextStyle(color: AppTheme.textSecondary, fontSize: 10),
+            suffixStyle: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 10,
+            ),
           ),
           onChanged: onChanged,
           validator: (value) {

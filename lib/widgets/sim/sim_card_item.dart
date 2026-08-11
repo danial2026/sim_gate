@@ -16,9 +16,9 @@ class SimCardItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.of(context).surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
+        border: Border.all(color: AppTheme.of(context).divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,8 +28,8 @@ class SimCardItem extends StatelessWidget {
               Icon(
                 Icons.sim_card_outlined,
                 color: sim.isActive
-                    ? AppTheme.textPrimary
-                    : AppTheme.textSecondary,
+                    ? AppTheme.of(context).textPrimary
+                    : AppTheme.of(context).textSecondary,
                 size: 22,
               ),
               const SizedBox(width: 12),
@@ -39,16 +39,16 @@ class SimCardItem extends StatelessWidget {
                   children: [
                     Text(
                       sim.name,
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
+                      style: TextStyle(
+                        color: AppTheme.of(context).textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
                       sim.carrier ?? 'Unknown carrier',
-                      style: const TextStyle(
-                        color: AppTheme.textSecondary,
+                      style: TextStyle(
+                        color: AppTheme.of(context).textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -64,8 +64,8 @@ class SimCardItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   sim.phoneNumber ?? 'No number',
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textPrimary,
                     fontFamily: AppTheme.monoFamily,
                     fontSize: 13,
                   ),
@@ -74,13 +74,13 @@ class SimCardItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppTheme.dividerColor,
+                  color: AppTheme.of(context).divider,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   sim.networkType.label,
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
@@ -98,7 +98,7 @@ class SimCardItem extends StatelessWidget {
                   style: TextStyle(
                     color: sim.isActive
                         ? AppTheme.successColor
-                        : AppTheme.textSecondary,
+                        : AppTheme.of(context).textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,

@@ -17,14 +17,17 @@ class RecentLogs extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceColor,
+          color: AppTheme.of(context).surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: AppTheme.of(context).divider),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
             'No recent requests',
-            style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+            style: TextStyle(
+              color: AppTheme.of(context).textSecondary,
+              fontSize: 12,
+            ),
           ),
         ),
       );
@@ -42,7 +45,7 @@ class _RecentLogTile extends StatelessWidget {
   final SmsRequest request;
   final ValueChanged<SmsRequest>? onTap;
 
-  Color _statusColor() {
+  Color _statusColor(BuildContext context) {
     switch (request.status) {
       case SmsStatus.sent:
         return AppTheme.successColor;
@@ -51,9 +54,9 @@ class _RecentLogTile extends StatelessWidget {
       case SmsStatus.retrying:
         return AppTheme.warningColor;
       case SmsStatus.pending:
-        return AppTheme.textSecondary;
+        return Theme.of(context).colorScheme.onSurface;
       case SmsStatus.cancelled:
-        return AppTheme.textSecondary;
+        return Theme.of(context).colorScheme.onSurface;
     }
   }
 
@@ -65,9 +68,9 @@ class _RecentLogTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceColor,
+          color: AppTheme.of(context).surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: AppTheme.of(context).divider),
         ),
         margin: const EdgeInsets.only(bottom: 8),
         child: Row(
@@ -76,7 +79,7 @@ class _RecentLogTile extends StatelessWidget {
               width: 6,
               height: 6,
               decoration: BoxDecoration(
-                color: _statusColor(),
+                color: _statusColor(context),
                 shape: BoxShape.circle,
               ),
             ),
@@ -89,15 +92,15 @@ class _RecentLogTile extends StatelessWidget {
                     request.messagePreview,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppTheme.textPrimary,
+                    style: TextStyle(
+                      color: AppTheme.of(context).textPrimary,
                       fontSize: 13,
                     ),
                   ),
                   Text(
                     Formatters.formatRelative(request.createdAt),
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                    style: TextStyle(
+                      color: AppTheme.of(context).textSecondary,
                       fontSize: 11,
                     ),
                   ),
@@ -110,7 +113,7 @@ class _RecentLogTile extends StatelessWidget {
                 Text(
                   request.status.label,
                   style: TextStyle(
-                    color: _statusColor(),
+                    color: _statusColor(context),
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -118,8 +121,8 @@ class _RecentLogTile extends StatelessWidget {
                 ),
                 Text(
                   'SIM ${request.simId.length <= 4 ? request.simId : request.simId.substring(0, 4)}',
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.of(context).textSecondary,
                     fontSize: 10,
                     fontFamily: AppTheme.monoFamily,
                   ),
