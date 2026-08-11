@@ -46,6 +46,7 @@ class SwaggerHandler {
       config: config,
       sims: sims,
       appVersion: appVersion,
+      serverOrigin: request.url.origin,
     ).build();
     return Response.ok(
       encodeSpec(spec),

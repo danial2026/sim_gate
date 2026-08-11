@@ -17,11 +17,16 @@ class SwaggerSpecBuilder {
     required this.config,
     required this.sims,
     required this.appVersion,
+    this.serverOrigin,
   });
 
   final AppConfiguration config;
   final List<SimCard> sims;
   final String appVersion;
+
+  /// Scheme + host + port the docs page was served from (e.g. `http://192.168.1.5:8080`),
+  /// taken from the incoming request so test requests target the real origin.
+  final String? serverOrigin;
 
   /// Builds the OpenAPI document.
   Map<String, dynamic> build() {
@@ -50,10 +55,9 @@ class SwaggerSpecBuilder {
       },
       'servers': [
         {
-          'url': '',
+          'url': serverOrigin ?? '',
           'description':
-              'Same origin as the SimGate server; paths already include '
-              'the /api prefix',
+              'SimGate server origin; paths already include the /api prefix',
         },
       ],
       'tags': [

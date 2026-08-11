@@ -297,7 +297,7 @@ class SwaggerUi {
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
-const state = { spec: null, token: localStorage.getItem("simgate_token") || "", server: "/api" };
+const state = { spec: null, token: localStorage.getItem("simgate_token") || "", server: "" };
 
 const METHOD_COLORS = { get: "#61affe", post: "#49cc90", put: "#fca130", delete: "#f93e3e", patch: "#50e3c2" };
 const METHOD_ORDER = ["get", "post", "put", "delete", "patch"];
@@ -350,7 +350,7 @@ async function loadSpec() {
   for (const s of servers) {
     const opt = document.createElement("option");
     opt.value = s;
-    opt.textContent = s;
+    opt.textContent = s || "Same origin";
     select.appendChild(opt);
   }
   if (servers.length) state.server = servers[0];
