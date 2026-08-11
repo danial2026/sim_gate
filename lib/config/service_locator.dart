@@ -177,7 +177,7 @@ Future<void> setupForTest({
 
 /// App version reported by the test harness. Mirrors the current version in
 /// `pubspec.yaml` so host tests can assert against a stable value.
-const String testAppVersion = '0.0.4';
+const String testAppVersion = '0.0.5';
 
 /// Resets the DI container between tests.
 Future<void> resetGetIt() async {
