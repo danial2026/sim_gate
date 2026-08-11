@@ -1,6 +1,7 @@
 // App-level smoke test: boots the whole widget tree with test wiring and
 // verifies the first screen renders without exceptions.
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
@@ -8,8 +9,20 @@ import 'package:sim_gate/main.dart';
 import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/services/platform_channel_service.dart';
 import 'package:sim_gate/services/sim_service.dart';
+import 'package:sim_gate/widgets/dashboard/charts.dart';
 
 import 'test_harness.dart';
+
+/// Lets real-async work (FFI SQLite) complete under the FakeAsync test zone.
+Future<void> settleDb(WidgetTester tester) async {
+  for (var i = 0; i < 5; i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  await tester.pumpAndSettle();
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -43,5 +56,30 @@ void main() {
     // First screen is the permissions gate.
     expect(find.text('PERMISSIONS'), findsOneWidget);
     expect(find.text('Grant Permissions'), findsOneWidget);
+  });
+
+  testWidgets('onboarding flow ends on the dashboard', (tester) async {
+    await tester.pumpWidget(const SimGateApp());
+    await settleDb(tester);
+
+    // Permissions gate -> Setup.
+    await tester.tap(find.text('Grant Permissions'));
+    await settleDb(tester);
+    expect(find.text('SETUP'), findsOneWidget);
+
+    // Setup -> SIM selection.
+    await tester.tap(find.text('Continue'));
+    await settleDb(tester);
+    expect(find.text('SIM Cards'), findsOneWidget);
+    expect(find.text('SIM 1'), findsOneWidget);
+
+    // SIM selection -> Dashboard (the app home).
+    await tester.tap(find.text('Continue'));
+    await settleDb(tester);
+    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('QUICK ACCESS'), findsOneWidget);
+    expect(find.text('STATISTICS'), findsOneWidget);
+    expect(find.byType(SmsActivityChart), findsOneWidget);
+    expect(find.byType(SuccessRateChart), findsOneWidget);
   });
 }
