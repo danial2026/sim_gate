@@ -73,48 +73,60 @@ class _SetupPageState extends State<SetupPage> {
       showBack: false,
       body: Form(
         key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Configure Server',
-              style: TextStyle(
-                color: AppTheme.textPrimary,
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.5,
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Configure Server',
+                      style: TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Choose the network interface and port the API will listen on.',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SectionHeader('Network'),
+                    IpSelector(
+                      interfaces: _interfaces,
+                      selected: _selectedIp,
+                      onChanged: (v) => setState(() => _selectedIp = v),
+                      isLoading: _loadingInterfaces,
+                    ),
+                    const SizedBox(height: 16),
+                    PortInput(controller: _portController),
+                    const SizedBox(height: 16),
+                    _ServerStatusChip(),
+                    const Spacer(),
+                    PrimaryButton(
+                      label: 'Continue',
+                      isLoading: _saving,
+                      icon: Icons.arrow_forward,
+                      onPressed: _continue,
+                    ),
+                    const SizedBox(height: 12),
+                    SecondaryButton(
+                      label: 'Cancel',
+                      icon: Icons.close,
+                      onPressed: () => Navigator.of(context).maybePop(),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Choose the network interface and port the API will listen on.',
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-            ),
-            const SectionHeader('Network'),
-            IpSelector(
-              interfaces: _interfaces,
-              selected: _selectedIp,
-              onChanged: (v) => setState(() => _selectedIp = v),
-              isLoading: _loadingInterfaces,
-            ),
-            const SizedBox(height: 16),
-            PortInput(controller: _portController),
-            const SizedBox(height: 16),
-            _ServerStatusChip(),
-            const Spacer(),
-            PrimaryButton(
-              label: 'Continue',
-              isLoading: _saving,
-              icon: Icons.arrow_forward,
-              onPressed: _continue,
-            ),
-            const SizedBox(height: 12),
-            SecondaryButton(
-              label: 'Cancel',
-              icon: Icons.close,
-              onPressed: () => Navigator.of(context).maybePop(),
-            ),
-          ],
+          ),
         ),
       ),
     );
