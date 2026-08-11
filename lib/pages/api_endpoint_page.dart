@@ -49,7 +49,14 @@ class ApiEndpointPage extends StatelessWidget {
                 version: QrVersions.auto,
                 size: 240,
                 backgroundColor: AppTheme.surfaceColor,
-                foregroundColor: AppTheme.textPrimary,
+                eyeStyle: QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: AppTheme.textPrimary,
+                ),
+                dataModuleStyle: QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
+                  color: AppTheme.textPrimary,
+                ),
                 errorStateBuilder: (_, error) => Center(
                   child: Text(
                     'QR too long: $error',

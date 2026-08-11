@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/service_locator.dart';
 import 'config/theme.dart';
-import 'models/configuration.dart';
 import 'providers/config_provider.dart';
 import 'providers/logs_provider.dart';
 import 'providers/server_provider.dart';
 import 'providers/sim_provider.dart';
 import 'providers/sms_provider.dart';
-import 'repositories/config_repository.dart';
 import 'repositories/logs_repository.dart';
 import 'repositories/sim_repository.dart';
 import 'repositories/sms_repository.dart';
@@ -19,7 +16,6 @@ import 'services/retry_manager.dart';
 import 'services/sim_service.dart';
 import 'services/sms_service.dart';
 import 'services/token_service.dart';
-import 'services/platform_channel_service.dart';
 import 'server/http_server.dart';
 import 'utils/logger.dart';
 

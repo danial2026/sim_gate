@@ -110,9 +110,8 @@ class _ConfigPageState extends State<ConfigPage> {
                 await server.stop();
               } else {
                 await server.start(config);
-                if (mounted) {
-                  Navigator.of(context).pushNamed('/api-endpoint');
-                }
+                if (!mounted) return;
+                Navigator.of(context).pushNamed('/api-endpoint');
               }
             },
           ),

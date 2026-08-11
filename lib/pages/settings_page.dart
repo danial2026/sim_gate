@@ -64,6 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (regenerate == true) {
       await context.read<ConfigProvider>().regenerateToken();
+      if (!mounted) return;
       _toast(context, 'Token regenerated');
     }
   }
@@ -104,6 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (newPort != null) {
       await context.read<ConfigProvider>().updatePort(newPort);
+      if (!mounted) return;
       _toast(context, 'Port updated. API restart required.');
     }
   }
@@ -141,6 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (newIp != null) {
       await context.read<ConfigProvider>().updateIp(newIp);
+      if (!mounted) return;
       _toast(context, 'IP updated. API restart required.');
     }
   }
@@ -172,6 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (confirmed == true) {
       await context.read<LogsProvider>().clearAll();
+      if (!mounted) return;
       _toast(context, 'Logs cleared');
     }
   }
@@ -340,13 +344,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SectionHeader('About'),
-          _SettingTile(
+          const _SettingTile(
             icon: Icons.info_outline,
             title: 'App Version',
-            subtitle: '${AppConstants.appVersion} (${AppConstants.buildNumber})',
+            subtitle: '0.0.1 (1)',
             mono: true,
           ),
-          _SettingTile(
+          const _SettingTile(
             icon: Icons.verified_user_outlined,
             title: 'Permissions',
             subtitle: 'SMS · Phone · Notifications',

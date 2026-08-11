@@ -46,7 +46,7 @@ class SmsQueries {
   Future<List<SmsRequest>> getPendingOrRetrying() async {
     final rows = await _db.query(
       _table,
-      where: "status IN (?, ?)",
+      where: 'status IN (?, ?)',
       whereArgs: ['pending', 'retrying'],
     );
     return rows.map(SmsRequest.fromMap).toList();

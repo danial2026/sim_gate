@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import '../constants/app_constants.dart';
-
 /// Log severity levels supported by the [Logger].
 enum LogLevel { debug, info, warning, error }
 

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
@@ -66,6 +64,7 @@ class SmsHandler {
       recipient: recipient!,
       message: message!,
       maxRetries: maxRetries,
+      priority: priority,
       clientIp: clientIp,
     );
 

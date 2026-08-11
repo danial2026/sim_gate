@@ -91,6 +91,7 @@ class SmsService {
     required String recipient,
     required String message,
     int maxRetries = 3,
+    SmsPriority priority = SmsPriority.normal,
     String? clientIp,
   }) async {
     final request = await queue(
@@ -98,6 +99,7 @@ class SmsService {
       recipient: recipient,
       message: message,
       maxRetries: maxRetries,
+      priority: priority,
       clientIp: clientIp,
     );
     return attemptSend(request);

@@ -36,13 +36,13 @@ class _SimCardsPageState extends State<SimCardsPage> {
         child: sim.isLoading && sim.sims.isEmpty
             ? const Center(child: LoadingIndicator())
             : sim.sims.isEmpty
-                ? ListView(
+                ? const ListView(
                     children: [
-                      const SizedBox(height: 64),
-                      const Icon(Icons.sim_card_outlined,
+                      SizedBox(height: 64),
+                      Icon(Icons.sim_card_outlined,
                           size: 48, color: AppTheme.textSecondary),
-                      const SizedBox(height: 16),
-                      const Center(
+                      SizedBox(height: 16),
+                      Center(
                         child: Text(
                           'No SIM Cards Available',
                           style: TextStyle(
@@ -61,14 +61,13 @@ class _SimCardsPageState extends State<SimCardsPage> {
                           try {
                             await sim.toggle(sim.sims[i]);
                           } on StateError catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(e.message),
-                                  backgroundColor: AppTheme.errorColor,
-                                ),
-                              );
-                            }
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(e.message),
+                                backgroundColor: AppTheme.errorColor,
+                              ),
+                            );
                           }
                         },
                       ),

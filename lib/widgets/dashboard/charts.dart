@@ -104,7 +104,7 @@ class SuccessRateChart extends StatelessWidget {
           value: sent.toDouble(),
           color: AppTheme.successColor,
           radius: 36,
-          title: '${sent}',
+          title: '$sent',
           titleStyle: const TextStyle(
             color: AppTheme.backgroundColor,
             fontSize: 12,
@@ -117,7 +117,7 @@ class SuccessRateChart extends StatelessWidget {
           value: failed.toDouble(),
           color: AppTheme.errorColor,
           radius: 36,
-          title: '${failed}',
+          title: '$failed',
           titleStyle: const TextStyle(
             color: AppTheme.backgroundColor,
             fontSize: 12,
@@ -130,7 +130,7 @@ class SuccessRateChart extends StatelessWidget {
           value: pending.toDouble(),
           color: AppTheme.warningColor,
           radius: 36,
-          title: '${pending}',
+          title: '$pending',
           titleStyle: const TextStyle(
             color: AppTheme.backgroundColor,
             fontSize: 12,
