@@ -1,7 +1,6 @@
 // App-level smoke test: boots the whole widget tree with test wiring and
 // verifies the first screen renders without exceptions.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sim_gate/config/service_locator.dart';
@@ -9,7 +8,6 @@ import 'package:sim_gate/main.dart';
 import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/services/platform_channel_service.dart';
 import 'package:sim_gate/services/sim_service.dart';
-import 'package:sim_gate/widgets/dashboard/charts.dart';
 
 import 'test_harness.dart';
 
