@@ -11,6 +11,7 @@ import 'package:sim_gate/models/sim_card.dart';
 import 'package:sim_gate/pages/api_endpoint_page.dart';
 import 'package:sim_gate/pages/config_page.dart';
 import 'package:sim_gate/pages/dashboard_page.dart';
+import 'package:sim_gate/pages/permissions_page.dart';
 import 'package:sim_gate/pages/sim_cards_page.dart';
 import 'package:sim_gate/providers/config_provider.dart';
 import 'package:sim_gate/providers/server_provider.dart';
@@ -125,6 +126,39 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(find.text('COPY AS CURL'), findsOneWidget);
+    });
+  });
+
+  group('PermissionsPage', () {
+    testWidgets('back button asks for confirmation before closing the app', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(theme: AppTheme.darkTheme, home: const PermissionsPage()),
+      );
+      await settleDb(tester);
+      expect(find.text('PERMISSIONS'), findsOneWidget);
+
+      // Simulate the Android back button on the root page.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('CLOSE APP'), findsOneWidget);
+      expect(find.text('CANCEL'), findsOneWidget);
+      expect(find.text('EXIT'), findsOneWidget);
+
+      // Cancelling keeps the page open.
+      await tester.tap(find.text('CANCEL'));
+      await tester.pumpAndSettle();
+      expect(find.text('CLOSE APP'), findsNothing);
+      expect(find.text('PERMISSIONS'), findsOneWidget);
+
+      // Back again + EXIT resolves the dialog and exits the app.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('EXIT'));
+      await tester.pumpAndSettle();
+      expect(find.text('CLOSE APP'), findsNothing);
     });
   });
 
