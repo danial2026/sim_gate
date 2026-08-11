@@ -80,9 +80,8 @@ class ConsoleLogSink implements LogSink {
 ///
 /// Respects a minimum [LogLevel] (configurable from Settings).
 class Logger {
-  Logger({LogLevel minLevel = LogLevel.info, List<LogSink>? sinks})
-      : minLevel = minLevel,
-        _sinks = sinks ?? [const ConsoleLogSink()];
+  Logger({this.minLevel = LogLevel.info, List<LogSink>? sinks})
+      : _sinks = sinks ?? [const ConsoleLogSink()];
 
   /// Mutable minimum level. Lower-level entries are dropped.
   LogLevel minLevel;

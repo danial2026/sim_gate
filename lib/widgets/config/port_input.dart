@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../config/theme.dart';
-import '../../constants/app_constants.dart';
 import '../../utils/validators.dart';
 
 /// Numeric port input with built-in validation.
@@ -43,10 +42,10 @@ class PortInput extends StatelessWidget {
             fontFamily: AppTheme.monoFamily,
             fontSize: 14,
           ),
-          decoration: InputDecoration(
-            hintText: '${AppConstants.defaultPort}',
+          decoration: const InputDecoration(
+            hintText: '3000',
             suffixText: '1024 - 65535',
-            suffixStyle: const TextStyle(
+            suffixStyle: TextStyle(
               color: AppTheme.textSecondary,
               fontSize: 10,
             ),

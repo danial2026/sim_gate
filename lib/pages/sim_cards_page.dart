@@ -37,6 +37,7 @@ class _SimCardsPageState extends State<SimCardsPage> {
             ? const Center(child: LoadingIndicator())
             : sim.sims.isEmpty
                 ? ListView(
+                    // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       const SizedBox(height: 64),
                       const Icon(Icons.sim_card_outlined,

@@ -129,9 +129,12 @@ class HttpServerService {
       final handler = buildHandler();
       _server = await io.serve(handler, ip, port);
       _setState(ServerState.running);
+      // Port 0 => OS-assigned ephemeral port; report the actual bound one.
+      final boundIp = _server!.address.address;
+      final boundPort = _server!.port;
       _logger.info(LogComponent.server, 'Server started',
-          details: {'ip': ip, 'port': port});
-      return 'http://$ip:$port';
+          details: {'ip': boundIp, 'port': boundPort});
+      return 'http://$boundIp:$boundPort';
     } catch (e, st) {
       _setState(ServerState.stopped);
       _logger.error(LogComponent.server, 'Failed to start server',
