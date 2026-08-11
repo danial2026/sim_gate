@@ -190,9 +190,7 @@ void main() {
       expect(find.byType(SuccessRateChart), findsOneWidget);
     });
 
-    testWidgets('back button asks for confirmation before closing the app', (
-      tester,
-    ) async {
+    testWidgets('back button returns to the previous page', (tester) async {
       final platform = getIt<PlatformChannelService>() as FakePlatformService;
       platform.setSims([
         SimCard(
@@ -206,58 +204,57 @@ void main() {
       ]);
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.darkTheme,
-          home: MultiProvider(
-            providers: [
-              ChangeNotifierProvider<ConfigProvider>(
-                create: (_) => ConfigProvider(
-                  configService: getIt<ConfigService>(),
-                  tokenService: getIt<TokenService>(),
-                )..load(),
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ConfigProvider>(
+              create: (_) => ConfigProvider(
+                configService: getIt<ConfigService>(),
+                tokenService: getIt<TokenService>(),
+              )..load(),
+            ),
+            ChangeNotifierProvider<SimProvider>(
+              create: (_) => SimProvider(simService: getIt<SimService>()),
+            ),
+            ChangeNotifierProvider<SmsProvider>(
+              create: (_) => SmsProvider(
+                smsService: getIt<SmsService>(),
+                smsRepository: getIt<SmsRepository>(),
+                simRepository: getIt<SimRepository>(),
               ),
-              ChangeNotifierProvider<SimProvider>(
-                create: (_) => SimProvider(simService: getIt<SimService>()),
+            ),
+            ChangeNotifierProvider<ServerProvider>(
+              create: (_) => ServerProvider(
+                httpServer: getIt<HttpServerService>(),
+                retryManager: getIt<RetryManager>(),
               ),
-              ChangeNotifierProvider<SmsProvider>(
-                create: (_) => SmsProvider(
-                  smsService: getIt<SmsService>(),
-                  smsRepository: getIt<SmsRepository>(),
-                  simRepository: getIt<SimRepository>(),
-                ),
-              ),
-              ChangeNotifierProvider<ServerProvider>(
-                create: (_) => ServerProvider(
-                  httpServer: getIt<HttpServerService>(),
-                  retryManager: getIt<RetryManager>(),
-                ),
-              ),
-            ],
-            child: const DashboardPage(),
+            ),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.darkTheme,
+            routes: {
+              '/config': (_) => const ConfigPage(),
+              '/dashboard': (_) => const DashboardPage(),
+            },
+            home: const ConfigPage(),
           ),
         ),
       );
       await settleDb(tester);
+      expect(find.text('SERVER CONFIGURATION'), findsOneWidget);
 
-      // Simulate the Android back button.
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-
-      expect(find.text('CLOSE APP'), findsOneWidget);
-      expect(find.text('CANCEL'), findsOneWidget);
-      expect(find.text('EXIT'), findsOneWidget);
-
-      // Cancelling keeps the dashboard open.
-      await tester.tap(find.text('CANCEL'));
-      await tester.pumpAndSettle();
-      expect(find.text('CLOSE APP'), findsNothing);
+      // Push the dashboard on top (as the flow does after starting the API).
+      Navigator.of(
+        tester.element(find.text('SERVER CONFIGURATION')),
+      ).pushNamed('/dashboard');
+      await settleDb(tester);
       expect(find.text('DASHBOARD'), findsOneWidget);
 
-      // Back again and confirming EXIT dismisses the dialog.
+      // The back button must return to the previous page...
       await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('EXIT'));
-      await tester.pumpAndSettle();
+      await settleDb(tester);
+      expect(find.text('DASHBOARD'), findsNothing);
+      expect(find.text('SERVER CONFIGURATION'), findsOneWidget);
+      // ...without any exit-confirmation dialog.
       expect(find.text('CLOSE APP'), findsNothing);
     });
   });

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../config/theme.dart';
@@ -41,56 +40,6 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-  /// Intercepts the system back button and asks before closing the app.
-  Future<void> _confirmExit() async {
-    final exit = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(
-          'CLOSE APP',
-          style: TextStyle(
-            color: AppTheme.errorColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 2.0,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to close SimGate?\n'
-          'The SMS gateway will stop responding while the app is closed.',
-          style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              'CANCEL',
-              style: TextStyle(
-                color: AppTheme.of(ctx).textSecondary,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text(
-              'EXIT',
-              style: TextStyle(
-                color: AppTheme.errorColor,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-    if (exit == true && mounted) {
-      await SystemNavigator.pop();
-    }
-  }
-
   Future<void> _load() async {
     final provider = context.read<SmsProvider>();
     await provider.refresh();
@@ -105,15 +54,9 @@ class _DashboardPageState extends State<DashboardPage> {
     final sim = context.watch<SimProvider>();
     final running = server.isRunning;
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _confirmExit();
-      },
-      child: SimGateScaffold(
-        title: 'Dashboard',
-        showBack: false,
+    return SimGateScaffold(
+      title: 'Dashboard',
+      showBack: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, size: 18),
