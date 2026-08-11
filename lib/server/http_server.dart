@@ -99,7 +99,7 @@ class HttpServerService {
     final public = {ApiEndpoints.health.substring(1)}; // strip leading '/'
     router.mount('/api', authed);
 
-    shelf.Handler handler = authed;
+    shelf.Handler handler = router;
     handler = _corsMiddleware(handler);
     handler = loggingMiddleware(logsRepository: logsRepo, logger: _logger)(
         handler);

@@ -67,14 +67,14 @@ void main() {
         level: LogLevel.info,
         component: LogComponent.ui,
         message: 'old',
-        timestamp: DateTime.utc(2020, 1, 1),
+        timestamp: DateTime.now().toUtc().subtract(const Duration(days: 60)),
       ));
       await repo.insert(AppLog(
         id: 'new',
         level: LogLevel.info,
         component: LogComponent.ui,
         message: 'new',
-        timestamp: DateTime.utc(2026, 1, 1),
+        timestamp: DateTime.now().toUtc(),
       ));
       final removed = await repo.purgeOlderThan(const Duration(days: 30));
       expect(removed, 1);

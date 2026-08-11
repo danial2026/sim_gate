@@ -49,6 +49,12 @@ class ConfigRepository {
     await _prefs.setBool(AppConstants.keyAutoStartServer, config.autoStartServer);
     await _prefs.setString(
         AppConstants.keyActiveSims, jsonEncode(config.activeSimIds));
+    if (config.accessToken != null) {
+      await saveToken(
+        config.accessToken!,
+        config.tokenGeneratedAt ?? DateTime.now().toUtc(),
+      );
+    }
   }
 
   /// Persists just the access token and its generation timestamp.

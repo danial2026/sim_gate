@@ -17,6 +17,10 @@ Middleware authMiddleware({
   final log = logger ?? Logger();
   return (Handler innerHandler) {
     return (Request request) async {
+      // CORS preflight requests never carry credentials.
+      if (request.method == 'OPTIONS') {
+        return innerHandler(request);
+      }
       if (publicPaths.contains(request.url.path)) {
         return innerHandler(request);
       }

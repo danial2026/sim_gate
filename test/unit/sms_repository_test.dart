@@ -123,9 +123,12 @@ void main() {
 
     test('query filters by status and searches text', () async {
       await repo.create(simId: 's1', recipient: '+1111111111', message: 'alpha');
-      final failed = await repo.create(
+      var failed = await repo.create(
           simId: 's1', recipient: '+2222222222', message: 'beta');
-      await repo.recordRetry(request: failed, success: false);
+      // Exhaust all 3 retries so the request ends in 'failed'.
+      for (var i = 0; i < failed.maxRetries; i++) {
+        await repo.recordRetry(request: failed, success: false);
+      }
 
       final byStatus = await repo.query(status: 'failed');
       expect(byStatus.length, 1);
