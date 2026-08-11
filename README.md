@@ -9,25 +9,29 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 - Multi-SIM support: detect, activate/deactivate, send via a specific SIM
 - Persistent queue with retry/backoff for failed sends
 - QR code with the API URL + token for quick client setup
+- Built-in Swagger UI docs (`/swagger.html`, gated by a settings toggle)
 - Configurable port, IP binding, and log retention (all in-app)
 - Server info, request logs, and SMS history (filterable)
-- Material dark UI with a simple 4-page flow (permissions → dashboard → settings → SIMs)
+- Material dark UI: permissions → server setup → SIM selection → confirm → API endpoint (QR) → dashboard hub (logs, settings)
 
 ## Architecture
 
 ```
 lib/
-  constants/   shared constants (API paths)
+  constants/   API paths + app-wide constants
   config/      DI container (get_it), theme
-  database/    sqflite schema + queries
+  database/    sqflite schema (migrations/) + queries/
   models/      domain models
-  repositories/  data access (sms, sim, logs)
-  services/    business logic (sms send/retry, config, tokens)
-  server/      HTTP server, handlers, middleware
+  repositories/  data access (sms, sim, logs, config)
+  services/    business logic (sms send/retry, sims, tokens, platform channel)
+  server/      HTTP server, handlers/, middleware/, swagger/
   providers/   ChangeNotifier state for pages
-  pages/       UI screens
+  pages/       UI screens (permissions, setup, sims, config, api endpoint,
+               dashboard, logs, settings)
   widgets/     shared widgets
+  utils/       helpers, validators, logging
 android/app/src/main/kotlin/com/example/sim_gate/
+  MainActivity.kt      app entry
   SimGateChannels.kt   platform channel: sendSms, detectSims, networkInterfaces
 ```
 
@@ -43,11 +47,15 @@ flutter run          # pick your device
 ## API
 
 Base URL: `http://<device-ip>:<port>/api` — shown as a QR code in the app.
-All endpoints except `GET /health` require `Authorization: Bearer <token>`.
+`GET /health` and the Swagger docs (`/swagger.html`, `/swagger.json`, gated by a
+settings toggle) are public; all other endpoints require
+`Authorization: Bearer <token>`.
 
 | Method | Path                 | Description                     |
 | ------ | -------------------- | ------------------------------- |
 | GET    | `/health`            | Liveness check                  |
+| GET    | `/swagger.html`      | Swagger UI docs (if enabled)    |
+| GET    | `/swagger.json`      | OpenAPI spec (if enabled)       |
 | POST   | `/sms/send`          | Queue an SMS: `{recipient, message, simId?}` |
 | POST   | `/sms/cancel`        | Cancel a queued message         |
 | GET    | `/sms/status`        | SMS request status              |
