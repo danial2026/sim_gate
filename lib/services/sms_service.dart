@@ -1,3 +1,4 @@
+import '../constants/app_constants.dart';
 import '../models/sms_request.dart';
 import '../repositories/sms_repository.dart';
 import '../utils/logger.dart';
@@ -38,7 +39,7 @@ class SmsService {
     }
     if (!MessageValidator.isValid(message)) {
       throw ArgumentError(
-          'Message must be 1-${SmsRequest.maxMessageLength} chars');
+          'Message must be 1-${AppConstants.maxMessageLength} chars');
     }
     final request = await _repo.create(
       simId: simId,
@@ -109,9 +110,4 @@ class SmsService {
   /// Returns the detailed JSON for the API `/api/sms/status` endpoint.
   Future<Map<String, dynamic>> detailedStatus(String requestId) =>
       _repo.detailedJson(requestId);
-}
-
-/// Workaround extension so the validator message references the max length.
-extension on SmsRequest {
-  static const int maxMessageLength = 1600;
 }
