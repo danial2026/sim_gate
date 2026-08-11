@@ -274,6 +274,7 @@ class SwaggerSpecBuilder {
           tag: 'SIMs',
           summary: 'Activate or deactivate a SIM',
           operationId: 'activateSim',
+          method: 'post',
           requestBody: _jsonBody('ActivateSimRequest', {
             'simId': simIdEnum?.firstOrNull ?? 'sim-0',
             'activate': true,
@@ -292,6 +293,7 @@ class SwaggerSpecBuilder {
           tag: 'SMS',
           summary: 'Send an SMS',
           operationId: 'sendSms',
+          method: 'post',
           requestBody: _jsonBody('SendSmsRequest', {
             'simId': simIdEnum?.firstOrNull ?? 'sim-0',
             'recipient': samplePhone ?? '+1234567890',
@@ -322,6 +324,7 @@ class SwaggerSpecBuilder {
           tag: 'SMS',
           summary: 'Cancel a pending SMS request',
           operationId: 'cancelSms',
+          method: 'post',
           requestBody: _jsonBody('CancelSmsRequest', {
             'requestId': 'm2xjx9k1abc123',
           }),
@@ -458,6 +461,7 @@ class SwaggerSpecBuilder {
               'Invalidates the current token immediately. Clients must be '
               'updated with the returned token.',
           operationId: 'regenerateToken',
+          method: 'post',
           responses: {
             '200': _envelopeResponse(
               'New token issued',

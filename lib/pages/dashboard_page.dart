@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../config/theme.dart';
@@ -40,6 +41,56 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
+  /// Intercepts the system back button and asks before closing the app.
+  Future<void> _confirmExit() async {
+    final exit = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'CLOSE APP',
+          style: TextStyle(
+            color: AppTheme.errorColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to close SimGate?\n'
+          'The SMS gateway will stop responding while the app is closed.',
+          style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'CANCEL',
+              style: TextStyle(
+                color: AppTheme.of(ctx).textSecondary,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text(
+              'EXIT',
+              style: TextStyle(
+                color: AppTheme.errorColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (exit == true && mounted) {
+      await SystemNavigator.pop();
+    }
+  }
+
   Future<void> _load() async {
     final provider = context.read<SmsProvider>();
     await provider.refresh();
@@ -54,51 +105,61 @@ class _DashboardPageState extends State<DashboardPage> {
     final sim = context.watch<SimProvider>();
     final running = server.isRunning;
 
-    return SimGateScaffold(
-      title: 'Dashboard',
-      showBack: false,
-      actions: [
-        IconButton(icon: const Icon(Icons.refresh, size: 18), onPressed: _load),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined, size: 18),
-          onPressed: () => Navigator.of(context).pushNamed('/settings'),
-        ),
-      ],
-      body: RefreshIndicator(
-        color: AppTheme.of(context).accent,
-        onRefresh: _load,
-        child: ListView(
-          children: [
-            _StatusCard(running: running, server: server),
-            const SectionHeader('Quick Access'),
-            _QuickAccess(
-              onConfigure: () => Navigator.of(context).pushNamed('/config'),
-              onSims: () => Navigator.of(context).pushNamed('/sim'),
-              onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
-              onSettings: () => Navigator.of(context).pushNamed('/settings'),
-            ),
-            const SectionHeader('Statistics'),
-            _StatGrid(stats: stats),
-            const SectionHeader('Recent'),
-            RecentLogs(logs: stats.recentLogs),
-            const SizedBox(height: 16),
-            const SectionHeader('Activity'),
-            SmsActivityChart(data: _activity),
-            const SizedBox(height: 8),
-            SuccessRateChart(
-              sent: stats.totalSent,
-              failed: stats.totalFailed,
-              pending: stats.totalPending,
-            ),
-            const SizedBox(height: 8),
-            _SignalGrid(sims: sim.sims),
-            const SizedBox(height: 8),
-            SecondaryButton(
-              label: 'View Logs',
-              icon: Icons.list_alt,
-              onPressed: () => Navigator.of(context).pushNamed('/logs'),
-            ),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _confirmExit();
+      },
+      child: SimGateScaffold(
+        title: 'Dashboard',
+        showBack: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, size: 18),
+            onPressed: _load,
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, size: 18),
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
+        ],
+        body: RefreshIndicator(
+          color: AppTheme.of(context).accent,
+          onRefresh: _load,
+          child: ListView(
+            children: [
+              _StatusCard(running: running, server: server),
+              const SectionHeader('Quick Access'),
+              _QuickAccess(
+                onConfigure: () => Navigator.of(context).pushNamed('/config'),
+                onSims: () => Navigator.of(context).pushNamed('/sim'),
+                onApi: () => Navigator.of(context).pushNamed('/api-endpoint'),
+                onSettings: () => Navigator.of(context).pushNamed('/settings'),
+              ),
+              const SectionHeader('Statistics'),
+              _StatGrid(stats: stats),
+              const SectionHeader('Recent'),
+              RecentLogs(logs: stats.recentLogs),
+              const SizedBox(height: 16),
+              const SectionHeader('Activity'),
+              SmsActivityChart(data: _activity),
+              const SizedBox(height: 8),
+              SuccessRateChart(
+                sent: stats.totalSent,
+                failed: stats.totalFailed,
+                pending: stats.totalPending,
+              ),
+              const SizedBox(height: 8),
+              _SignalGrid(sims: sim.sims),
+              const SizedBox(height: 8),
+              SecondaryButton(
+                label: 'View Logs',
+                icon: Icons.list_alt,
+                onPressed: () => Navigator.of(context).pushNamed('/logs'),
+              ),
+            ],
+          ),
         ),
       ),
     );
