@@ -31,7 +31,7 @@ KEYTOOL="/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/keytool
 
 $KEYTOOL -genkey -v \
   -keystore android/app/upload-keystore.jks \
-  -keyalg RSA -keysize 2048 -validity 10000 \
+  -keyalg RSA -keysize 4096 -validity 10000 \
   -alias upload \
   -storepass YOUR_STORE_PASSWORD \
   -keypass YOUR_KEY_PASSWORD \
@@ -186,9 +186,9 @@ JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" \
 Expected output (non-debug certificate):
 ```
 Signer #1 certificate DN: CN=Danial, OU=SimGate, O=SimGate, L=Unknown, ST=Unknown, C=IR
-Signer #1 certificate SHA-256 digest: ee39e05668ca92ee1f61b382c02fd03e6ceaa29d74a8c0e5f53b3702d92e4219
-Signer #1 certificate SHA-1 digest: 4ab3e088a28fd512c426b51bef13aefd43693a01
-Signer #1 certificate MD5 digest: 6b086888ec78742e42c09954315caf07
+Signer #1 certificate SHA-256 digest: <your-cert-sha256>
+Signer #1 certificate SHA-1 digest: <your-cert-sha1>
+Signer #1 certificate MD5 digest: <your-cert-md5>
 ```
 
 **Do NOT upload** if you see `CN=Android Debug` — that means the debug keystore was used.
