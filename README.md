@@ -98,6 +98,7 @@ settings toggle) are public; all other endpoints require
 | PUT    | `/config/port`       | Change bind port                |
 | PUT    | `/logs/retention`    | Log retention days and max entries |
 
+
 ## Testing
 
 ```bash
@@ -114,3 +115,12 @@ flutter test          # unit + widget tests
 | `scripts/test.sh`    | Unit, widget, and e2e tests              |
 | `scripts/check.sh`   | Analyze, format, tests, Kotlin compile, APK build |
 | `scripts/dev.sh`     | Multi-command: analyze, format, run, apk |
+
+
+## License
+
+[CC BY-NC 4.0](LICENSE) — free to use and modify for non-commercial purposes; no commercial use.
+
+## AI Assistance
+
+Parts of this project were developed with assistance from DeepSeek.
