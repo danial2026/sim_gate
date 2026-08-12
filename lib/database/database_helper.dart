@@ -4,10 +4,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../constants/app_constants.dart';
 import '../utils/logger.dart';
-import 'migrations/migration_001_initial.dart';
-
-/// Schema migrations applied in order when the database is opened.
-typedef Migration = Future<void> Function(Database db);
+import 'schema.dart';
 
 /// SQLite access point for the SimGate app.
 ///
@@ -25,13 +22,10 @@ class DatabaseHelper {
   Database? _db;
   final _logger = Logger(minLevel: LogLevel.info);
 
-  /// Migrations applied in ascending order. New migrations append to this list.
-  static final List<Migration> migrations = [migration001Initial];
-
   /// Optional factory override for tests (e.g. `databaseFactoryFfi`).
   static DatabaseFactory? overrideFactory;
 
-  /// Lazily opens and returns the database, applying all migrations.
+  /// Lazily opens and returns the database, creating the schema if needed.
   Future<Database> database() async {
     if (_db != null && _db!.isOpen) return _db!;
 
@@ -46,22 +40,7 @@ class DatabaseHelper {
         version: AppConstants.databaseVersion,
         onCreate: (db, version) async {
           _logger.info(LogComponent.database, 'Creating database v$version');
-          for (final migration in migrations) {
-            await migration(db);
-          }
-        },
-        onUpgrade: (db, oldVersion, newVersion) async {
-          _logger.info(
-            LogComponent.database,
-            'Upgrading database $oldVersion -> $newVersion',
-          );
-          for (
-            var i = oldVersion;
-            i < newVersion && i < migrations.length;
-            i++
-          ) {
-            await migrations[i](db);
-          }
+          await createSchema(db);
         },
       ),
     );

@@ -46,7 +46,7 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 lib/
   constants/   API paths + app-wide constants
   config/      DI container (get_it), theme
-  database/    sqflite schema (migrations/) + queries/
+  database/    sqflite schema + queries/
   models/      domain models
   repositories/  data access (sms, sim, logs, config)
   services/    business logic (sms send/retry, sims, tokens, platform channel)

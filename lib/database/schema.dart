@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
-/// Initial schema: creates every table defined in the project document.
+/// Creates the full schema on first database open.
 ///
 /// Tables:
 ///   - sms_requests
@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 ///   - configuration
 ///   - sim_cards
 ///   - api_access_log
-Future<void> migration001Initial(Database db) async {
+Future<void> createSchema(Database db) async {
   final batch = db.batch();
 
   // --- sms_requests --------------------------------------------------------
@@ -52,7 +52,8 @@ Future<void> migration001Initial(Database db) async {
       error_code TEXT,
       attempted_at DATETIME NOT NULL,
       response_time_ms INTEGER,
-      FOREIGN KEY(request_id) REFERENCES sms_requests(request_id) ON DELETE CASCADE
+      FOREIGN KEY(request_id) REFERENCES sms_requests(request_id) ON DELETE CASCADE,
+      UNIQUE(request_id, attempt_number)
     )
   ''');
   batch.execute(
@@ -126,6 +127,8 @@ Future<void> migration001Initial(Database db) async {
   ''');
   batch.execute('CREATE INDEX idx_client_ip ON api_access_log(client_ip)');
   batch.execute('CREATE INDEX idx_endpoint ON api_access_log(endpoint)');
+  batch.execute('CREATE INDEX idx_method ON api_access_log(method)');
+  batch.execute('CREATE INDEX idx_status_code ON api_access_log(status_code)');
   batch.execute(
     'CREATE INDEX idx_timestamp_access ON api_access_log(timestamp)',
   );

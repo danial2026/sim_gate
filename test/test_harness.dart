@@ -13,7 +13,7 @@ const int _permissionGranted = 1;
 ///
 /// Each harness gets a *unique* in-memory SQLite database (the FFI factory
 /// caches databases by path, so reusing `:memory:` across tests re-opens the
-/// same schema and breaks migrations). Tests never touch platform channels.
+/// same schema). Tests never touch platform channels.
 class TestHarness {
   TestHarness._(this._dbPath);
 

@@ -1338,7 +1338,7 @@ dependencies {
 ### Phase 2: Database & Data Layer
 1. [ ] Create SQLite database helper
 2. [ ] Implement all table schemas
-3. [ ] Create database migrations logic
+3. [ ] Create database schema creation logic
 4. [ ] Create repository pattern for each table
 5. [ ] Implement SharedPreferences wrapper
 6. [ ] Create model classes for all entities
@@ -1785,8 +1785,7 @@ lib/
 │       └── logs_handler.dart
 ├── database/
 │   ├── database_helper.dart
-│   ├── migrations/
-│   │   └── migration_001_initial.dart
+│   ├── schema.dart
 │   └── queries/
 │       ├── sms_queries.dart
 │       ├── sim_queries.dart
