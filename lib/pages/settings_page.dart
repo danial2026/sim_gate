@@ -10,6 +10,7 @@ import '../config/theme.dart';
 import '../models/configuration.dart';
 import '../providers/config_provider.dart';
 import '../providers/logs_provider.dart';
+import '../services/background_service.dart';
 import '../utils/helpers.dart';
 import '../utils/validators.dart';
 import '../widgets/common/app_widgets.dart';
@@ -22,8 +23,14 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage>
+    with WidgetsBindingObserver {
   bool _tokenVisible = false;
+
+  /// Battery-optimization state: Samsung kills backgrounded apps unless the
+  /// app is whitelisted (Device care → Battery → Background usage limits).
+  bool _batteryIgnored = false;
+  bool _batteryChecking = true;
 
   /// App version info loaded via package_info_plus at startup.
   PackageInfo? _packageInfo;
@@ -31,7 +38,46 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadPackageInfo();
+    _refreshBatteryStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Re-checks the battery status when the user returns from system settings.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshBatteryStatus();
+    }
+  }
+
+  Future<void> _refreshBatteryStatus() async {
+    final ignored = await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    if (!mounted) return;
+    setState(() {
+      _batteryIgnored = ignored;
+      _batteryChecking = false;
+    });
+  }
+
+  /// Shows the system dialog that whitelists SimGate from battery
+  /// optimization (on Samsung this adds the app to "Never sleeping apps").
+  Future<void> _fixBatteryOptimization() async {
+    await getIt<BackgroundService>().requestBatteryOptimizationExemption();
+    if (!mounted) return;
+    _toast(
+      context,
+      'In the dialog, tap Allow so SimGate keeps running while locked',
+    );
+    await Future<void>.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
+    await _refreshBatteryStatus();
   }
 
   Future<void> _loadPackageInfo() async {
@@ -347,6 +393,58 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
+
+          const SectionHeader('Background Service'),
+          const _SettingTile(
+            icon: Icons.notifications_active_outlined,
+            title: 'Run while phone is locked',
+            subtitle: 'A persistent notification keeps the SMS gateway alive '
+                'when the screen is locked or the app is backgrounded',
+          ),
+          _SettingTile(
+            icon: Icons.battery_charging_full_outlined,
+            title: 'Battery optimization',
+            subtitle: _batteryChecking
+                ? 'Checking…'
+                : _batteryIgnored
+                ? 'Exempt — the gateway keeps running when the screen locks'
+                : 'Blocked — Samsung may stop the gateway while the phone '
+                      'is locked',
+            trailing: _batteryChecking
+                ? null
+                : _batteryIgnored
+                ? const StatusBadge(
+                    label: 'Exempt',
+                    color: AppTheme.successColor,
+                  )
+                : TextButton(
+                    onPressed: _fixBatteryOptimization,
+                    child: const Text(
+                      'FIX',
+                      style: TextStyle(
+                        color: AppTheme.errorColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+          ),
+          SecondaryButton(
+            label: 'Open Battery Settings',
+            icon: Icons.battery_saver_outlined,
+            onPressed: () async {
+              final opened =
+                  await getIt<BackgroundService>().openBatterySettings();
+              if (!mounted) return;
+              _toast(
+                context,
+                opened
+                    ? 'Battery settings opened'
+                    : 'Could not open battery settings',
+              );
+            },
+          ),
+          const SizedBox(height: 8),
 
           const SectionHeader('Logging'),
           _SettingTile(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../models/configuration.dart';
+import '../services/background_service.dart';
 import '../services/retry_manager.dart';
 import '../server/http_server.dart';
 import '../utils/logger.dart';
@@ -15,8 +16,10 @@ class ServerProvider extends ChangeNotifier {
   ServerProvider({
     required this.httpServer,
     required this.retryManager,
+    BackgroundService? backgroundService,
     Logger? logger,
-  }) : _logger = logger ?? Logger() {
+  }) : _backgroundService = backgroundService,
+       _logger = logger ?? Logger() {
     _subscription = httpServer.stateStream.listen(_onState);
     _uptimeTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (httpServer.isRunning) notifyListeners();
@@ -25,6 +28,7 @@ class ServerProvider extends ChangeNotifier {
 
   final HttpServerService httpServer;
   final RetryManager retryManager;
+  final BackgroundService? _backgroundService;
   final Logger _logger;
 
   late final StreamSubscription<ServerState> _subscription;
@@ -43,6 +47,8 @@ class ServerProvider extends ChangeNotifier {
         port: config.serverPort,
       );
       retryManager.start();
+      // Keep the process alive when the phone locks / the app is backgrounded.
+      await _backgroundService?.start();
       return url;
     } finally {
       _isBusy = false;
@@ -57,6 +63,7 @@ class ServerProvider extends ChangeNotifier {
     try {
       retryManager.stop();
       await httpServer.stop();
+      await _backgroundService?.stop();
     } finally {
       _isBusy = false;
       notifyListeners();

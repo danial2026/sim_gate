@@ -87,8 +87,8 @@ class _PermissionsPageState extends State<PermissionsPage> {
           ),
         ),
         content: Text(
-          'Exiting will close the app. Any running API server will be '
-          'stopped. Are you sure you want to exit?',
+          'Exiting will close the app. Any running API server keeps running '
+          'in the background. Are you sure you want to exit?',
           style: TextStyle(
             color: AppTheme.of(context).textSecondary,
             fontSize: 13,

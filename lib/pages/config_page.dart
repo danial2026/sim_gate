@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../config/service_locator.dart';
 import '../config/theme.dart';
 import '../providers/config_provider.dart';
 import '../providers/server_provider.dart';
+import '../services/background_service.dart';
 import '../utils/helpers.dart';
 import '../widgets/common/app_widgets.dart';
 
@@ -18,6 +20,16 @@ class ConfigPage extends StatefulWidget {
 
 class _ConfigPageState extends State<ConfigPage> {
   bool _tokenVisible = false;
+
+  /// Battery-optimization status, checked once the server is running.
+  bool? _batteryIgnored;
+
+  Future<void> _refreshBatteryStatus() async {
+    final ignored =
+        await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    if (!mounted) return;
+    setState(() => _batteryIgnored = ignored);
+  }
 
   /// Asks the user to confirm before the system back button closes the app.
   Future<void> _confirmExit() async {
@@ -175,10 +187,44 @@ class _ConfigPageState extends State<ConfigPage> {
                 } else {
                   await server.start(config);
                   if (!context.mounted) return;
+                  _maybePromptBatteryFix();
                   Navigator.of(context).pushNamed('/api-endpoint');
                 }
               },
             ),
+            if (running && _batteryIgnored == false)
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.warningColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppTheme.warningColor.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: AppTheme.warningColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Battery optimization may stop the gateway when the '
+                        'screen locks. Fix it in Settings → Battery '
+                        'optimization.',
+                        style: TextStyle(
+                          color: AppTheme.of(context).textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (running) ...[
               const SizedBox(height: 8),
               PrimaryButton(

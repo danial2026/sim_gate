@@ -14,6 +14,7 @@ import 'repositories/logs_repository.dart';
 import 'repositories/sim_repository.dart';
 import 'repositories/sms_repository.dart';
 import 'services/config_service.dart';
+import 'services/background_service.dart';
 import 'services/retry_manager.dart';
 import 'services/sim_service.dart';
 import 'services/sms_service.dart';
@@ -44,6 +45,8 @@ Future<void> main() async {
       try {
         await httpServer.start(ip: config.serverIp, port: config.serverPort);
         getIt<RetryManager>().start();
+        // Keep the gateway process alive once the phone locks.
+        await getIt<BackgroundService>().start();
       } catch (e) {
         // Swallow startup failure; the user can start the API from the UI.
         getIt<Logger>().error(
@@ -116,7 +119,8 @@ class _SimGateAppState extends State<SimGateApp> with WidgetsBindingObserver {
         ),
         content: Text(
           'Are you sure you want to close SimGate?\n'
-          'The SMS gateway will stop responding while the app is closed.',
+          'The gateway keeps running in the background while the phone is '
+          'locked. Closing the app does not stop it — use Stop API to stop it.',
           style: TextStyle(color: AppTheme.of(ctx).textSecondary, fontSize: 13),
         ),
         actions: [
