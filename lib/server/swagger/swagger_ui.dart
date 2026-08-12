@@ -16,6 +16,7 @@ class SwaggerUi {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SimGate API Docs</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'><rect x='1' y='1' width='106' height='106' rx='24' fill='%2314161a'/><g stroke='white' stroke-width='3.7' stroke-linecap='round' stroke-linejoin='round' fill='none'><path d='M72 60a4 4 0 0 1 -4 4H44l-8 8V40a4 4 0 0 1 4 -4h24a4 4 0 0 1 4 4z'/><path d='M46 46h16M46 54h10'/></g></svg>">
 <style>
   :root {
     --bg: #14161a;
