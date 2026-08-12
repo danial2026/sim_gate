@@ -889,14 +889,15 @@ CREATE INDEX idx_request_id ON sms_requests(request_id);
 ```sql
 CREATE TABLE retry_attempts (
   id TEXT PRIMARY KEY,
-  request_id TEXT NOT NULL UNIQUE,
+  request_id TEXT NOT NULL,
   attempt_number INTEGER NOT NULL,
   status TEXT NOT NULL, -- 'success', 'failed'
   error_message TEXT,
   error_code TEXT,
   attempted_at DATETIME NOT NULL,
   response_time_ms INTEGER,
-  FOREIGN KEY(request_id) REFERENCES sms_requests(request_id) ON DELETE CASCADE
+  FOREIGN KEY(request_id) REFERENCES sms_requests(request_id) ON DELETE CASCADE,
+  UNIQUE(request_id, attempt_number)
 );
 
 CREATE INDEX idx_request_id_retry ON retry_attempts(request_id);
@@ -981,6 +982,8 @@ CREATE TABLE api_access_log (
 
 CREATE INDEX idx_client_ip ON api_access_log(client_ip);
 CREATE INDEX idx_endpoint ON api_access_log(endpoint);
+CREATE INDEX idx_method ON api_access_log(method);
+CREATE INDEX idx_status_code ON api_access_log(status_code);
 CREATE INDEX idx_timestamp_access ON api_access_log(timestamp);
 ```
 
@@ -1303,7 +1306,8 @@ android {
 
 dependencies {
   // Android SMS support is built-in
-  // No additional dependencies needed for core SMS functionality
+  // Additional AndroidX dependencies are handled by Flutter plugins
+  // (permission_handler, android_intent_plus, etc.)
 }
 ```
 
@@ -1782,8 +1786,7 @@ lib/
 ├── database/
 │   ├── database_helper.dart
 │   ├── migrations/
-│   │   ├── migration_001_initial.dart
-│   │   └── migration_002_*.dart
+│   │   └── migration_001_initial.dart
 │   └── queries/
 │       ├── sms_queries.dart
 │       ├── sim_queries.dart
