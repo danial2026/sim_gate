@@ -1,7 +1,6 @@
 package com.danials.sim_gate
 
 import android.app.Application
-import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -29,11 +28,9 @@ class SimGateApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val loader = FlutterInjector.instance().flutterLoader()
-        loader.startInitialization(applicationContext)
         flutterEngine = FlutterEngine(this)
         flutterEngine.dartExecutor.executeDartEntrypoint(
-            DartExecutor.DartEntrypoint(loader, "main"),
+            DartExecutor.DartEntrypoint.createDefault(),
         )
         SimGateChannels(applicationContext, flutterEngine)
         FlutterEngineCache.getInstance().put(ENGINE_ID, flutterEngine)
