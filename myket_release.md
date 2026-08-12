@@ -195,13 +195,46 @@ Signer #1 certificate MD5 digest: <your-cert-md5>
 
 ---
 
-### Step 6 — Upload to Myket
+### Step 6 — Convert screenshots to Myket standards
+
+Myket requires:
+- At least **3** screenshots
+- Max width/height **3000 px**
+- Aspect ratio **16:9** or **9:16** (e.g. 1600×900)
+- Max **3 MB** per image
+
+Use the bundled converter script (`scripts/myket_screenshots.sh`):
+
+```bash
+scripts/myket_screenshots.sh [SRC_DIR] [OUT_DIR]
+# default: reads screenshot/*, writes screenshot/myket/
+```
+
+**What it does per image:**
+- Auto-detects orientation → **center-crops** to exact **9:16** (portrait) or **16:9** (landscape)
+- Keeps **native resolution** — never upscales, never pads/letterboxes
+- Crops the redundant axis (tall images lose top/bottom, wide images lose left/right)
+- Outputs **PNG** if ≤ 3 MB; otherwise falls back to **JPEG**, stepping quality down until ≤ 3 MB
+- Aborts with an error if fewer than 3 input images are found
+
+Example:
+```text
+01-permissions.png (539x1147) -> crop to 539x958  9:16
+swagger.png        (1482x2016) -> crop to 1134x2016 9:16
+```
+
+This run produced `screenshot/myket/*.png` — 11 images, all exact 9:16, native resolution, 66–204 KB.
+
+---
+
+### Step 7 — Upload to Myket
 
 1. Go to [Myket Developer Panel](https://myket.ir/developer/panel)
 2. Select your app
-3. Upload `sim_gate-v0.0.8-release.apk`
-4. Fill in version changelog (Persian)
-5. Submit for review
+3. Upload `build/app/outputs/apk/release/sim_gate-v0.0.8-release.apk`
+4. Upload screenshots from `screenshot/myket/` (pick at least 3, order them by importance)
+5. Fill in version changelog (Persian)
+6. Submit for review
 
 ---
 
@@ -242,6 +275,8 @@ Add this to your `~/.zshrc` or `~/.bashrc` for persistence.
 | `android/key.properties` | Keystore credentials for Gradle | No (`.gitignore`) |
 | `android/app/build.gradle.kts` | Signing config + build logic | Yes |
 | `build/app/outputs/apk/release/sim_gate-v*.apk` | Signed release APK | No (`build/`) |
+| `scripts/myket_screenshots.sh` | Screenshot converter (Myket spec) | Yes |
+| `screenshot/myket/` | Converted screenshots (output of the script) | No (`build/` rule applies only to `build/` — commit or gitignore as you prefer) |
 
 ---
 
