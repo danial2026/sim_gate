@@ -1,10 +1,10 @@
 package com.danials.sim_gate
 
 import android.app.Application
+import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.embedding.engine.loader.FlutterInjector
 
 /**
  * Application entry point.
