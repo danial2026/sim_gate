@@ -1290,7 +1290,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.sim_gateway
+        package: com.danials.sim_gateway
 ```
 
 ### Build Gradle Dependencies (android/app/build.gradle)

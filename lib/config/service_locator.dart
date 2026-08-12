@@ -8,6 +8,7 @@ import '../repositories/logs_repository.dart';
 import '../repositories/sim_repository.dart';
 import '../repositories/sms_repository.dart';
 import '../services/config_service.dart';
+import '../services/background_service.dart';
 import '../services/logger_service.dart';
 import '../services/platform_channel_service.dart';
 import '../services/retry_manager.dart';
@@ -77,6 +78,10 @@ Future<void> setup() async {
     repository: smsRepo,
     logger: getIt<Logger>(),
   );
+  final backgroundService = BackgroundService(
+    platform: platform,
+    logger: getIt<Logger>(),
+  );
 
   getIt.registerSingleton<PlatformChannelService>(platform);
   getIt.registerSingleton<TokenService>(tokenService);
@@ -84,6 +89,7 @@ Future<void> setup() async {
   getIt.registerSingleton<SmsService>(smsService);
   getIt.registerSingleton<SimService>(simService);
   getIt.registerSingleton<RetryManager>(retryManager);
+  getIt.registerSingleton<BackgroundService>(backgroundService);
 
   // HTTP server.
   final appInfo = getIt<AppInfo>();
@@ -155,11 +161,16 @@ Future<void> setupForTest({
     repository: smsRepo,
     logger: logger,
   );
+  final backgroundService = BackgroundService(
+    platform: fakePlatform,
+    logger: logger,
+  );
   getIt.registerSingleton<TokenService>(tokenService);
   getIt.registerSingleton<ConfigService>(configService);
   getIt.registerSingleton<SmsService>(smsService);
   getIt.registerSingleton<SimService>(simService);
   getIt.registerSingleton<RetryManager>(retryManager);
+  getIt.registerSingleton<BackgroundService>(backgroundService);
 
   final httpServer = HttpServerService(
     smsService: smsService,

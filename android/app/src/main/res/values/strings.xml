@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_channel_name">SimGate background service</string>
+    <string name="service_channel_description">Keeps the SMS gateway running while the phone is locked</string>
+    <string name="service_notification_title">SimGate API running</string>
+    <string name="service_notification_text">SMS gateway active — tap to open</string>
+</resources>

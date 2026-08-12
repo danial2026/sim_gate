@@ -1,8 +1,13 @@
-package com.example.sim_gate
+package com.danials.sim_gate
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import android.telephony.SubscriptionInfo
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
@@ -22,7 +27,7 @@ import java.net.NetworkInterface
  *   - networkInterfaces()                          -> lists local IPv4 addresses
  *
  * The channel name must match MethodChannelPlatformService in Dart:
- *   com.example.sim_gate/platform
+ *   com.danials.sim_gate/platform
  */
 class SimGateChannels(
     private val context: Context,
@@ -31,7 +36,7 @@ class SimGateChannels(
 
     companion object {
         private const val TAG = "SimGateChannels"
-        private const val CHANNEL = "com.example.sim_gate/platform"
+        private const val CHANNEL = "com.danials.sim_gate/platform"
     }
 
     private val channel: MethodChannel = MethodChannel(
@@ -44,7 +49,86 @@ class SimGateChannels(
             "sendSms" -> sendSms(call, result)
             "detectSims" -> detectSims(result)
             "networkInterfaces" -> networkInterfaces(result)
+            "startForegroundService" -> startForegroundService(result)
+            "stopForegroundService" -> stopForegroundService(result)
+            "isBatteryOptimizationIgnored" -> verifyBatteryOptOut(result)
+            "requestIgnoreBatteryOptimizations" -> requestBatteryOptOut(result)
+            "openAppBatterySettings" -> openBatterySettings(result)
             else -> result.notImplemented()
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Background service
+    // -------------------------------------------------------------------------
+
+    /** Starts [SimGateService]: keeps the process alive when the phone locks. */
+    private fun startForegroundService(result: MethodChannel.Result) {
+        SimGateService.start(context)
+        result.success(true)
+    }
+
+    /** Stops [SimGateService]. */
+    private fun stopForegroundService(result: MethodChannel.Result) {
+        SimGateService.stop(context)
+        result.success(true)
+    }
+
+    // -------------------------------------------------------------------------
+    // Battery optimization (Samsung kills background apps without this)
+    // -------------------------------------------------------------------------
+
+    /** True when the app is exempt from battery optimization / Doze. */
+    private fun verifyBatteryOptOut(result: MethodChannel.Result) {
+        result.success(isBatteryOptimizationIgnored())
+    }
+
+    /** Shows the system dialog to whitelist SimGate from battery optimization. */
+    private fun requestBatteryOptOut(result: MethodChannel.Result) {
+        val intent = Intent(
+            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+            Uri.parse("package:${context.packageName}"),
+        )
+        result.success(launchIntent(intent))
+    }
+
+    /**
+     * Opens the battery-settings page (Samsung Device Care when available,
+     * otherwise the Android battery-optimization list).
+     */
+    private fun openBatterySettings(result: MethodChannel.Result) {
+        val samsung = Intent().setComponent(
+            ComponentName(
+                "com.samsung.android.sm",
+                "com.samsung.android.sm.ui.battery.BatteryActivity",
+            ),
+        )
+        val target = if (samsung.resolveActivity(context.packageManager) != null) {
+            samsung
+        } else {
+            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        }
+        result.success(launchIntent(target))
+    }
+
+    private fun isBatteryOptimizationIgnored(): Boolean {
+        return try {
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            powerManager.isIgnoringBatteryOptimizations(context.packageName)
+        } catch (e: Exception) {
+            Log.e(TAG, "isIgnoringBatteryOptimizations failed", e)
+            false
+        }
+    }
+
+    private fun launchIntent(intent: Intent): Boolean {
+        return try {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "launchIntent failed: $intent", e)
+            false
         }
     }
 

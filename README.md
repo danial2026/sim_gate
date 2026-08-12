@@ -56,9 +56,12 @@ lib/
                dashboard, logs, settings)
   widgets/     shared widgets
   utils/       helpers, validators, logging
-android/app/src/main/kotlin/com/example/sim_gate/
-  MainActivity.kt      app entry
-  SimGateChannels.kt   platform channel: sendSms, detectSims, networkInterfaces
+android/app/src/main/kotlin/com/danials/sim_gate/
+  MainActivity.kt      app entry (attaches to the process-wide Flutter engine)
+  SimGateApplication.kt  owns the persistent engine; keeps the gateway alive
+  SimGateService.kt    foreground service (notification + wake lock)
+  SimGateChannels.kt   platform channel: sendSms, detectSims, networkInterfaces,
+                       foreground service + battery-optimization helpers
 ```
 
 ## Getting started

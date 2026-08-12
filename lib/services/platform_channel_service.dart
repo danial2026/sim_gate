@@ -38,13 +38,30 @@ abstract class PlatformChannelService {
 
   /// Returns the available network interfaces.
   Future<List<NetworkInterface>> networkInterfaces();
+
+  /// Starts the Android foreground service that keeps the gateway process
+  /// alive while the phone is locked or the app is backgrounded.
+  Future<void> startForegroundService();
+
+  /// Stops the Android foreground service.
+  Future<void> stopForegroundService();
+
+  /// Whether the app is exempt from battery optimization (Doze / Samsung
+  /// app-sleeping), which the OS requires for reliable background running.
+  Future<bool> isBatteryOptimizationIgnored();
+
+  /// Prompts the system dialog to whitelist the app from battery optimization.
+  Future<void> requestIgnoreBatteryOptimizations();
+
+  /// Opens the battery settings page (Samsung Device Care when available).
+  Future<bool> openAppBatterySettings();
 }
 
 /// [MethodChannel]-backed implementation.
 class MethodChannelPlatformService implements PlatformChannelService {
   MethodChannelPlatformService({Logger? logger})
     : _logger = logger ?? Logger(),
-      _channel = const MethodChannel('com.example.sim_gate/platform');
+      _channel = const MethodChannel('com.danials.sim_gate/platform');
 
   final Logger _logger;
   final MethodChannel _channel;
@@ -137,6 +154,80 @@ class MethodChannelPlatformService implements PlatformChannelService {
     }
   }
 
+  @override
+  Future<void> startForegroundService() async {
+    try {
+      await _channel.invokeMethod('startForegroundService');
+    } on PlatformException catch (e) {
+      _logger.error(
+        LogComponent.server,
+        'startForegroundService failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  @override
+  Future<void> stopForegroundService() async {
+    try {
+      await _channel.invokeMethod('stopForegroundService');
+    } on PlatformException catch (e) {
+      _logger.error(
+        LogComponent.server,
+        'stopForegroundService failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  @override
+  Future<bool> isBatteryOptimizationIgnored() async {
+    try {
+      return await _channel.invokeMethod<bool>('isBatteryOptimizationIgnored') ??
+          false;
+    } on PlatformException catch (e) {
+      _logger.error(
+        LogComponent.server,
+        'isBatteryOptimizationIgnored failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return false;
+    }
+  }
+
+  @override
+  Future<void> requestIgnoreBatteryOptimizations() async {
+    try {
+      await _channel.invokeMethod('requestIgnoreBatteryOptimizations');
+    } on PlatformException catch (e) {
+      _logger.error(
+        LogComponent.server,
+        'requestIgnoreBatteryOptimizations failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  @override
+  Future<bool> openAppBatterySettings() async {
+    try {
+      return await _channel.invokeMethod<bool>('openAppBatterySettings') ??
+          false;
+    } on PlatformException catch (e) {
+      _logger.error(
+        LogComponent.server,
+        'openAppBatterySettings failed',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return false;
+    }
+  }
+
   SimCard _parseSim(Map<String, dynamic> m) {
     return SimCard(
       simId: m['simId'] as String,
@@ -207,4 +298,43 @@ class FakePlatformService implements PlatformChannelService {
   @override
   Future<List<NetworkInterface>> networkInterfaces() async =>
       List.unmodifiable(_interfaces);
+
+  /// Tracks foreground-service start/stop invocations for test assertions.
+  bool foregroundServiceStarted = false;
+  bool foregroundServiceStopped = false;
+
+  /// Whether the fake reports the app as exempt from battery optimization.
+  bool batteryOptimizationIgnored = false;
+
+  /// True once the battery-optimization request/settings were opened.
+  bool batteryRequested = false;
+  bool batterySettingsOpened = false;
+
+  @override
+  Future<void> startForegroundService() async {
+    foregroundServiceStarted = true;
+    foregroundServiceStopped = false;
+  }
+
+  @override
+  Future<void> stopForegroundService() async {
+    foregroundServiceStopped = true;
+    foregroundServiceStarted = false;
+  }
+
+  @override
+  Future<bool> isBatteryOptimizationIgnored() async =>
+      batteryOptimizationIgnored;
+
+  @override
+  Future<void> requestIgnoreBatteryOptimizations() async {
+    batteryRequested = true;
+    batteryOptimizationIgnored = true;
+  }
+
+  @override
+  Future<bool> openAppBatterySettings() async {
+    batterySettingsOpened = true;
+    return true;
+  }
 }
