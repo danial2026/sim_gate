@@ -435,7 +435,7 @@ class _SettingsPageState extends State<SettingsPage>
             onPressed: () async {
               final opened =
                   await getIt<BackgroundService>().openBatterySettings();
-              if (!mounted) return;
+              if (!context.mounted) return;
               _toast(
                 context,
                 opened

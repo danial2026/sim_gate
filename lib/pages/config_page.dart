@@ -31,6 +31,70 @@ class _ConfigPageState extends State<ConfigPage> {
     setState(() => _batteryIgnored = ignored);
   }
 
+  /// Offers to whitelist the app from battery optimization right after the
+  /// server starts. Critical on Samsung (app-sleeping kills background apps).
+  Future<void> _maybePromptBatteryFix() async {
+    final ignored =
+        await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    if (!mounted || ignored) {
+      if (mounted) setState(() => _batteryIgnored = ignored);
+      return;
+    }
+    _batteryIgnored = ignored;
+    final fix = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'BACKGROUND RUNNING',
+          style: TextStyle(
+            color: AppTheme.warningColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+          ),
+        ),
+        content: Text(
+          'To keep the SMS gateway running while the phone is locked, '
+          'SimGate needs to be exempt from battery optimization '
+          '(Samsung may otherwise stop it in the background). '
+          'Allow it now?',
+          style: TextStyle(
+            color: AppTheme.of(context).textSecondary,
+            fontSize: 13,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'LATER',
+              style: TextStyle(
+                color: AppTheme.of(context).textSecondary,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text(
+              'ALLOW',
+              style: TextStyle(
+                color: AppTheme.successColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (fix == true) {
+      await getIt<BackgroundService>().requestBatteryOptimizationExemption();
+      await _refreshBatteryStatus();
+    }
+  }
+
   /// Asks the user to confirm before the system back button closes the app.
   Future<void> _confirmExit() async {
     final exit = await showDialog<bool>(
@@ -205,7 +269,7 @@ class _ConfigPageState extends State<ConfigPage> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.warning_amber_rounded,
                       color: AppTheme.warningColor,
                       size: 20,
