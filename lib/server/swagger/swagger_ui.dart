@@ -202,6 +202,9 @@ class SwaggerUi {
     border-radius: 6px; padding: 10px 12px; margin-top: 12px;
     font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; word-break: break-word;
   }
+  .err-banner.banner-ok {
+    background: #173a2b; color: var(--ok); border-color: var(--ok);
+  }
   .curl {
     background: #0d0f12; border: 1px solid var(--border); border-radius: 6px;
     color: var(--text-2); font-family: var(--mono); font-size: 11.5px;
@@ -626,9 +629,25 @@ function setupActions(card, ctx) {
         errBanner.style.display = "block";
         errBanner.textContent = "API error: " + (parsed.error || "unknown error") +
           "\nrequestId: " + (parsed.requestId || "—");
-      } else if (data && typeof data === "object" && Object.keys(data).length === 0) {
-        errBanner.style.display = "block";
-        errBanner.textContent = "Empty data object returned.";
+        if (res.status === 401 && typeof parsed.error === "string" &&
+            parsed.error.includes("Unauthorized")) {
+          errBanner.textContent +=
+            "\n\nThe token was rejected by the server. If it was regenerated, copy the " +
+            "current token from SimGate → Settings → Access Token and re-authorize.";
+        }
+      } else if (data && typeof data === "object") {
+        if (typeof data.newToken === "string" && data.newToken) {
+          state.token = data.newToken;
+          localStorage.setItem("simgate_token", state.token);
+          updateAuthUi();
+          errBanner.className = "err-banner banner-ok";
+          errBanner.style.display = "block";
+          errBanner.textContent = "Token rotated — the new token was saved automatically " +
+            "and will be used for the next requests.";
+        } else if (Object.keys(data).length === 0) {
+          errBanner.style.display = "block";
+          errBanner.textContent = "Empty data object returned.";
+        }
       }
     } else if (res.status >= 400) {
       bodyOut.textContent = raw || "(empty body)";
