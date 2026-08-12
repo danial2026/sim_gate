@@ -39,6 +39,10 @@ send and manage text messages over a local HTTP API, one app — no carrier serv
 - Configurable port, IP binding, and log retention (all in-app)
 - Server info, request logs, and SMS history (filterable)
 - Material UI (dark + light): permissions → server setup → SIM selection → config → API endpoint (QR) → dashboard hub (logs, settings)
+- **Runs in the background** while the phone is locked — foreground service with
+  persistent notification and wake lock keeps the gateway alive
+- **Samsung support** — battery-optimization exemption (Settings → Background
+  Service → Fix), opens Device Care battery settings automatically
 
 ## Architecture
 

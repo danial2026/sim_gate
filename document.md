@@ -12,11 +12,12 @@
 4. [API Endpoints](#api-endpoints)
 5. [Database Schema](#database-schema)
 6. [Features Breakdown](#features-breakdown)
-7. [Required Packages](#required-packages)
-8. [Task Breakdown](#task-breakdown)
-9. [MVP Scope](#mvp-scope)
-10. [Logging Strategy](#logging-strategy)
-11. [MCP Code Structure](#mcp-code-structure)
+7. [Background Service & Samsung Battery Optimization](#feature-11-background-service--samsung-battery-optimization)
+8. [Required Packages](#required-packages)
+9. [Task Breakdown](#task-breakdown)
+10. [MVP Scope](#mvp-scope)
+11. [Logging Strategy](#logging-strategy)
+12. [MCP Code Structure](#mcp-code-structure)
 
 ---
 
@@ -33,6 +34,10 @@ A self-hosted SMS API running natively on Android devices, allowing external app
 - Dashboard with logs, diagrams, and system status
 - QR code sharing of API endpoint
 - Automatic retry mechanism for failed SMS sends
+- **Background running** — foreground service with persistent notification and wake
+  lock keeps the gateway alive while the phone is locked
+- **Samsung battery-optimization support** — built-in prompt to whitelist the app
+  from Samsung Device Care / app-sleeping so the gateway stays responsive
 
 ### Target Users
 - Developers who need SMS functionality for applications
@@ -65,10 +70,12 @@ A self-hosted SMS API running natively on Android devices, allowing external app
 2. **Business Logic** - BLoC/Provider for state management
 3. **HTTP Server** - Dart HTTP server for API
 4. **Services** - SMS sending, SIM detection, authentication
-5. **Data Layer** - SQLite for persistence, SharedPreferences for config
-6. **Platform Integration** - Android native calls for SMS/SIM access
-7. **Logging** - Centralized logging system
-8. **Networking** - Retry logic, request handling
+5. **Background Service** - Android foreground service with wake lock; persistent
+   Flutter engine in Application (survives activity destruction)
+6. **Data Layer** - SQLite for persistence, SharedPreferences for config
+7. **Platform Integration** - Android native calls for SMS/SIM access
+8. **Logging** - Centralized logging system
+9. **Networking** - Retry logic, request handling
 
 ---
 
@@ -344,6 +351,15 @@ A self-hosted SMS API running natively on Android devices, allowing external app
   - Toggle: "Start API on app launch"
   - Requires permission on first enable
 
+#### Background Service
+- **Run while phone is locked** — info tile showing the persistent notification keeps
+  the gateway alive while the screen is off or the app is backgrounded
+- **Battery optimization** — status indicator (Exempt / Blocked) + "FIX" button that
+  opens the system dialog to whitelist SimGate from battery optimization (critical
+  on Samsung One UI — Device Care → Battery → Background usage limits)
+- **Open Battery Settings** — opens the Samsung Device Care battery page (when
+  available) or the Android battery-optimization list
+
 #### Logging Settings
 - Log Level
   - Dropdown: Debug, Info, Warning, Error
@@ -406,6 +422,11 @@ A self-hosted SMS API running natively on Android devices, allowing external app
 - `android.permission.ACCESS_NETWORK_STATE` - Monitor network connectivity
 - `android.permission.INTERNET` - For HTTP server
 - `android.permission.READ_PHONE_NUMBERS` - Get phone numbers of SIM cards (Android 10+)
+- `android.permission.POST_NOTIFICATIONS` - Show foreground-service notification (Android 13+)
+- `android.permission.FOREGROUND_SERVICE` - Run a persistent background process
+- `android.permission.FOREGROUND_SERVICE_DATA_SYNC` - Foreground service type (data sync)
+- `android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` - Battery-optimization exemption dialog
+- `android.permission.WAKE_LOCK` - Hold partial wake lock so the CPU serves requests with screen off
 - `android.permission.READ_CALL_LOG` - (Optional) For advanced features
 - `android.permission.RECEIVE_SMS` - (Optional) For delivery receipts
 
@@ -1064,7 +1085,8 @@ CREATE INDEX idx_timestamp_access ON api_access_log(timestamp);
 - Handle authentication (token validation)
 - Implement request logging
 - Proper error handling
-- Background service that survives app state changes
+- Background service that survives app state changes, phone lock, and swipe-away
+  — Flutter engine held in Application, foreground service with wake lock
 
 **Tasks:**
 - [ ] Choose HTTP framework (shelf/dio/shelf_router)
@@ -1220,6 +1242,47 @@ CREATE INDEX idx_timestamp_access ON api_access_log(timestamp);
 - [ ] Implement database storage
 - [ ] Add console output for development
 - [ ] Create structured error handling
+
+---
+
+### Feature 11: Background Service & Samsung Battery Optimization
+**Scope:** Entire app (Android-native)  
+**Requirements:**
+- Keep the HTTP server alive while the phone is locked, backgrounded, or
+  swiped away
+- Persistent notification with "SimGate API running" shown while the
+  gateway is active
+- Partial wake lock so the CPU stays awake and the server can answer
+  requests while the screen is off
+- Battery-optimization exemption — open the system dialog or Samsung
+  Device Care battery page to whitelist the app from app sleeping
+- Flutter engine held in `Application` so the Dart isolate (HTTP server,
+  SMS queue) survives activity destruction
+
+**Implementation:**
+- `SimGateApplication.kt` — owns the process-wide `FlutterEngine`
+- `SimGateService.kt` — Android foreground service with `START_STICKY`,
+  notification channel, and `PARTIAL_WAKE_LOCK`
+- `SimGateChannels.kt` — five new platform-channel methods:
+  `startForegroundService`, `stopForegroundService`,
+  `isBatteryOptimizationIgnored`, `requestIgnoreBatteryOptimizations`,
+  `openAppBatterySettings`
+- Dart side: `BackgroundService` class wired into `ServerProvider` (start
+  when API starts, stop when API stops) and `main()` auto-start path
+- UI: Settings → Background Service section with Exempt/Blocked status +
+  Fix button; Config page shows warning banner when battery optimization
+  is blocked; start-API dialog prompts to allow background running
+
+**Tasks:**
+- [x] Create `SimGateService` Kotlin foreground service
+- [x] Create `SimGateApplication` class (persistent engine)
+- [x] Update `MainActivity` to use cached engine
+- [x] Add platform-channel methods in `SimGateChannels`
+- [x] Implement `BackgroundService` in Dart
+- [x] Wire FGS start/stop into `ServerProvider` + `main()` auto-start
+- [x] Add battery-optimization tiles + Fix/open-settings button to Settings
+- [x] Add battery warning banner + start-API prompt to Config page
+- [x] Declare WAKE_LOCK + REQUEST_IGNORE_BATTERY_OPTIMIZATIONS in manifest
 
 ---
 
