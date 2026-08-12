@@ -185,7 +185,9 @@ class MethodChannelPlatformService implements PlatformChannelService {
   @override
   Future<bool> isBatteryOptimizationIgnored() async {
     try {
-      return await _channel.invokeMethod<bool>('isBatteryOptimizationIgnored') ??
+      return await _channel.invokeMethod<bool>(
+            'isBatteryOptimizationIgnored',
+          ) ??
           false;
     } on PlatformException catch (e) {
       _logger.error(

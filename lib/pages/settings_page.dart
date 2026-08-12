@@ -58,7 +58,8 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   Future<void> _refreshBatteryStatus() async {
-    final ignored = await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    final ignored = await getIt<BackgroundService>()
+        .isBatteryOptimizationIgnored();
     if (!mounted) return;
     setState(() {
       _batteryIgnored = ignored;
@@ -398,7 +399,8 @@ class _SettingsPageState extends State<SettingsPage>
           const _SettingTile(
             icon: Icons.notifications_active_outlined,
             title: 'Run while phone is locked',
-            subtitle: 'A persistent notification keeps the SMS gateway alive '
+            subtitle:
+                'A persistent notification keeps the SMS gateway alive '
                 'when the screen is locked or the app is backgrounded',
           ),
           _SettingTile(
@@ -433,8 +435,8 @@ class _SettingsPageState extends State<SettingsPage>
             label: 'Open Battery Settings',
             icon: Icons.battery_saver_outlined,
             onPressed: () async {
-              final opened =
-                  await getIt<BackgroundService>().openBatterySettings();
+              final opened = await getIt<BackgroundService>()
+                  .openBatterySettings();
               if (!context.mounted) return;
               _toast(
                 context,

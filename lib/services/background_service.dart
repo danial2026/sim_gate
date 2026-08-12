@@ -9,11 +9,9 @@ import 'platform_channel_service.dart';
 /// management) and holds a wake lock so the CPU can serve requests with the
 /// screen off. Start it whenever the API server is running.
 class BackgroundService {
-  BackgroundService({
-    required PlatformChannelService platform,
-    Logger? logger,
-  }) : _platform = platform,
-       _logger = logger ?? Logger();
+  BackgroundService({required PlatformChannelService platform, Logger? logger})
+    : _platform = platform,
+      _logger = logger ?? Logger();
 
   final PlatformChannelService _platform;
   final Logger _logger;

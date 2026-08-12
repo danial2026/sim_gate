@@ -25,8 +25,8 @@ class _ConfigPageState extends State<ConfigPage> {
   bool? _batteryIgnored;
 
   Future<void> _refreshBatteryStatus() async {
-    final ignored =
-        await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    final ignored = await getIt<BackgroundService>()
+        .isBatteryOptimizationIgnored();
     if (!mounted) return;
     setState(() => _batteryIgnored = ignored);
   }
@@ -34,8 +34,8 @@ class _ConfigPageState extends State<ConfigPage> {
   /// Offers to whitelist the app from battery optimization right after the
   /// server starts. Critical on Samsung (app-sleeping kills background apps).
   Future<void> _maybePromptBatteryFix() async {
-    final ignored =
-        await getIt<BackgroundService>().isBatteryOptimizationIgnored();
+    final ignored = await getIt<BackgroundService>()
+        .isBatteryOptimizationIgnored();
     if (!mounted || ignored) {
       if (mounted) setState(() => _batteryIgnored = ignored);
       return;
