@@ -7,6 +7,7 @@
 #   scripts/dev.sh format      # dart format (idempotent)
 #   scripts/dev.sh run         # flutter run (attaches to a device)
 #   scripts/dev.sh apk         # flutter build apk --debug
+#   scripts/dev.sh release     # flutter build apk --release
 # -----------------------------------------------------------------------------
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -28,8 +29,12 @@ case "${1:-}" in
     echo "==> flutter build apk --debug"
     flutter build apk --debug
     ;;
+  release)
+    echo "==> flutter build apk --release"
+    flutter build apk --release
+    ;;
   *)
-    echo "Usage: scripts/dev.sh [analyze|format|run|apk]"
+    echo "Usage: scripts/dev.sh [analyze|format|run|apk|release]"
     exit 1
     ;;
 esac
