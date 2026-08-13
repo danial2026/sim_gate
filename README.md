@@ -102,6 +102,38 @@ settings toggle) are public; all other endpoints require
 | PUT    | `/config/port`       | Change bind port                |
 | PUT    | `/logs/retention`    | Log retention days and max entries |
 
+## Beszel webhook notifications
+
+Route [Beszel](https://beszel.dev) alerts to a phone via SimGate's SMS API using
+a [generic webhook](https://beszel.dev/guide/notifications/generic)
+notification. Paste the URL into Beszel **Settings → Notifications**:
+
+```
+generic://<phone-ip>:<port>/api/sms/send?template=json&disabletls=yes&$simId=<sim-id>&$recipient=%2B<phone-number>&$priority=high&$maxRetries=3&@authorization=Bearer%20<api-token>
+```
+
+Example:
+
+```
+generic://192.168.0.119:3000/api/sms/send?template=json&disabletls=yes&$simId=1_2&$recipient=%2B1234567890&$priority=high&@authorization=Bearer%20<your-api-token>
+```
+
+How the URL maps to the API:
+
+| URL part                | API field    | Notes |
+| ----------------------- | ------------ | ----- |
+| `template=json`         | —            | Shoutrrr sends a JSON payload |
+| `$simId=<sim-id>`       | `simId`      | Required; `GET /api/sims/active` or the SIM Cards page |
+| `$recipient=%2B<num>`   | `recipient`  | Static target; the `+` must be URL-encoded (`%2B`) |
+| `$priority=high`        | `priority`   | `low`, `normal`, or `high` |
+| `$maxRetries=3`         | `maxRetries` | Optional |
+| `@authorization=Bearer%20<token>` | — | Auth header; the space is `%20` |
+| `disabletls=yes`        | —            | SimGate serves plain HTTP on the LAN |
+
+The alert title lands in the (ignored) `title` field and the alert message is
+sent as the SMS text. The recipient is static — the webhook template can only
+inject the alert's title/message dynamically, so changing the target phone
+number requires editing the URL.
 
 ## Testing
 
